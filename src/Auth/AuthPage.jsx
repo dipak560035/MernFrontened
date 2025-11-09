@@ -163,7 +163,7 @@ export default function AuthPage() {
             <form className="flex flex-col gap-4">
               <div>
                 <Label>Email</Label>
-                <Input type="email" placeholder="you@example.com" />
+                <Input type="email" placeholder="dipak@gmail.com" />
               </div>
               <div>
                 <Label>Password</Label>
@@ -189,7 +189,7 @@ export default function AuthPage() {
               </div>
               <div>
                 <Label>Email</Label>
-                <Input type="email" placeholder="dipak@example.com" />
+                <Input type="email" placeholder="dipak@gmail.com" />
               </div>
               <div>
                 <Label>Password</Label>
