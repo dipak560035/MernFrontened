@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-export const base = 'http://192.168.1.70:5000';
+export const base = 'https://rtk-query-oc7w.onrender.com/';
 
 export const mainApi = createApi({
     reducerPath:'mainApi',
-    baseQuery:fetchBaseQuery({baseUrl: 'http://192.168.1.70:5000/api'}),
+    baseQuery:fetchBaseQuery({baseUrl: 'https://rtk-query-oc7w.onrender.com/'}),
     tagTypes: ['Products'],
 
     endpoints:() => ({})
