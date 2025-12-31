@@ -3,8 +3,10 @@
 
 
 
+import { revalidatePath } from "next/cache";
 import { connectDb } from "./db";
 import { News } from "@/models/News"; // ✅ REQUIRED
+import { NewsModel } from "@/models/model";
 
 export async function getNews() {
   try {
@@ -20,14 +22,10 @@ export async function getNews() {
 
 
 
-export async function addNews() {
+export async function addNews(news:NewsModel) {
     await connectDb();
     try {
-        await News.create({
-        title:'title',
-        description:'description',
-        image:'image'
-         });
+        await News.create({news});
          return { success: true, message: 'News added successfully' };
         
     } catch (err) {
@@ -35,4 +33,22 @@ export async function addNews() {
 
         
     }
+  }
+
+export async function removeNews(id: string) {
+  await connectDb();
+  try {
+    await News.findByIdAndDelete(id);
+    revalidatePath('/');
+    return {
+      success: true,
+      message: 'News removed successfully'
+    }
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err.message
+    }
+  }
+
 }

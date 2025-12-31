@@ -8,9 +8,9 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   try {
     await News.create(body);
-    return NextResponse.json({ message: 'News added successfully' }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json({ message: 'Failed to add news' }, { status: 500 });
+    return NextResponse.json({ message: 'News added successfully' }, { status: 201 });
+  } catch (err:any) {
+    return NextResponse.json({ message:err.message }, { status: 400 });
   }
 
 

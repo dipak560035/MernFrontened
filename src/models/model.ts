@@ -31,3 +31,10 @@ export interface Employee {
     age: number;
    
 }
+
+export interface NewsModel {
+  id?: string;
+  title: string;
+  description: string;
+  image: string;
+}
