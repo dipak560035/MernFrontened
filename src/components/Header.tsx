@@ -1,5 +1,5 @@
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
-// import Link from "next/link";
+import Link from "next/link";
 
 export default function Header() {
   return (
@@ -16,9 +16,14 @@ export default function Header() {
           <SignUpButton> Sign Up</SignUpButton>
         </SignedOut>
 
+          <Link href={'/news/add'}> Add News</Link>
+
         <SignedIn>
           <UserButton />
+        
         </SignedIn>
+          
+
       </nav>
 
     </div>

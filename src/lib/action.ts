@@ -25,11 +25,12 @@ export async function getNews() {
 export async function addNews(news:NewsModel) {
     await connectDb();
     try {
-        await News.create({news});
+        await News.create(news);
+        revalidatePath('/');
          return { success: true, message: 'News added successfully' };
         
-    } catch (err) {
-        return { success: false, message: 'Failed to add news' };
+    } catch (err:any) {
+        return { success: false, message: err.message };
 
         
     }
