@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { getNews } from "@/lib/action";
 
 import { NewsModel } from "@/models/model";
+
 import Link from "next/link";
 
 export default async function Home() {
-
+  
   const res = await getNews();
 
   const news: NewsModel[] = res.data ?? [];
