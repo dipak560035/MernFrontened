@@ -1,0 +1,107 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import ProductCard from '../components/ProductCard';
+import { fetchProducts } from '../redux/slices/productSlice';
+import { Button } from '@/components/ui/button';
+import { ShoppingBag, Sparkles, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+export default function Home() {
+  const dispatch = useDispatch();
+  const { list: products, isLoading } = useSelector((state) => state.products);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-primary/5 py-20 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <div className="flex flex-col items-center text-center space-y-6">
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <Sparkles className="h-8 w-8 text-primary" />
+              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Welcome to Shopal
+              </h1>
+            </div>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              Discover premium products curated just for you. Shop the latest trends and exclusive deals.
+            </p>
+            <div className="flex gap-4 mt-4">
+              <Button asChild size="lg" className="text-lg px-8">
+                <Link to="#products">Shop Now</Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="text-lg px-8">
+                <Link to="/products">Explore</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-12 bg-muted/50">
+        <div className="container mx-auto max-w-7xl px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className="rounded-full bg-primary/10 p-4">
+                <ShoppingBag className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold">Premium Quality</h3>
+              <p className="text-muted-foreground">Handpicked products from trusted brands worldwide</p>
+            </div>
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className="rounded-full bg-primary/10 p-4">
+                <TrendingUp className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold">Best Prices</h3>
+              <p className="text-muted-foreground">Competitive pricing with exclusive deals and discounts</p>
+            </div>
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className="rounded-full bg-primary/10 p-4">
+                <Sparkles className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold">Fast Delivery</h3>
+              <p className="text-muted-foreground">Quick and secure shipping to your doorstep</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Products Section */}
+      <section id="products" className="py-16 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-2">Our Products</h2>
+              <p className="text-muted-foreground">Browse our curated collection of premium products</p>
+            </div>
+          </div>
+          
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="text-center space-y-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                <p className="text-muted-foreground">Loading products...</p>
+              </div>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-20">
+              <ShoppingBag className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-2xl font-semibold mb-2">No products found</h3>
+              <p className="text-muted-foreground">Check back later for new arrivals!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
