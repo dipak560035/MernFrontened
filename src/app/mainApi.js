@@ -424,12 +424,222 @@
 
 
 
+// import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+// export const mainApi = createApi({
+//   reducerPath: 'mainApi',
+//   baseQuery: fetchBaseQuery({
+//     baseUrl: 'http://localhost:5000/api', // match backend
+//     credentials: 'include',
+//     prepareHeaders: (headers) => {
+//       const token = localStorage.getItem("token");
+//       if (token) headers.set("Authorization", `Bearer ${token}`);
+//       return headers;
+//     },
+//   }),
+//   tagTypes: ['User', 'Products', 'Orders'],
+//   endpoints: (builder) => ({
+//     // AUTH
+//     registerUser: builder.mutation({
+//       query: (user) => ({
+//         url: '/auth/signup',   // ✅ matches backend
+//         method: 'POST',
+//         body: user,
+//       }),
+//     }),
+//     loginUser: builder.mutation({
+//       query: (user) => ({
+//         url: '/auth/login',    // ✅ matches backend
+//         method: 'POST',
+//         body: user,
+//       }),
+//     }),
+
+//     // USER
+//     getProfile: builder.query({
+//       query: () => '/users/profile',
+//       providesTags: ['User'],
+//     }),
+
+//     // PRODUCTS
+//     getProducts: builder.query({
+//       query: () => '/products',
+//       providesTags: ['Products'],
+//     }),
+//     getProduct: builder.query({
+//       query: (id) => `/products/${id}`,
+//     }),
+
+//     // ORDERS
+//     getOrders: builder.query({
+//       query: () => '/orders',
+//       providesTags: ['Orders'],
+//     }),
+//     createOrder: builder.mutation({
+//       query: (order) => ({
+//         url: '/orders',
+//         method: 'POST',
+//         body: order,
+//       }),
+//       invalidatesTags: ['Orders'],
+//     }),
+//   }),
+// });
+
+// export const {
+//   useRegisterUserMutation,
+//   useLoginUserMutation,
+//   useGetProfileQuery,
+//   useGetProductsQuery,
+//   useGetProductQuery,
+//   useGetOrdersQuery,
+//   useCreateOrderMutation,
+// } = mainApi;
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+// export const mainApi = createApi({
+//   reducerPath: 'mainApi',
+//   baseQuery: fetchBaseQuery({
+//     baseUrl: 'http://localhost:5000/api', // your backend
+//     credentials: 'include',
+//     prepareHeaders: (headers) => {
+//       const token = localStorage.getItem("token");
+//       if (token) headers.set("Authorization", `Bearer ${token}`);
+//       return headers;
+//     },
+//   }),
+//   tagTypes: ['User', 'Products', 'Orders'],
+//   endpoints: (builder) => ({
+//     // AUTH
+//     registerUser: builder.mutation({
+//       query: (user) => ({
+//         url: '/auth/signup',
+//         method: 'POST',
+//         body: user,
+//       }),
+//     }),
+//     loginUser: builder.mutation({
+//       query: (user) => ({
+//         url: '/auth/login',
+//         method: 'POST',
+//         body: user,
+//       }),
+//     }),
+
+//     // USER
+//     getProfile: builder.query({
+//       query: () => '/users/profile',
+//       providesTags: ['User'],
+//     }),
+
+//     // PRODUCTS
+//     getProducts: builder.query({
+//       query: () => '/products',
+//       providesTags: ['Products'],
+//     }),
+//     getProduct: builder.query({
+//       query: (id) => `/products/${id}`,
+//     }),
+//     addProduct: builder.mutation({
+//       query: (product) => ({
+//         url: '/products',
+//         method: 'POST',
+//         body: product,
+//       }),
+//       invalidatesTags: ['Products'],
+//     }),
+//     // updateProduct: builder.mutation({
+//     //   query: ({ id, ...product }) => ({
+//     //     url: `/products/${id}`,
+//     //     method: 'PATCH',
+//     //     body: product,
+//     //   }),
+//     //   invalidatesTags: ['Products'],
+//     // }),
+
+//   updateProduct: builder.mutation({
+//       query: ({ id, formData }) => ({
+//         url: `/products/${id}`,
+//         method: "PATCH",
+//         body: formData,
+//       }),
+//       invalidatesTags: ["Products"],
+//     }),
+
+
+
+//     deleteProduct: builder.mutation({
+//       query: (id) => ({
+//         url: `/products/${id}`,
+//         method: 'DELETE',
+//       }),
+//       invalidatesTags: ['Products'],
+//     }),
+
+//     // ORDERS
+//     getOrders: builder.query({
+//       query: () => '/orders',
+//       providesTags: ['Orders'],
+//     }),
+//     createOrder: builder.mutation({
+//       query: (order) => ({
+//         url: '/orders',
+//         method: 'POST',
+//         body: order,
+//       }),
+//       invalidatesTags: ['Orders'],
+//     }),
+//   }),
+// });
+
+// export const {
+//   useRegisterUserMutation,
+//   useLoginUserMutation,
+//   useGetProfileQuery,
+//   useGetProductsQuery,
+//   useGetProductQuery,
+//   useAddProductMutation,
+//   useUpdateProductMutation,
+//   useDeleteProductMutation,
+//   useGetOrdersQuery,
+//   useCreateOrderMutation,
+// } = mainApi;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// src/services/mainApi.js
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const mainApi = createApi({
   reducerPath: 'mainApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api', // match backend
+    baseUrl: 'http://localhost:5000/api',
     credentials: 'include',
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
@@ -438,43 +648,73 @@ export const mainApi = createApi({
     },
   }),
   tagTypes: ['User', 'Products', 'Orders'],
+
   endpoints: (builder) => ({
-    // AUTH
+    // =============== AUTH ===============
     registerUser: builder.mutation({
       query: (user) => ({
-        url: '/auth/signup',   // ✅ matches backend
+        url: '/auth/signup',
         method: 'POST',
         body: user,
       }),
     }),
     loginUser: builder.mutation({
       query: (user) => ({
-        url: '/auth/login',    // ✅ matches backend
+        url: '/auth/login',
         method: 'POST',
         body: user,
       }),
     }),
 
-    // USER
+    // =============== USER ===============
     getProfile: builder.query({
       query: () => '/users/profile',
       providesTags: ['User'],
     }),
 
-    // PRODUCTS
+    // =============== PRODUCTS ===============
     getProducts: builder.query({
       query: () => '/products',
       providesTags: ['Products'],
     }),
+
     getProduct: builder.query({
       query: (id) => `/products/${id}`,
+      providesTags: ['Products'],
     }),
 
-    // ORDERS
+    addProduct: builder.mutation({
+      query: (formData) => ({
+        url: '/products',
+        method: 'POST',
+        body: formData, // multipart/form-data auto handled
+      }),
+      invalidatesTags: ['Products'],
+    }),
+
+    updateProduct: builder.mutation({
+      query: ({ id, formData }) => ({
+        url: `/products/${id}`,
+        method: 'PATCH', // important because backend expects PATCH
+        body: formData, // supports file upload
+      }),
+      invalidatesTags: ['Products'],
+    }),
+
+    deleteProduct: builder.mutation({
+      query: (id) => ({
+        url: `/products/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Products'],
+    }),
+
+    // =============== ORDERS ===============
     getOrders: builder.query({
       query: () => '/orders',
       providesTags: ['Orders'],
     }),
+
     createOrder: builder.mutation({
       query: (order) => ({
         url: '/orders',
@@ -483,6 +723,7 @@ export const mainApi = createApi({
       }),
       invalidatesTags: ['Orders'],
     }),
+
   }),
 });
 
@@ -492,6 +733,10 @@ export const {
   useGetProfileQuery,
   useGetProductsQuery,
   useGetProductQuery,
+  useAddProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
   useGetOrdersQuery,
   useCreateOrderMutation,
 } = mainApi;
+

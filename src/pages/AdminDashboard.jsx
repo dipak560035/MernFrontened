@@ -1,12 +1,173 @@
 
-import { useGetProductsQuery, useDeleteProductMutation } from "@/services/api";
+// import { useGetProductsQuery, useDeleteProductMutation } from "@/services/api";
+// import { Link } from "react-router-dom";
+// import { Button } from "@/components/ui/button";
+// import toast from "react-hot-toast";
+
+// export default function AdminDashboard() {
+//   const { data: products, isLoading } = useGetProductsQuery();
+//   const [deleteProduct] = useDeleteProductMutation();
+
+//   const handleDelete = async (id) => {
+//     try {
+//       await deleteProduct(id).unwrap();
+//       toast.success("Product deleted");
+//     } catch (err) {
+//       toast.error(err?.data?.message || "Delete failed");
+//     }
+//   };
+
+//   if (isLoading) return <div className="p-6">Loading products...</div>;
+
+//   return (
+//     <div className="container mx-auto p-6">
+//       <div className="flex items-center justify-between mb-4">
+//         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+//         <Link to="/admin/add">
+//           <Button>Add Product</Button>
+//         </Link>
+//       </div>
+
+//       <div className="space-y-3">
+//         {products?.map((p) => (
+//           <div key={p._id} className="flex items-center justify-between border rounded p-3">
+//             <div>
+//               <p className="font-semibold">{p.name}</p>
+//               <p className="text-sm text-muted-foreground">Rs.{p.price} • {p.category}</p>
+//             </div>
+//             <div className="flex gap-2">
+//               <Link to={`/admin/edit/${p._id}`}>
+//                 <Button variant="outline">Edit</Button>
+//               </Link>
+//               <Button variant="destructive" onClick={() => handleDelete(p._id)}>
+//                 Delete
+//               </Button>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+// import { Link } from "react-router-dom";
+// import { Button } from "@/components/ui/button";
+// import toast from "react-hot-toast";
+// import { useDeleteProductMutation, useGetProductsQuery } from "@/app/mainApi";
+
+// export default function AdminDashboard() {
+//   const { data: products, isLoading } = useGetProductsQuery();
+//   const [deleteProduct] = useDeleteProductMutation();
+
+//   const handleDelete = async (id) => {
+//     try {
+//       await deleteProduct(id).unwrap();
+//       toast.success("Product deleted successfully");
+//     } catch (err) {
+//       toast.error(err?.data?.message || "Failed to delete product");
+//     }
+//   };
+
+//   if (isLoading)
+//     return (
+//       <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+//         Loading products...
+//       </div>
+//     );
+
+//   return (
+//     <div className="min-h-screen bg-background p-6">
+//       {/* Header */}
+//       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+//         <h1 className="text-3xl font-bold mb-3 sm:mb-0">Admin Dashboard</h1>
+//         <Link to="/admin/add">
+//           <Button>Add Product</Button>
+//         </Link>
+//       </div>
+
+//       {/* Products Table */}
+//       <div className="overflow-x-auto">
+//         <table className="w-full text-left border rounded-lg bg-white">
+//           <thead className="bg-gray-50">
+//             <tr>
+//               <th className="px-4 py-2">Name</th>
+//               <th className="px-4 py-2">Category</th>
+//               <th className="px-4 py-2">Price (Rs.)</th>
+//               <th className="px-4 py-2 text-right">Actions</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {products?.map((p) => (
+//               <tr key={p._id} className="border-b hover:bg-gray-50 transition">
+//                 <td className="px-4 py-2">{p.name}</td>
+//                 <td className="px-4 py-2">{p.category}</td>
+//                 <td className="px-4 py-2">{p.price}</td>
+//                 <td className="px-4 py-2 flex justify-end gap-2">
+//                   <Link to={`/admin/edit/${p._id}`}>
+//                     <Button variant="outline" size="sm">
+//                       Edit
+//                     </Button>
+//                   </Link>
+//                   <Button
+//                     variant="destructive"
+//                     size="sm"
+//                     onClick={() => handleDelete(p._id)}
+//                   >
+//                     Delete
+//                   </Button>
+//                 </td>
+//               </tr>
+//             ))}
+//             {!products?.length && (
+//               <tr>
+//                 <td colSpan="4" className="text-center py-4 text-muted-foreground">
+//                   No products found.
+//                 </td>
+//               </tr>
+//             )}
+//           </tbody>
+//         </table>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { useGetProductsQuery, useDeleteProductMutation } from "@/app/mainApi";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 
 export default function AdminDashboard() {
-  const { data: products, isLoading } = useGetProductsQuery();
+  // Fetch products
+  const { data, isLoading, error } = useGetProductsQuery();
   const [deleteProduct] = useDeleteProductMutation();
+
+  // Make sure products is an array
+  const products = Array.isArray(data) ? data : data?.products || [];
 
   const handleDelete = async (id) => {
     try {
@@ -18,6 +179,7 @@ export default function AdminDashboard() {
   };
 
   if (isLoading) return <div className="p-6">Loading products...</div>;
+  if (error) return <div className="p-6 text-red-500">Failed to load products</div>;
 
   return (
     <div className="container mx-auto p-6">
@@ -29,22 +191,26 @@ export default function AdminDashboard() {
       </div>
 
       <div className="space-y-3">
-        {products?.map((p) => (
-          <div key={p._id} className="flex items-center justify-between border rounded p-3">
-            <div>
-              <p className="font-semibold">{p.name}</p>
-              <p className="text-sm text-muted-foreground">Rs.{p.price} • {p.category}</p>
+        {products.length === 0 ? (
+          <p>No products found.</p>
+        ) : (
+          products.map((p) => (
+            <div key={p._id} className="flex items-center justify-between border rounded p-3">
+              <div>
+                <p className="font-semibold">{p.name}</p>
+                <p className="text-sm text-muted-foreground">Rs.{p.price} • {p.category}</p>
+              </div>
+              <div className="flex gap-2">
+                <Link to={`/admin/edit/${p._id}`}>
+                  <Button variant="outline">Edit</Button>
+                </Link>
+                <Button variant="destructive" onClick={() => handleDelete(p._id)}>
+                  Delete
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <Link to={`/admin/edit/${p._id}`}>
-                <Button variant="outline">Edit</Button>
-              </Link>
-              <Button variant="destructive" onClick={() => handleDelete(p._id)}>
-                Delete
-              </Button>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
@@ -62,165 +228,91 @@ export default function AdminDashboard() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useDispatch, useSelector } from 'react-redux';
-// import { Button } from '@/components/ui/button';
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-// import { NavLink, useNavigate } from 'react-router-dom';
-// import AdminProductTable from '../components/AdminProductTable';
-// import { fetchProducts } from '../redux/slices/productSlice';
-// import { useEffect } from 'react';
-// import { Plus, Package, DollarSign, TrendingUp, ArrowLeft } from 'lucide-react';
-// import { Separator } from '@/components/ui/separator';
+// import { useGetProductsQuery, useDeleteProductMutation } from "@/app/mainApi";
+// import { Link } from "react-router-dom";
+// import { Button } from "@/components/ui/button";
+// import toast from "react-hot-toast";
 
 // export default function AdminDashboard() {
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-//   const { list: products, isLoading } = useSelector((state) => state.products);
-//   const { user } = useSelector((state) => state.auth);
+//   const { data: productsData, isLoading, error, refetch } = useGetProductsQuery();
+//   const [deleteProduct, { isLoading: deleting }] = useDeleteProductMutation();
 
-//   useEffect(() => {
-//     dispatch(fetchProducts());
-//   }, [dispatch]);
+//   const handleDelete = async (id) => {
+//     if (!window.confirm("Are you sure you want to delete this product?")) return;
+//     try {
+//       await deleteProduct(id).unwrap();
+//       toast.success("Product deleted successfully");
+//       refetch(); // refresh product list
+//     } catch (err) {
+//       toast.error(err?.data?.message || "Delete failed");
+//     }
+//   };
 
-//   if (user?.role !== 'admin') {
-//     return (
-//       <div className="container mx-auto p-6 max-w-4xl">
-//         <Card className="border-destructive">
-//           <CardHeader>
-//             <CardTitle className="text-destructive">Access Denied</CardTitle>
-//             <CardDescription>You don't have permission to access this page.</CardDescription>
-//           </CardHeader>
-//           <CardContent>
-//             <Button onClick={() => navigate('/')}>Go Back Home</Button>
-//           </CardContent>
-//         </Card>
-//       </div>
-//     );
-//   }
+//   if (isLoading) return <div className="p-6">Loading products...</div>;
+//   if (error) return <div className="p-6 text-red-500">Error loading products</div>;
 
-//   // Calculate statistics
-//   const totalProducts = products.length;
-//   const totalValue = products.reduce((sum, p) => sum + (p.price * p.stock), 0);
-//   const lowStockItems = products.filter(p => p.stock <= 5 && p.stock > 0).length;
-//   const outOfStockItems = products.filter(p => p.stock === 0).length;
+//   const products = productsData?.products || []; // make sure it's an array
 
 //   return (
-//     <div className="container mx-auto p-4 md:p-6 max-w-7xl min-h-screen">
-//       <div className="mb-6">
-//         <Button variant="ghost" onClick={() => navigate('/')} className="mb-4">
-//           <ArrowLeft className="mr-2 h-4 w-4" />
-//           Back to Home
-//         </Button>
-//         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-//           <div>
-//             <h1 className="text-3xl md:text-4xl font-bold mb-2">Admin Dashboard</h1>
-//             <p className="text-muted-foreground">Manage your products and inventory</p>
-//           </div>
-//           <Button asChild size="lg">
-//             <NavLink to="/admin/add">
-//               <Plus className="mr-2 h-4 w-4" />
-//               Add New Product
-//             </NavLink>
-//           </Button>
-//         </div>
+//     <div className="container mx-auto p-6">
+//       <div className="flex items-center justify-between mb-6">
+//         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+//         <Link to="/admin/add">
+//           <Button>Add Product</Button>
+//         </Link>
 //       </div>
 
-//       <Separator className="my-6" />
+//       {products.length === 0 ? (
+//         <p>No products found</p>
+//       ) : (
+//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//           {products.map((product) => (
+//             <div key={product._id} className="border rounded shadow p-4 flex flex-col">
+//               {/* Image */}
+//               {product.image && (
+//                 <img
+//                   src={product.image}
+//                   alt={product.title}
+//                   className="h-48 w-full object-cover rounded mb-4"
+//                 />
+//               )}
 
-//       {/* Statistics Cards */}
-//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-//         <Card>
-//           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-//             <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-//             <Package className="h-4 w-4 text-muted-foreground" />
-//           </CardHeader>
-//           <CardContent>
-//             <div className="text-2xl font-bold">{totalProducts}</div>
-//             <p className="text-xs text-muted-foreground">Products in catalog</p>
-//           </CardContent>
-//         </Card>
+//               {/* Product Info */}
+//               <div className="flex-1">
+//                 <h2 className="font-semibold text-lg">{product.title}</h2>
+//                 <p className="text-sm text-muted-foreground">{product.detail}</p>
+//                 <p className="mt-2 text-sm">
+//                   <span className="font-medium">Category:</span> {product.category}
+//                 </p>
+//                 <p className="text-sm">
+//                   <span className="font-medium">Brand:</span> {product.brand}
+//                 </p>
+//                 <p className="mt-1 text-sm">
+//                   <span className="font-medium">Price:</span> Rs.{product.price}
+//                 </p>
+//                 <p className="text-sm">
+//                   <span className="font-medium">Stock:</span> {product.stock}
+//                 </p>
+//               </div>
 
-//         <Card>
-//           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-//             <CardTitle className="text-sm font-medium">Total Inventory Value</CardTitle>
-//             <DollarSign className="h-4 w-4 text-muted-foreground" />
-//           </CardHeader>
-//           <CardContent>
-//             <div className="text-2xl font-bold">${totalValue.toLocaleString()}</div>
-//             <p className="text-xs text-muted-foreground">Current stock value</p>
-//           </CardContent>
-//         </Card>
-
-//         <Card>
-//           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-//             <CardTitle className="text-sm font-medium">Low Stock Items</CardTitle>
-//             <TrendingUp className="h-4 w-4 text-muted-foreground" />
-//           </CardHeader>
-//           <CardContent>
-//             <div className="text-2xl font-bold text-orange-500">{lowStockItems}</div>
-//             <p className="text-xs text-muted-foreground">Need restocking</p>
-//           </CardContent>
-//         </Card>
-
-//         <Card>
-//           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-//             <CardTitle className="text-sm font-medium">Out of Stock</CardTitle>
-//             <Package className="h-4 w-4 text-muted-foreground" />
-//           </CardHeader>
-//           <CardContent>
-//             <div className="text-2xl font-bold text-destructive">{outOfStockItems}</div>
-//             <p className="text-xs text-muted-foreground">Require attention</p>
-//           </CardContent>
-//         </Card>
-//       </div>
-
-//       <Separator className="my-6" />
-
-//       {/* Products Table */}
-//       <Card>
-//         <CardHeader>
-//           <CardTitle>Products</CardTitle>
-//           <CardDescription>Manage all your products from here</CardDescription>
-//         </CardHeader>
-//         <CardContent>
-//           {isLoading ? (
-//             <div className="flex items-center justify-center py-20">
-//               <div className="text-center space-y-4">
-//                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-//                 <p className="text-muted-foreground">Loading products...</p>
+//               {/* Action Buttons */}
+//               <div className="mt-4 flex gap-2">
+//                 <Link to={`/admin/edit/${product._id}`}>
+//                   <Button variant="outline" className="flex-1">Edit</Button>
+//                 </Link>
+//                 <Button
+//                   variant="destructive"
+//                   className="flex-1"
+//                   onClick={() => handleDelete(product._id)}
+//                   disabled={deleting}
+//                 >
+//                   {deleting ? "Deleting..." : "Delete"}
+//                 </Button>
 //               </div>
 //             </div>
-//           ) : products.length === 0 ? (
-//             <div className="text-center py-20">
-//               <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-//               <h3 className="text-2xl font-semibold mb-2">No products yet</h3>
-//               <p className="text-muted-foreground mb-4">Get started by adding your first product</p>
-//               <Button asChild>
-//                 <NavLink to="/admin/add">
-//                   <Plus className="mr-2 h-4 w-4" />
-//                   Add Product
-//                 </NavLink>
-//               </Button>
-//             </div>
-//           ) : (
-//             <AdminProductTable products={products} />
-//           )}
-//         </CardContent>
-//       </Card>
+//           ))}
+//         </div>
+//       )}
 //     </div>
 //   );
 // }
