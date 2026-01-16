@@ -341,6 +341,92 @@
 
 
 
+// import { useNavigate, Link } from "react-router-dom";
+// import { useForm } from "react-hook-form";
+// import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
+// import toast from "react-hot-toast";
+// import { useDispatch } from "react-redux";
+// import { setUser } from "@/redux/slices/userSlice";
+// import { useLoginUserMutation } from "@/app/mainApi";
+
+// export default function Login() {
+//   const [loginUser, { isLoading }] = useLoginUserMutation();
+//   const navigate = useNavigate();
+//   const dispatch = useDispatch();
+//   const { register, handleSubmit } = useForm();
+
+//   // const onSubmit = async (data) => {
+//   //   try {
+//   //     const res = await loginUser(data).unwrap();
+
+//   //     localStorage.setItem("token", res.token);
+//   //     dispatch(setUser(res.user));
+
+//   //     toast.success("Logged in!");
+//   //     navigate("/");
+//   //   } catch (err) {
+//   //     toast.error(err?.data?.message || "Login failed");
+//   //   }
+//   // };
+
+
+//   const onSubmit = async (data) => {
+//   try {
+//     const res = await loginUser(data).unwrap();
+
+//     dispatch(
+//       setUser({
+//         user: res.user,
+//         token: res.token,
+//       })
+//     );
+
+//     toast.success("Logged in!");
+//     navigate("/");
+//   } catch (err) {
+//     toast.error(err?.data?.message || "Login failed");
+//   }
+// };
+
+
+//   return (
+//     <div className="container mx-auto p-6 max-w-md">
+//       <h1 className="text-2xl font-bold mb-4">Login</h1>
+//       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+//         <div className="space-y-2">
+//           <Label>Email</Label>
+//           <Input type="email" {...register("email")} placeholder="Enter email" />
+//         </div>
+//         <div className="space-y-2">
+//           <Label>Password</Label>
+//           <Input type="password" {...register("password")} placeholder="Enter password" />
+//         </div>
+//         <Button type="submit" disabled={isLoading} className="w-full">
+//           {isLoading ? "Logging in..." : "Login"}
+//         </Button>
+//       </form>
+//       <p className="mt-4 text-sm">
+//         No account? <Link to="/signup" className="text-primary">Sign up</Link>
+//       </p>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -361,8 +447,13 @@ export default function Login() {
     try {
       const res = await loginUser(data).unwrap();
 
-      localStorage.setItem("token", res.token);
-      dispatch(setUser(res.user));
+      // dispatch user + token to Redux
+      dispatch(
+        setUser({
+          user: res.user,
+          token: res.token,
+        })
+      );
 
       toast.success("Logged in!");
       navigate("/");
