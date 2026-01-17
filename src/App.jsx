@@ -204,22 +204,7 @@ export default function App() {
             </PrivateRoute>
           }
         />
-        {/* <Route
-          path="/admin/add"
-          element={
-            <PrivateRoute adminOnly>
-              <AddProduct />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/admin/edit/:id"
-          element={
-            <PrivateRoute adminOnly>
-              <EditProduct />
-            </PrivateRoute>
-          }
-        /> */}
+   
 
         {/* Admin routes */}
 <Route

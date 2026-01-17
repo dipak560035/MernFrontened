@@ -681,10 +681,17 @@ export const mainApi = createApi({
       providesTags: ['Products'],
     }),
 
+    // getProduct: builder.query({
+    //   query: (id) => `/products/${id}`,
+    //   providesTags: ['Products'],
+    // }),
+
     getProduct: builder.query({
-      query: (id) => `/products/${id}`,
-      providesTags: ['Products'],
-    }),
+  query: (id) => `/products/${id}`,
+  transformResponse: (response) => response.product, // <── important
+  providesTags: ['Products'],
+}),
+
 
     addProduct: builder.mutation({
       query: (formData) => ({
