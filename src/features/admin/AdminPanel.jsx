@@ -51,12 +51,20 @@ export default function AdminPanel() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.products.map(item => (
+              {data.products.map(item => {
+                const imageUrl = item.image ? `${base}${item.image}` : null;
+                return (
                 <TableRow key={item._id}>
                   <TableCell>
                     <div className='flex items-center gap-3'>
                       <Avatar>
-                        <AvatarImage src={`${base}/${item.image}`} alt={item.image} />
+                        <AvatarImage 
+                          src={imageUrl} 
+                          alt={item.title}
+                          onError={(e) => {
+                            e.target.src = 'https://via.placeholder.com/40?text=No+Image';
+                          }}
+                        />
                        
                       </Avatar>
                       <div className='font-medium'>{item.title}</div>
@@ -77,7 +85,9 @@ export default function AdminPanel() {
                   </TableCell>
                   
                 </TableRow>
-              ))}
+              );
+              })}
+
             </TableBody>
           </Table>
         </div>

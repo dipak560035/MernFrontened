@@ -91,12 +91,17 @@ export default function Order() {
         <div className="mt-5 space-y-4">
           {validProducts.length === 0 && <p>No products in this order.</p>}
 
-          {validProducts.map((item) => (
+          {validProducts.map((item) => {
+            const imageUrl = item.product?.image ? `${base}${item.product.image}` : null;
+            return (
             <div key={item._id} className="flex gap-5 items-center">
               <Avatar className="size-20">
                 <AvatarImage
-                  src={`${base}/${item.product?.image || "default-image.png"}`}
+                  src={imageUrl || "https://via.placeholder.com/80?text=No+Image"}
                   alt={item.product?.title || "Product"}
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/80?text=No+Image';
+                  }}
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
@@ -106,7 +111,8 @@ export default function Order() {
                 <p>Quantity: {item.quantity || 0}</p>
               </div>
             </div>
-          ))}
+          );
+          })}
         </div>
       </div>
 

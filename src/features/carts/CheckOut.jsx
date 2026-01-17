@@ -43,13 +43,21 @@ export default function CheckOut() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {carts.map(item => (
+                {carts.map(item => {
+                  const imageUrl = item.image ? `${base}${item.image}` : null;
+                  return (
                   <TableRow key={item.id} className='has-data-[state=checked]:bg-muted/50'>
 
                     <TableCell>
                       <div className='flex items-center gap-3'>
                         <Avatar className='rounded-sm'>
-                          <AvatarImage src={`${base}/${item.image}`} alt={item.image} />
+                          <AvatarImage 
+                            src={imageUrl} 
+                            alt={item.title}
+                            onError={(e) => {
+                              e.target.src = 'https://via.placeholder.com/40?text=No+Image';
+                            }}
+                          />
                           <AvatarFallback className='text-xs'>{item.title}</AvatarFallback>
                         </Avatar>
                         <div>
@@ -101,7 +109,8 @@ export default function CheckOut() {
 
                     </TableCell>
                   </TableRow>
-                ))}
+                );
+                })}
               </TableBody>
             </Table>
           </div>

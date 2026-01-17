@@ -85,9 +85,7 @@ export default function ProductsSection({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product) => (
-              <div key={product._id || Math.random()} className="border rounded-lg p-4">
-                <ProductCard product={product} />
-              </div>
+              <ProductCard key={product._id || Math.random()} product={product} />
             ))}
           </div>
         )}

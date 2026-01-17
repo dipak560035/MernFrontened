@@ -636,10 +636,13 @@
 // src/services/mainApi.js
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+// Base URL for constructing image paths
+export const base = '/api';
+
 export const mainApi = createApi({
   reducerPath: 'mainApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api',
+    baseUrl: '/api',
     credentials: 'include',
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");

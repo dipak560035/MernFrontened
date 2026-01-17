@@ -303,15 +303,15 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Base URL for images
-const BASE_URL = "http://192.168.1.78:5000/";
+// Base URL for images - use relative path, proxy will handle backend URL
+const BASE_URL = window.location.origin;
 
 // Fetch all products
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch("http://192.168.1.78:5000/api/products");
+      const res = await fetch("/api/products");
       const data = await res.json();
       const products = Array.isArray(data) ? data : data.products || [];
       return products.map((p) => ({

@@ -32,10 +32,27 @@ export default function ProductDetail() {
     console.log('Product:', product);
     
     if (!product) return <h3 className='text-pink-500'>Product not found</h3>
+    
+    // Construct image URL properly
+    const imageUrl = product.image ? `${base}${product.image}` : null;
+
   return (
      <div className=" max-w-7xl mx-auto grid grid-cols-2 mt-11 gap-10">
       <div>
-        <img src={`${base}/${product.image}`} alt="" />
+        {imageUrl ? (
+          <img 
+            src={imageUrl} 
+            alt={product.title}
+            className="w-full object-cover rounded-lg"
+            onError={(e) => {
+              e.target.src = 'https://via.placeholder.com/400?text=No+Image';
+            }}
+          />
+        ) : (
+          <div className='bg-gray-200 w-full h-64 flex items-center justify-center rounded-lg'>
+            <span className='text-gray-400'>No Image</span>
+          </div>
+        )}
       </div>
       <div className="space-y-4">
         <h1>{product.title}</h1>
