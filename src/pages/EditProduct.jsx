@@ -1,190 +1,168 @@
 
-// import { useForm } from "react-hook-form";
+
+
+// import { useUpdateProductMutation, useGetProductQuery } from "@/app/mainApi";
 // import { useNavigate, useParams } from "react-router-dom";
+// import { useForm } from "react-hook-form";
 // import { Button } from "@/components/ui/button";
 // import { Input } from "@/components/ui/input";
 // import { Label } from "@/components/ui/label";
 // import { Textarea } from "@/components/ui/textarea";
 // import toast from "react-hot-toast";
-// import {
-//   useGetProductQuery,
-//   useUpdateProductMutation,
-// } from "@/app/mainApi";
-// import { useEffect } from "react";
+// import { useEffect, useState } from "react";
 
 // export default function EditProduct() {
 //   const { id } = useParams();
 //   const navigate = useNavigate();
-
-//   const { data, isLoading: isFetching } = useGetProductQuery(id);
-//   const [updateProduct, { isLoading: isSubmitting }] = useUpdateProductMutation();
+  
+//   const { data: product, isLoading, error } = useGetProductQuery(id);
+//   const [updateProduct, { isLoading: updating }] = useUpdateProductMutation();
+  
+//   const [imagePreview, setImagePreview] = useState("");
 
 //   const {
 //     register,
 //     handleSubmit,
 //     setValue,
 //     formState: { errors },
-//   } = useForm({
-//     defaultValues: {
-//       title: "",         // UI field name
-//       detail: "",
-//       price: 0,
-//       stock: 0,
-//       category: "",
-//       brand: "",
-//       image: undefined,
-//     },
-//   });
+//   } = useForm();
 
-//   // Populate form with actual backend field names
+//   // Set image preview
 //   useEffect(() => {
-//     if (!data?.product) return;
+//     if (product?.image) {
+//       const imgUrl = product.image.startsWith("http")
+//         ? product.image
+//         : `http://localhost:5000/${product.image}`;
+//       setImagePreview(imgUrl);
+//     }
+//   }, [product]);
 
-//     const p = data.product;
+//   // Fill form with existing product data (matching backend field names)
+//  useEffect(() => {
+//   if (!product) return;
 
-//     setValue("title",       p.name          || "");
-//     setValue("detail",      p.description   || "");
-//     setValue("price",       Number(p.price) || 0);
-//     setValue("stock",       Number(p.stock) || 0);
-//     setValue("category",    p.category      || "");
-//     setValue("brand",       p.brand         || "");
+//   // ← This is the most important part
+//   setValue("title", product.name || product.title || "");
+//   setValue("detail", product.description || product.detail || "");
+//   setValue("price", Number(product.price) || 0);
+//   setValue("stock", Number(product.stock) ?? 0);
+//   setValue("category", product.category || "");
+//   setValue("brand", product.brand || "");
 
-//     // Optional: for debugging - remove in production
-//     // console.log("Product data loaded:", p);
-//   }, [data, setValue]);
-
+// }, [product, setValue]);
 //   const onSubmit = async (formData) => {
 //     try {
-//       const payload = new FormData();
-//       payload.append("title", formData.title);
-//       payload.append("detail", formData.detail);
-//       payload.append("price", formData.price);
-//       payload.append("stock", formData.stock);
-//       payload.append("category", formData.category);
-//       payload.append("brand", formData.brand);
+//       const submitData = new FormData();
+      
+//       submitData.append("title", formData.title);
+//       submitData.append("detail", formData.detail);
+//       submitData.append("price", formData.price);
+//       submitData.append("stock", formData.stock);
+//       submitData.append("category", formData.category);
+//       submitData.append("brand", formData.brand);
 
-//       // Only append image if user selected a new one
+//       // Only append image if a new one was selected
 //       if (formData.image?.[0]) {
-//         payload.append("image", formData.image[0]);
+//         submitData.append("image", formData.image[0]);
 //       }
 
-//       await updateProduct({ id, formData: payload }).unwrap();
+//       await updateProduct({ id, formData: submitData }).unwrap();
 
 //       toast.success("Product updated successfully!");
 //       navigate("/admin");
 //     } catch (err) {
-//       const errorMessage =
-//         err?.data?.message || err?.message || "Failed to update product";
+//       const errorMessage = err?.data?.message || "Failed to update product";
 //       toast.error(errorMessage);
 //       console.error("Update error:", err);
 //     }
 //   };
 
-//   if (isFetching) {
-//     return <p className="p-10 text-center text-gray-500">Loading product data...</p>;
+//   if (isLoading) {
+//     return <div className="p-8 text-center text-lg">Loading product data...</div>;
 //   }
 
-//   if (!data?.product) {
+//   if (error || !product) {
 //     return (
-//       <div className="p-10 text-center">
-//         <p className="text-xl text-red-600">Product not found</p>
-//         <Button
-//           variant="outline"
-//           className="mt-4"
-//           onClick={() => navigate("/admin")}
-//         >
-//           Back to Admin
-//         </Button>
+//       <div className="p-8 text-center">
+//         <h2 className="text-2xl font-bold text-red-600 mb-4">Product not found</h2>
+//         <Button onClick={() => navigate("/admin")}>Back to Admin Panel</Button>
 //       </div>
 //     );
 //   }
 
 //   return (
 //     <div className="container mx-auto p-6 max-w-2xl">
-//       <h1 className="text-3xl font-bold mb-8 text-gray-800">Edit Product</h1>
+//       <h1 className="text-3xl font-bold mb-8">Edit Product</h1>
 
 //       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
 //         {/* Title */}
-//         <div className="space-y-2">
-//           <Label htmlFor="title">Product Title *</Label>
+//         <div>
+//           <Label htmlFor="title">Product Title</Label>
 //           <Input
 //             id="title"
-//             placeholder="e.g. Wireless Headphones"
 //             {...register("title", { required: "Title is required" })}
+//             placeholder="Enter product title"
 //           />
 //           {errors.title && (
-//             <p className="text-sm text-red-600">{errors.title.message}</p>
+//             <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
 //           )}
 //         </div>
 
-//         {/* Detail */}
-//         <div className="space-y-2">
-//           <Label htmlFor="detail">Description *</Label>
+//         {/* Description */}
+//         <div>
+//           <Label htmlFor="detail">Description</Label>
 //           <Textarea
 //             id="detail"
-//             placeholder="Detailed product description..."
-//             rows={4}
 //             {...register("detail", { required: "Description is required" })}
+//             placeholder="Enter product description"
+//             rows={5}
 //           />
 //           {errors.detail && (
-//             <p className="text-sm text-red-600">{errors.detail.message}</p>
+//             <p className="text-red-500 text-sm mt-1">{errors.detail.message}</p>
 //           )}
 //         </div>
 
-//         {/* Price + Stock */}
+//         {/* Price & Stock */}
 //         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//           <div className="space-y-2">
-//             <Label htmlFor="price">Price (Rs.) *</Label>
+//           <div>
+//             <Label htmlFor="price">Price (Rs.)</Label>
 //             <Input
 //               id="price"
 //               type="number"
-//               min="0"
-//               step="1"           // Change to "0.01" if decimals needed
-//               placeholder="0"
 //               {...register("price", {
 //                 required: "Price is required",
 //                 min: { value: 0, message: "Price cannot be negative" },
-//                 valueAsNumber: true,
 //               })}
-//               onKeyDown={(e) => {
-//                 if (e.key === "-") e.preventDefault();
-//               }}
 //             />
 //             {errors.price && (
-//               <p className="text-sm text-red-600">{errors.price.message}</p>
+//               <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>
 //             )}
 //           </div>
 
-//           <div className="space-y-2">
-//             <Label htmlFor="stock">Stock Quantity *</Label>
+//           <div>
+//             <Label htmlFor="stock">Stock Quantity</Label>
 //             <Input
 //               id="stock"
 //               type="number"
-//               min="0"
-//               step="1"
-//               placeholder="0"
 //               {...register("stock", {
 //                 required: "Stock is required",
 //                 min: { value: 0, message: "Stock cannot be negative" },
-//                 valueAsNumber: true,
 //               })}
-//               onKeyDown={(e) => {
-//                 if (e.key === "-") e.preventDefault();
-//               }}
 //             />
 //             {errors.stock && (
-//               <p className="text-sm text-red-600">{errors.stock.message}</p>
+//               <p className="text-red-500 text-sm mt-1">{errors.stock.message}</p>
 //             )}
 //           </div>
 //         </div>
 
 //         {/* Category */}
-//         <div className="space-y-2">
-//           <Label htmlFor="category">Category *</Label>
+//         <div>
+//           <Label htmlFor="category">Category</Label>
 //           <select
 //             id="category"
-//             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 //             {...register("category", { required: "Category is required" })}
+//             className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
 //           >
 //             <option value="">Select category</option>
 //             <option value="food">Food</option>
@@ -193,61 +171,65 @@
 //             <option value="jewellery">Jewellery</option>
 //           </select>
 //           {errors.category && (
-//             <p className="text-sm text-red-600">{errors.category.message}</p>
+//             <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
 //           )}
 //         </div>
 
 //         {/* Brand */}
-//         <div className="space-y-2">
-//           <Label htmlFor="brand">Brand *</Label>
+//         <div>
+//           <Label htmlFor="brand">Brand</Label>
 //           <select
 //             id="brand"
-//             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 //             {...register("brand", { required: "Brand is required" })}
+//             className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
 //           >
 //             <option value="">Select brand</option>
 //             <option value="addidas">Addidas</option>
 //             <option value="samsung">Samsung</option>
 //             <option value="tanishq">Tanishq</option>
-//             <option value="kfc">KFC</option>
+//             <option value="kfc">Kfc</option>
 //           </select>
 //           {errors.brand && (
-//             <p className="text-sm text-red-600">{errors.brand.message}</p>
+//             <p className="text-red-500 text-sm mt-1">{errors.brand.message}</p>
 //           )}
 //         </div>
 
 //         {/* Image */}
-//         <div className="space-y-2">
-//           <Label htmlFor="image">Change Product Image (optional)</Label>
-//           <Input
-//             id="image"
-//             type="file"
-//             accept="image/*"
-//             {...register("image")}
-//           />
-//           <p className="text-sm text-gray-500">
-//             Leave empty to keep the current image.
-//           </p>
+//         <div>
+//           <Label>Current Image</Label>
+//           {imagePreview ? (
+//             <div className="mt-2">
+//               <img
+//                 src={imagePreview}
+//                 alt="Current product"
+//                 className="w-40 h-40 object-cover rounded-lg border shadow-sm"
+//               />
+//             </div>
+//           ) : (
+//             <p className="text-gray-500 mt-2">No image available</p>
+//           )}
+
+//           <div className="mt-4">
+//             <Label htmlFor="image">Change Image (optional)</Label>
+//             <Input
+//               id="image"
+//               type="file"
+//               accept="image/*"
+//               {...register("image")}
+//               className="mt-1"
+//             />
+//           </div>
 //         </div>
 
-//         {/* Actions */}
-//         <div className="pt-4 flex flex-col sm:flex-row gap-4">
-//           <Button
-//             type="submit"
-//             className="flex-1"
-//             disabled={isSubmitting || isFetching}
+//         {/* Submit */}
+//         <div className="pt-4">
+//           <Button 
+//             type="submit" 
+//             className="w-full" 
+//             disabled={updating}
+//             size="lg"
 //           >
-//             {isSubmitting ? "Updating..." : "Update Product"}
-//           </Button>
-
-//           <Button
-//             type="button"
-//             variant="outline"
-//             className="flex-1 sm:flex-none sm:w-32"
-//             onClick={() => navigate("/admin")}
-//             disabled={isSubmitting}
-//           >
-//             Cancel
+//             {updating ? "Updating..." : "Update Product"}
 //           </Button>
 //         </div>
 //       </form>
@@ -257,167 +239,335 @@
 
 
 
-import { useUpdateProductMutation, useGetProductQuery } from "@/app/mainApi";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useGetProductQuery, useUpdateProductMutation } from "@/app/mainApi";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { ArrowLeft, Upload } from "lucide-react";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
 
 export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: product, isLoading } = useGetProductQuery(id);
-  const [updateProduct, { isLoading: updating }] = useUpdateProductMutation();
+
+  const { data: product, isLoading, error } = useGetProductQuery(id);
+  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
+
   const [imagePreview, setImagePreview] = useState("");
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      title: "",
+      detail: "",
+      price: "",
+      stock: "",
+      category: "",
+      brand: "",
+    },
+  });
 
-  useEffect(() => {
-    if (product?.image) {
-      setImagePreview(`http://localhost:5000/${product.image}`);
-    }
-  }, [product]);
-
-  // Prefill form fields when data is fetched
+  // Fill form when product data is loaded
   useEffect(() => {
     if (!product) return;
 
-    setValue("title", product.title);
-    setValue("detail", product.detail);
-    setValue("price", product.price);
-    setValue("stock", product.stock);
-    setValue("category", product.category);
-    setValue("brand", product.brand);
+    // Map backend → form field names
+    setValue("title", product.name || product.title || "");
+    setValue("detail", product.description || product.detail || "");
+    setValue("price", product.price ?? "");
+    setValue("stock", product.stock ?? "");
+    setValue("category", product.category || "");
+    setValue("brand", product.brand || "");
+
+    // Image preview
+    if (product?.image) {
+      const imgUrl = product.image.startsWith("http")
+        ? product.image
+        : `http://localhost:5000/${product.image}`;
+      setImagePreview(imgUrl);
+    }
   }, [product, setValue]);
 
-  const onSubmit = async (form) => {
+  const onSubmit = async (data) => {
     try {
       const formData = new FormData();
-      formData.append("title", form.title);
-      formData.append("detail", form.detail);
-      formData.append("price", form.price);
-      formData.append("stock", form.stock);
-      formData.append("category", form.category);
-      formData.append("brand", form.brand);
 
-      if (form.image?.[0]) {
-        formData.append("image", form.image[0]);
+      formData.append("title", data.title);
+      formData.append("detail", data.detail);
+      formData.append("price", data.price);
+      formData.append("stock", data.stock);
+      formData.append("category", data.category);
+      formData.append("brand", data.brand);
+
+      if (data.image?.[0]) {
+        formData.append("image", data.image[0]);
       }
 
       await updateProduct({ id, formData }).unwrap();
-      toast.success("Product updated successfully!");
+
+      toast.success("Product updated successfully!", {
+        duration: 4000,
+        position: "top-right",
+      });
+
       navigate("/admin");
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to update product");
-      console.error(err);
+      toast.error(err?.data?.message || "Failed to update product", {
+        duration: 5000,
+        position: "top-right",
+      });
+      console.error("Update error:", err);
     }
   };
 
-  if (isLoading) return <p className="p-6 text-center">Loading product data...</p>;
-  if (!product) return <p className="p-6 text-center text-red-600">Product not found</p>;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading product details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-destructive mb-4">
+            Product not found
+          </h2>
+          <Button onClick={() => navigate("/admin")}>Back to Admin Panel</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto p-6 max-w-lg">
-      <h1 className="text-2xl font-bold mb-6">Edit Product</h1>
+    <div className="container mx-auto py-10 px-4 max-w-4xl">
+      <Button
+        variant="ghost"
+        className="mb-8 pl-0"
+        onClick={() => navigate("/admin")}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to Products
+      </Button>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <Card className="border shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-3xl">Edit Product</CardTitle>
+          <CardDescription>Update the product information below</CardDescription>
+        </CardHeader>
 
-        {/* Title */}
-        <div>
-          <Label>Title</Label>
-          <Input
-            defaultValue={product?.title}
-            {...register("title", { required: "Title is required" })}
-            placeholder="Product title"
-          />
-          {errors.title && <p className="text-red-500">{errors.title.message}</p>}
-        </div>
+        <CardContent className="pt-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            {/* Title & Price */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="title">Product Title *</Label>
+                <Input
+                  id="title"
+                  placeholder="e.g. Wireless Headphones Pro"
+                  {...register("title", { required: "Title is required" })}
+                />
+                {errors.title && (
+                  <p className="text-sm text-destructive">{errors.title.message}</p>
+                )}
+              </div>
 
-        {/* Detail */}
-        <div>
-          <Label>Detail</Label>
-          <Textarea
-            defaultValue={product?.detail}
-            {...register("detail", { required: "Detail is required" })}
-            placeholder="Product detail"
-          />
-          {errors.detail && <p className="text-red-500">{errors.detail.message}</p>}
-        </div>
+              <div className="space-y-2">
+                <Label htmlFor="price">Price (Rs.) *</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  step="0.01"
+                  {...register("price", {
+                    required: "Price is required",
+                    min: { value: 0, message: "Price must be positive" },
+                  })}
+                />
+                {errors.price && (
+                  <p className="text-sm text-destructive">{errors.price.message}</p>
+                )}
+              </div>
+            </div>
 
-        {/* Price */}
-        <div>
-          <Label>Price (Rs.)</Label>
-          <Input
-            type="number"
-            defaultValue={product?.price}
-            {...register("price", { required: "Price is required", min: { value: 0, message: "Price must be ≥ 0" } })}
-          />
-          {errors.price && <p className="text-red-500">{errors.price.message}</p>}
-        </div>
+            {/* Description */}
+            <div className="space-y-2">
+              <Label htmlFor="detail">Description *</Label>
+              <Textarea
+                id="detail"
+                placeholder="Describe features, specifications, materials..."
+                className="min-h-[140px]"
+                {...register("detail", { required: "Description is required" })}
+              />
+              {errors.detail && (
+                <p className="text-sm text-destructive">{errors.detail.message}</p>
+              )}
+            </div>
 
-        {/* Stock */}
-        <div>
-          <Label>Stock Quantity</Label>
-          <Input
-            type="number"
-            defaultValue={product?.stock}
-            {...register("stock", { required: "Stock is required", min: { value: 0, message: "Stock must be ≥ 0" } })}
-          />
-          {errors.stock && <p className="text-red-500">{errors.stock.message}</p>}
-        </div>
+            {/* Stock, Category, Brand */}
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="space-y-2">
+                <Label htmlFor="stock">Stock Quantity *</Label>
+                <Input
+                  id="stock"
+                  type="number"
+                  {...register("stock", {
+                    required: "Stock is required",
+                    min: { value: 0, message: "Stock must be ≥ 0" },
+                  })}
+                />
+                {errors.stock && (
+                  <p className="text-sm text-destructive">{errors.stock.message}</p>
+                )}
+              </div>
 
-        {/* Category */}
-        <div>
-          <Label>Category</Label>
-          <select
-            defaultValue={product?.category}
-            {...register("category", { required: "Category is required" })}
-            className="w-full border rounded px-2 py-1"
-          >
-            <option value="">Select category</option>
-            <option value="food">Food</option>
-            <option value="clothes">Clothes</option>
-            <option value="tech">Tech</option>
-            <option value="jewellery">Jewellery</option>
-          </select>
-          {errors.category && <p className="text-red-500">{errors.category.message}</p>}
-        </div>
+              <div className="space-y-2">
+                <Label>Category *</Label>
+                <Select
+                  defaultValue={product?.category || ""}
+                  onValueChange={(val) => setValue("category", val, { shouldValidate: true })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="food">Food</SelectItem>
+                    <SelectItem value="clothes">Clothes</SelectItem>
+                    <SelectItem value="tech">Tech</SelectItem>
+                    <SelectItem value="jewellery">Jewellery</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-        {/* Brand */}
-        <div>
-          <Label>Brand</Label>
-          <select
-            defaultValue={product?.brand}
-            {...register("brand", { required: "Brand is required" })}
-            className="w-full border rounded px-2 py-1"
-          >
-            <option value="">Select brand</option>
-            <option value="addidas">Addidas</option>
-            <option value="samsung">Samsung</option>
-            <option value="tanishq">Tanishq</option>
-            <option value="kfc">Kfc</option>
-          </select>
-          {errors.brand && <p className="text-red-500">{errors.brand.message}</p>}
-        </div>
+              <div className="space-y-2">
+                <Label>Brand *</Label>
+                <Select
+                  defaultValue={product?.brand || ""}
+                  onValueChange={(val) => setValue("brand", val, { shouldValidate: true })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select brand" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="addidas">Addidas</SelectItem>
+                    <SelectItem value="samsung">Samsung</SelectItem>
+                    <SelectItem value="tanishq">Tanishq</SelectItem>
+                    <SelectItem value="kfc">Kfc</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-        {/* Image */}
-        <div>
-          <Label>Change Image (optional)</Label>
-          <Input type="file" accept="image/*" {...register("image")} />
-          {imagePreview && (
-            <img src={imagePreview} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded border" />
-          )}
-        </div>
+            {/* Image Section */}
+            <div className="space-y-4">
+              <Label>Product Image</Label>
 
-        {/* Submit */}
-        <Button type="submit" className="w-full" disabled={updating}>
-          {updating ? "Updating..." : "Update Product"}
-        </Button>
-      </form>
+              {imagePreview ? (
+                <div className="relative w-64 h-64 rounded-xl overflow-hidden border bg-muted/50">
+                  <img
+                    src={imagePreview}
+                    alt="Current product"
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ) : (
+                <div className="w-64 h-64 rounded-xl bg-muted flex items-center justify-center text-muted-foreground">
+                  No image
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="image-upload">Change Image (optional)</Label>
+                <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary/70 transition-colors">
+                  <Input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    {...register("image")}
+                  />
+                  <label
+                    htmlFor="image-upload"
+                    className="cursor-pointer flex flex-col items-center gap-3"
+                  >
+                    <Upload className="h-10 w-10 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium">Click to upload new image</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        PNG, JPG, WEBP (max 5MB recommended)
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Buttons */}
+            <div className="flex justify-end gap-4 pt-8">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => navigate("/admin")}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isUpdating} size="lg">
+                {isUpdating ? "Saving..." : "Save Changes"}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

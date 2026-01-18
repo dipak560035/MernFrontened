@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useGetOrderQuery } from "@/services/api";
+
 import { Button } from "@/components/ui/button";
+import { useGetOrdersQuery } from "@/app/mainApi";
 
 export default function OrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: order, isLoading, error } = useGetOrderQuery(id);
+  const { data: order, isLoading, error } = useGetOrdersQuery(id);
 
   if (isLoading) return <div className="p-6">Loading order...</div>;
   if (error || !order) return <div className="p-6">Order not found</div>;

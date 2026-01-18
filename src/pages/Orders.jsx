@@ -1,53 +1,196 @@
 
 
-import { useGetOrdersQuery } from "@/services/api";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+
+// import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
+// import { useNavigate } from "react-router-dom";
+// import { useGetOrdersQuery } from "@/app/mainApi";
+
+// export default function Orders() {
+//   const { data: orders, isLoading } = useGetOrdersQuery();
+//   const navigate = useNavigate();
+
+//   if (isLoading) return <div className="p-6">Loading orders...</div>;
+
+//   if (!orders || orders.length === 0) {
+//     return (
+//       <div className="container mx-auto p-6 max-w-4xl">
+//         <Card>
+//           <CardHeader>
+//             <CardTitle>No orders yet</CardTitle>
+//             <CardDescription>Start shopping to see your orders here!</CardDescription>
+//           </CardHeader>
+//           <CardContent>
+//             <Button onClick={() => navigate("/")}>Start Shopping</Button>
+//           </CardContent>
+//         </Card>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="container mx-auto p-6 max-w-7xl">
+//       <h1 className="text-3xl font-bold mb-4">My Orders</h1>
+//       <div className="space-y-4">
+//         {orders.map((order) => (
+//           <Card key={order._id || order.id}>
+//             <CardHeader>
+//               <div className="flex items-center justify-between">
+//                 <CardTitle>Order #{order.orderNumber || order._id}</CardTitle>
+//                 <span className="text-sm">{new Date(order.createdAt).toLocaleDateString()}</span>
+//               </div>
+//             </CardHeader>
+//             <CardContent className="flex items-center justify-between">
+//               <div>
+//                 <p className="text-sm text-muted-foreground">
+//                   {order.items?.length || 0} items • Total Rs.{order.total}
+//                 </p>
+//               </div>
+//               <Button variant="outline" onClick={() => navigate(`/orders/${order._id || order.id}`)}>
+//                 View Details
+//               </Button>
+//             </CardContent>
+//           </Card>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// src/pages/Orders.jsx
 import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge"; // optional - if you add status
+import { Package, Calendar, IndianRupee } from "lucide-react";
+import { useGetOrdersQuery } from "@/app/mainApi";
+import { format } from "date-fns";
 
 export default function Orders() {
-  const { data: orders, isLoading } = useGetOrdersQuery();
+  const { data: orders = [], isLoading, isError, error } = useGetOrdersQuery();
   const navigate = useNavigate();
 
-  if (isLoading) return <div className="p-6">Loading orders...</div>;
-
-  if (!orders || orders.length === 0) {
+  if (isLoading) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>No orders yet</CardTitle>
-            <CardDescription>Start shopping to see your orders here!</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={() => navigate("/")}>Start Shopping</Button>
-          </CardContent>
-        </Card>
+      <div className="container mx-auto py-12 px-4 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-muted-foreground">Loading your orders...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    console.error("Orders fetch error:", error);
+    return (
+      <div className="container mx-auto py-12 px-4 text-center">
+        <h2 className="text-2xl font-bold text-destructive mb-4">
+          Failed to load orders
+        </h2>
+        <Button onClick={() => window.location.reload()}>Retry</Button>
+      </div>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <div className="container mx-auto py-16 px-4 max-w-4xl text-center">
+        <Package className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
+        <h2 className="text-3xl font-bold mb-3">No orders yet</h2>
+        <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+          When you place an order, it will appear here.
+        </p>
+        <Button size="lg" asChild>
+          <a href="/">Start Shopping</a>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <h1 className="text-3xl font-bold mb-4">My Orders</h1>
-      <div className="space-y-4">
+    <div className="container mx-auto py-8 px-4 max-w-6xl">
+      <h1 className="text-3xl font-bold mb-8">My Orders</h1>
+
+      <div className="space-y-5">
         {orders.map((order) => (
-          <Card key={order._id || order.id}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Order #{order.orderNumber || order._id}</CardTitle>
-                <span className="text-sm">{new Date(order.createdAt).toLocaleDateString()}</span>
+          <Card
+            key={order._id}
+            className="hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => navigate(`/orders/${order._id}`)}
+          >
+            <CardHeader className="pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <CardTitle className="text-lg">
+                    Order #{order._id.slice(-8).toUpperCase()}
+                  </CardTitle>
+                  <CardDescription className="mt-1 flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    {format(new Date(order.createdAt), "dd MMM yyyy • hh:mm a")}
+                  </CardDescription>
+                </div>
+                {/* Optional: show status badge */}
+                {/* <Badge variant={order.status === "completed" ? "success" : "secondary"}>
+                  {order.status || "Pending"}
+                </Badge> */}
               </div>
             </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {order.items?.length || 0} items • Total Rs.{order.total}
-                </p>
+
+            <CardContent>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-muted p-3 rounded-full">
+                    <Package className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="font-medium">
+                      {order.items?.length || 0}{" "}
+                      {order.items?.length === 1 ? "item" : "items"}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Total: <IndianRupee className="inline h-4 w-4" />
+                      {order.total?.toLocaleString() || "—"}
+                    </p>
+                  </div>
+                </div>
+
+                <Button variant="outline" size="sm">
+                  View Details →
+                </Button>
               </div>
-              <Button variant="outline" onClick={() => navigate(`/orders/${order._id || order.id}`)}>
-                View Details
-              </Button>
             </CardContent>
           </Card>
         ))}
@@ -57,156 +200,3 @@ export default function Orders() {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useSelector } from 'react-redux';
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-// import { Button } from '@/components/ui/button';
-// import { Badge } from '@/components/ui/badge';
-// import { Separator } from '@/components/ui/separator';
-// import { Package, ArrowLeft, Eye, Calendar, Truck } from 'lucide-react';
-// import { useNavigate } from 'react-router-dom';
-
-// export default function Orders() {
-//   const { user } = useSelector((state) => state.auth);
-//   const navigate = useNavigate();
-  
-//   // TODO: Replace with actual orders from Redux store or API
-//   const orders = [];
-
-//   if (!user) {
-//     return (
-//       <div className="container mx-auto p-6 max-w-4xl">
-//         <Card>
-//           <CardHeader>
-//             <CardTitle>Please Login</CardTitle>
-//             <CardDescription>You need to be logged in to view your orders</CardDescription>
-//           </CardHeader>
-//           <CardContent>
-//             <Button onClick={() => navigate('/login')}>Go to Login</Button>
-//           </CardContent>
-//         </Card>
-//       </div>
-//     );
-//   }
-
-//   const getStatusBadge = (status) => {
-//     const statusConfig = {
-//       pending: { variant: 'secondary', label: 'Pending' },
-//       processing: { variant: 'default', label: 'Processing' },
-//       shipped: { variant: 'default', label: 'Shipped' },
-//       delivered: { variant: 'default', label: 'Delivered' },
-//       cancelled: { variant: 'destructive', label: 'Cancelled' },
-//     };
-//     const config = statusConfig[status] || statusConfig.pending;
-//     return <Badge variant={config.variant}>{config.label}</Badge>;
-//   };
-
-//   return (
-//     <div className="container mx-auto p-4 md:p-6 max-w-7xl min-h-screen">
-//       <div className="mb-6">
-//         <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4">
-//           <ArrowLeft className="mr-2 h-4 w-4" />
-//           Back
-//         </Button>
-//         <h1 className="text-3xl md:text-4xl font-bold mb-2">My Orders</h1>
-//         <p className="text-muted-foreground">View and track your order history</p>
-//       </div>
-
-//       {orders.length === 0 ? (
-//         <Card>
-//           <CardContent className="flex flex-col items-center justify-center py-20">
-//             <Package className="h-16 w-16 text-muted-foreground mb-4" />
-//             <h2 className="text-2xl font-semibold mb-2">No orders yet</h2>
-//             <p className="text-muted-foreground mb-6">Start shopping to see your orders here!</p>
-//             <Button onClick={() => navigate('/')}>
-//               <Package className="mr-2 h-4 w-4" />
-//               Start Shopping
-//             </Button>
-//           </CardContent>
-//         </Card>
-//       ) : (
-//         <div className="space-y-4">
-//           {orders.map((order) => (
-//             <Card key={order.id}>
-//               <CardHeader>
-//                 <div className="flex items-start justify-between">
-//                   <div>
-//                     <CardTitle className="mb-2">Order #{order.orderNumber}</CardTitle>
-//                     <CardDescription className="flex items-center gap-2">
-//                       <Calendar className="h-4 w-4" />
-//                       Placed on {new Date(order.createdAt).toLocaleDateString()}
-//                     </CardDescription>
-//                   </div>
-//                   {getStatusBadge(order.status)}
-//                 </div>
-//               </CardHeader>
-//               <CardContent>
-//                 <div className="space-y-4">
-//                   {/* Order Items */}
-//                   <div className="space-y-3">
-//                     {order.items.map((item, index) => (
-//                       <div key={index}>
-//                         <div className="flex gap-4">
-//                           <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted shrink-0">
-//                             <img 
-//                               src={item.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop'} 
-//                               alt={item.name}
-//                               className="w-full h-full object-cover"
-//                             />
-//                           </div>
-//                           <div className="flex-1">
-//                             <h4 className="font-semibold">{item.name}</h4>
-//                             <p className="text-sm text-muted-foreground">
-//                               Quantity: {item.quantity} × ${item.price}
-//                             </p>
-//                           </div>
-//                           <div className="text-right">
-//                             <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
-//                           </div>
-//                         </div>
-//                         {index < order.items.length - 1 && <Separator className="my-3" />}
-//                       </div>
-//                     ))}
-//                   </div>
-
-//                   <Separator />
-
-//                   {/* Order Summary */}
-//                   <div className="flex items-center justify-between">
-//                     <div className="space-y-1">
-//                       <p className="text-sm text-muted-foreground">Total Amount</p>
-//                       <p className="text-2xl font-bold">${order.total.toFixed(2)}</p>
-//                     </div>
-//                     <div className="flex gap-2">
-//                       {order.status === 'shipped' && (
-//                         <Button variant="outline" size="sm">
-//                           <Truck className="mr-2 h-4 w-4" />
-//                           Track Order
-//                         </Button>
-//                       )}
-//                       <Button variant="outline" size="sm" onClick={() => navigate(`/order/${order.id}`)}>
-//                         <Eye className="mr-2 h-4 w-4" />
-//                         View Details
-//                       </Button>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </CardContent>
-//             </Card>
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
