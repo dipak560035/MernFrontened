@@ -125,14 +125,17 @@
 
 
 
+
 import { useGetProductsQuery } from "@/app/mainApi";
 import ProductsSection from "@/components/Productsection";
+
 import React from "react";
 ;
 
 export default function Products() {
   const { data, error, isLoading } = useGetProductsQuery();
-  const products = data?.products || [];
+  // const products = data?.products || [];
+const products = Array.isArray(data) ? data : data?.products || [];
 
   return (
     <div className="min-h-screen bg-background">
