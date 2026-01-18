@@ -212,7 +212,7 @@ const imageUrl = product.image
       )}
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+      <div className="relative aspect-4/3 w-full overflow-hidden bg-gray-100">
         {imageUrl ? (
           <img
             src={imageUrl}

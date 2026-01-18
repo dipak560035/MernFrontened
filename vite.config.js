@@ -64,18 +64,18 @@ export default defineConfig({
   server: {
     open: true,
     proxy: {
-      // Proxy API calls (your existing one – cleaned up)
+      // Proxy API calls
       "/api": {
-        target: "http://192.168.1.78:5000",   // ← keep your IP/port
+        target: "http://localhost:5000",
         changeOrigin: true,
         // No need for rewrite if you want /api/... to stay /api/...
         // If you want to strip /api prefix → uncomment next line
         // rewrite: (path) => path.replace(/^\/api/, ""),
       },
 
-      // NEW: Proxy for images / static uploads folder
+      // Proxy for images / static uploads folder
       "/uploads": {
-        target: "http://192.168.1.78:5000",
+        target: "http://localhost:5000",
         changeOrigin: true,
         secure: false,           // useful for local http
       },

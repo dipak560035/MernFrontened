@@ -627,88 +627,277 @@
 
 
 
+// import { useEffect, useState } from "react";
+// import { Button } from "@/components/ui/button";
+// import {
+//   Card,
+//   CardHeader,
+//   CardTitle,
+//   CardContent,
+//   CardFooter,
+// } from "@/components/ui/card";
+
+// export default function Cart() {
+//   const [cartItems, setCartItems] = useState([]);
+
+//   useEffect(() => {
+//     const savedCart = JSON.parse(localStorage.getItem("cart") || "[]");
+//     setCartItems(savedCart);
+//   }, []);
+
+//   const handlePlaceOrder = () => {
+//     alert("Order placed successfully!");
+//     localStorage.removeItem("cart");
+//     setCartItems([]);
+//   };
+
+//   if (cartItems.length === 0) {
+//     return (
+//       <Card className="max-w-lg mx-auto mt-10">
+//         <CardHeader>
+//           <CardTitle>Your Cart</CardTitle>
+//         </CardHeader>
+//         <CardContent>
+//           <p className="text-gray-500">Your cart is empty</p>
+//         </CardContent>
+//       </Card>
+//     );
+//   }
+
+//   const total = cartItems.reduce(
+//     (acc, item) => acc + item.price * item.quantity,
+//     0
+//   );
+
+//   return (
+//     <Card className="max-w-lg mx-auto mt-10">
+//       <CardHeader>
+//         <CardTitle>Your Cart</CardTitle>
+//       </CardHeader>
+
+//       <CardContent>
+//         <ul className="space-y-4">
+//           {cartItems.map((item) => (
+//             <li
+//               key={item._id}
+//               className="flex items-center gap-4 border-b pb-4"
+//             >
+//               <img
+//                 src={`http://localhost:5000/${item.image}`}
+//                 alt={item.name}
+//                 className="w-20 h-20 object-cover rounded-md"
+//               />
+//               <div className="flex-1">
+//                 <p className="font-medium">{item.name}</p>
+//                 <p className="text-sm text-gray-600">Price: ${item.price}</p>
+//                 <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+//               </div>
+//               <p className="font-semibold">
+//                 ${item.price * item.quantity}
+//               </p>
+//             </li>
+//           ))}
+//         </ul>
+//       </CardContent>
+
+//       <CardFooter className="flex justify-between items-center">
+//         <h3 className="text-lg font-semibold">Total: ${total}</h3>
+//         <Button
+//           onClick={handlePlaceOrder}
+//           className="bg-blue-600 text-white hover:bg-blue-700"
+//         >
+//           Place Order
+//         </Button>
+//       </CardFooter>
+//     </Card>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
   CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
 
+  const loadCart = () => {
+    const saved = JSON.parse(localStorage.getItem("cart") || "[]");
+    setCartItems(saved);
+  };
+
   useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    setCartItems(savedCart);
+    loadCart();
+    window.addEventListener("storage", loadCart);
+    return () => window.removeEventListener("storage", loadCart);
   }, []);
 
+  const updateCart = (newCart) => {
+    localStorage.setItem("cart", JSON.stringify(newCart));
+    setCartItems(newCart);
+  };
+
+  const changeQuantity = (id, delta) => {
+    const newCart = cartItems.map((item) =>
+      item._id === id
+        ? { ...item, quantity: Math.max(1, Math.min(99, item.quantity + delta)) }
+        : item
+    );
+    updateCart(newCart);
+  };
+
+  const removeItem = (id) => {
+    const newCart = cartItems.filter((item) => item._id !== id);
+    updateCart(newCart);
+    toast.success("Item removed from cart");
+  };
+
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
   const handlePlaceOrder = () => {
-    alert("Order placed successfully!");
+    if (cartItems.length === 0) return;
+    toast.success("Order placed successfully! (Demo)");
     localStorage.removeItem("cart");
     setCartItems([]);
   };
 
   if (cartItems.length === 0) {
     return (
-      <Card className="max-w-lg mx-auto mt-10">
-        <CardHeader>
-          <CardTitle>Your Cart</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-500">Your cart is empty</p>
-        </CardContent>
-      </Card>
+      <div className="container mx-auto px-4 py-16 max-w-4xl text-center">
+        <ShoppingBag className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
+        <h2 className="text-3xl font-bold mb-3">Your cart is empty</h2>
+        <p className="text-muted-foreground mb-8">
+          Looks like you haven't added anything yet.
+        </p>
+        <Button asChild size="lg">
+          <Link to="/">Continue Shopping</Link>
+        </Button>
+      </div>
     );
   }
 
-  const total = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-
   return (
-    <Card className="max-w-lg mx-auto mt-10">
-      <CardHeader>
-        <CardTitle>Your Cart</CardTitle>
-      </CardHeader>
+    <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <h1 className="text-3xl font-bold mb-8">Shopping Cart ({cartItems.length})</h1>
 
-      <CardContent>
-        <ul className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-6">
           {cartItems.map((item) => (
-            <li
-              key={item._id}
-              className="flex items-center gap-4 border-b pb-4"
-            >
-              <img
-                src={`http://localhost:5000/${item.image}`}
-                alt={item.name}
-                className="w-20 h-20 object-cover rounded-md"
-              />
-              <div className="flex-1">
-                <p className="font-medium">{item.name}</p>
-                <p className="text-sm text-gray-600">Price: ${item.price}</p>
-                <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
-              </div>
-              <p className="font-semibold">
-                ${item.price * item.quantity}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </CardContent>
+            <Card key={item._id} className="overflow-hidden">
+              <CardContent className="p-0">
+                <div className="flex flex-col sm:flex-row">
+                  <div className="sm:w-32 md:w-40 shrink-0">
+                    <img
+                      src={`http://localhost:5000/${item.image}`}
+                      alt={item.name}
+                      className="w-full h-full object-cover aspect-square sm:aspect-auto sm:h-32 md:h-40"
+                    />
+                  </div>
 
-      <CardFooter className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Total: ${total}</h3>
-        <Button
-          onClick={handlePlaceOrder}
-          className="bg-blue-600 text-white hover:bg-blue-700"
-        >
-          Place Order
-        </Button>
-      </CardFooter>
-    </Card>
+                  <div className="flex-1 p-5 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-semibold text-lg">{item.name}</h3>
+                      <p className="text-muted-foreground mt-1">
+                        Rs. {item.price.toLocaleString()}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-4">
+                      <div className="flex items-center border rounded-md">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-9 w-9 rounded-none"
+                          onClick={() => changeQuantity(item._id, -1)}
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="w-12 text-center font-medium">
+                          {item.quantity}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-9 w-9 rounded-none"
+                          onClick={() => changeQuantity(item._id, 1)}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        <p className="font-semibold whitespace-nowrap">
+                          Rs. {(item.price * item.quantity).toLocaleString()}
+                        </p>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => removeItem(item._id)}
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="lg:col-span-1">
+          <Card className="sticky top-8">
+            <CardHeader>
+              <CardTitle>Order Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between text-sm">
+                <span>Subtotal ({cartItems.length} items)</span>
+                <span>Rs. {subtotal.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Shipping</span>
+                <span className="text-green-600">Free</span>
+              </div>
+              <Separator />
+              <div className="flex justify-between text-lg font-bold">
+                <span>Total</span>
+                <span>Rs. {subtotal.toLocaleString()}</span>
+              </div>
+            </CardContent>
+            <CardFooter className="flex-col gap-3">
+              <Button className="w-full h-12 text-base" onClick={handlePlaceOrder}>
+                Proceed to Checkout
+              </Button>
+              <Button variant="outline" className="w-full" asChild>
+                <Link to="/">Continue Shopping</Link>
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 }
