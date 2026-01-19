@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils"; // make sure you have this (tailwind-merge)
 
 // Use this for production-ready code
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = "https://nepalstore.onrender.com";
 
 export default function ProductCard({ product }) {
   // Correct image URL – this is the FIXED part!
