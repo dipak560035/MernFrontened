@@ -440,7 +440,7 @@ export const base = '/api'; // still fine for image paths
 export const mainApi = createApi({
   reducerPath: 'mainApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_API_URL}/api`,
+    baseUrl: "https://nepalstore.onrender.com/api",
     credentials: 'include',
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
