@@ -1,61 +1,6 @@
 
 
 
-// import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { useNavigate } from "react-router-dom";
-// import { useGetOrdersQuery } from "@/app/mainApi";
-
-// export default function Orders() {
-//   const { data: orders, isLoading } = useGetOrdersQuery();
-//   const navigate = useNavigate();
-
-//   if (isLoading) return <div className="p-6">Loading orders...</div>;
-
-//   if (!orders || orders.length === 0) {
-//     return (
-//       <div className="container mx-auto p-6 max-w-4xl">
-//         <Card>
-//           <CardHeader>
-//             <CardTitle>No orders yet</CardTitle>
-//             <CardDescription>Start shopping to see your orders here!</CardDescription>
-//           </CardHeader>
-//           <CardContent>
-//             <Button onClick={() => navigate("/")}>Start Shopping</Button>
-//           </CardContent>
-//         </Card>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="container mx-auto p-6 max-w-7xl">
-//       <h1 className="text-3xl font-bold mb-4">My Orders</h1>
-//       <div className="space-y-4">
-//         {orders.map((order) => (
-//           <Card key={order._id || order.id}>
-//             <CardHeader>
-//               <div className="flex items-center justify-between">
-//                 <CardTitle>Order #{order.orderNumber || order._id}</CardTitle>
-//                 <span className="text-sm">{new Date(order.createdAt).toLocaleDateString()}</span>
-//               </div>
-//             </CardHeader>
-//             <CardContent className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm text-muted-foreground">
-//                   {order.items?.length || 0} items • Total Rs.{order.total}
-//                 </p>
-//               </div>
-//               <Button variant="outline" onClick={() => navigate(`/orders/${order._id || order.id}`)}>
-//                 View Details
-//               </Button>
-//             </CardContent>
-//           </Card>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
 
 
 
@@ -80,12 +25,11 @@
 
 
 
+// Updated Orders.jsx
+// Changes:
+// - Uncommented the status Badge for better visibility
+// - Minor tweaks for consistency (e.g., added optional chaining where needed)
 
-
-
-
-
-// src/pages/Orders.jsx
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -95,7 +39,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge"; // optional - if you add status
+import { Badge } from "@/components/ui/badge";
 import { Package, Calendar, IndianRupee } from "lucide-react";
 import { useGetOrdersQuery } from "@/app/mainApi";
 import { format } from "date-fns";
@@ -143,7 +87,6 @@ export default function Orders() {
   return (
     <div className="container mx-auto py-8 px-4 max-w-6xl">
       <h1 className="text-3xl font-bold mb-8">My Orders</h1>
-
       <div className="space-y-5">
         {orders.map((order) => (
           <Card
@@ -162,13 +105,11 @@ export default function Orders() {
                     {format(new Date(order.createdAt), "dd MMM yyyy • hh:mm a")}
                   </CardDescription>
                 </div>
-                {/* Optional: show status badge */}
-                {/* <Badge variant={order.status === "completed" ? "success" : "secondary"}>
-                  {order.status || "Pending"}
-                </Badge> */}
+                <Badge variant={order.status === "completed" ? "success" : order.status === "cancelled" ? "destructive" : "secondary"}>
+                  {order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || "Pending"}
+                </Badge>
               </div>
             </CardHeader>
-
             <CardContent>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center gap-3">
@@ -186,7 +127,6 @@ export default function Orders() {
                     </p>
                   </div>
                 </div>
-
                 <Button variant="outline" size="sm">
                   View Details →
                 </Button>
@@ -200,3 +140,211 @@ export default function Orders() {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// New/Updated OrderDetail.jsx
+// This component fetches the single order using the new getOrder query.
+// It displays full details: order ID, date, status, item list with product name/title, quantity (assumes items have {product, quantity}; defaults quantity to 1 if missing), subtotal per item, and total.
+// Cancel button shown only if status allows (not cancelled/completed).
+// On cancel, shows confirmation dialog with product details/titles (as per your request: users know details/title, not just ID).
+// After cancel, navigates back to /orders and invalidates tags for refetch.
+
+// import { useParams, useNavigate } from "react-router-dom";
+// import {
+//   Card,
+//   CardContent,
+//   CardHeader,
+//   CardTitle,
+//   CardDescription,
+// } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
+// import { Badge } from "@/components/ui/badge";
+// import { IndianRupee, Calendar, Package } from "lucide-react";
+// import { useGetOrderQuery, useCancelOrderMutation } from "@/app/mainApi";
+// import { format } from "date-fns";
+
+// export default function OrderDetail() {
+//   const { id } = useParams();
+//   const { data: order, isLoading, isError, error } = useGetOrderQuery(id);
+//   const [cancelOrder, { isLoading: isCanceling }] = useCancelOrderMutation();
+//   const navigate = useNavigate();
+
+//   if (isLoading) {
+//     return (
+//       <div className="container mx-auto py-12 px-4 text-center">
+//         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+//         <p className="text-muted-foreground">Loading order details...</p>
+//       </div>
+//     );
+//   }
+
+//   if (isError) {
+//     console.error("Order fetch error:", error);
+//     return (
+//       <div className="container mx-auto py-12 px-4 text-center">
+//         <h2 className="text-2xl font-bold text-destructive mb-4">
+//           Failed to load order
+//         </h2>
+//         <Button onClick={() => window.location.reload()}>Retry</Button>
+//       </div>
+//     );
+//   }
+
+//   if (!order) {
+//     return (
+//       <div className="container mx-auto py-12 px-4 text-center">
+//         <h2 className="text-2xl font-bold text-destructive mb-4">
+//           Order not found
+//         </h2>
+//         <Button onClick={() => navigate("/orders")}>Back to Orders</Button>
+//       </div>
+//     );
+//   }
+
+//   const handleCancel = async () => {
+//     const productDetails = order.items
+//       .map((item) => `${item.product?.name || 'Unknown Product'} (x${item.quantity || 1})`)
+//       .join(", ");
+//     if (
+//       window.confirm(
+//         `Are you sure you want to cancel this order?\n\nDetails:\n- Order #: ${order._id.slice(-8).toUpperCase()}\n- Items: ${productDetails}\n- Total: ₹${order.total?.toLocaleString() || "—"}`
+//       )
+//     ) {
+//       try {
+//         await cancelOrder(id).unwrap();
+//         navigate("/orders");
+//       } catch (err) {
+//         console.error("Cancel error:", err);
+//         alert("Failed to cancel order. Please try again.");
+//       }
+//     }
+//   };
+
+//   return (
+//     <div className="container mx-auto py-8 px-4 max-w-4xl">
+//       <Button variant="ghost" onClick={() => navigate("/orders")} className="mb-4">
+//         ← Back to Orders
+//       </Button>
+//       <h1 className="text-3xl font-bold mb-6">Order Details</h1>
+//       <Card>
+//         <CardHeader>
+//           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+//             <div>
+//               <CardTitle className="text-2xl">
+//                 Order #{order._id.slice(-8).toUpperCase()}
+//               </CardTitle>
+//               <CardDescription className="mt-1 flex items-center gap-2">
+//                 <Calendar className="h-4 w-4" />
+//                 {format(new Date(order.createdAt), "dd MMM yyyy • hh:mm a")}
+//               </CardDescription>
+//             </div>
+//             <Badge variant={order.status === "completed" ? "success" : order.status === "cancelled" ? "destructive" : "secondary"}>
+//               {order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || "Pending"}
+//             </Badge>
+//           </div>
+//         </CardHeader>
+//         <CardContent>
+//           <div className="space-y-6">
+//             <div>
+//               <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+//                 <Package className="h-5 w-5" />
+//                 Items
+//               </h3>
+//               <div className="space-y-4">
+//                 {order.items?.map((item, index) => (
+//                   <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4 last:border-b-0 last:pb-0">
+//                     <div className="flex items-center gap-4">
+//                       {/* Assuming product has image; fallback to placeholder */}
+//                       <img
+//                         src={item.product?.image || "/placeholder-image.jpg"}
+//                         alt={item.product?.name}
+//                         className="w-16 h-16 object-cover rounded-md"
+//                       />
+//                       <div>
+//                         <p className="font-medium">{item.product?.name || "Unknown Product"}</p>
+//                         <p className="text-sm text-muted-foreground">
+//                           Quantity: {item.quantity || 1}
+//                         </p>
+//                         <p className="text-sm text-muted-foreground">
+//                           Price: <IndianRupee className="inline h-4 w-4" />
+//                           {item.product?.price?.toLocaleString() || "—"}
+//                         </p>
+//                       </div>
+//                     </div>
+//                     <p className="font-medium text-right">
+//                       Subtotal: <IndianRupee className="inline h-4 w-4" />
+//                       {((item.product?.price || 0) * (item.quantity || 1)).toLocaleString()}
+//                     </p>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//             <div className="flex justify-between text-lg font-semibold pt-4 border-t">
+//               <span>Total</span>
+//               <span>
+//                 <IndianRupee className="inline h-5 w-5" />
+//                 {order.total?.toLocaleString() || "—"}
+//               </span>
+//             </div>
+//             {order.status !== "cancelled" && order.status !== "completed" && (
+//               <Button
+//                 variant="destructive"
+//                 onClick={handleCancel}
+//                 disabled={isCanceling}
+//                 className="w-full sm:w-auto"
+//               >
+//                 {isCanceling ? "Cancelling..." : "Cancel Order"}
+//               </Button>
+//             )}
+//           </div>
+//         </CardContent>
+//       </Card>
+//     </div>
+//   );
+// }
