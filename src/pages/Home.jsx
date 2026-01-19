@@ -83,38 +83,7 @@ export default function Home() {
   products={products}
 />
 
-      {/* <section id="products" className="py-16 px-4">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-2">Our Products</h2>
-              <p className="text-muted-foreground">Browse our curated collection of premium products</p>
-            </div>
-          </div>
-          
-          {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="text-center space-y-4">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                <p className="text-muted-foreground">Loading products...</p>
-              </div>
-            </div>
-          ) : products.length === 0 ? (
-            <div className="text-center py-20">
-              <ShoppingBag className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-2xl font-semibold mb-2">No products found</h3>
-              <p className="text-muted-foreground">Check back later for new arrivals!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <ProductCard key={product._id} product={product} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section> */}
-    </div>
+   </div>
   );
 }
 
