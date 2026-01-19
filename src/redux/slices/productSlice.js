@@ -301,22 +301,113 @@
 
 
 
+// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+// // Base URL for images - use relative path, proxy will handle backend URL
+// const BASE_URL = window.location.origin;
+
+// // Fetch all products
+// export const fetchProducts = createAsyncThunk(
+//   "products/fetchProducts",
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const res = await fetch("/api/products");
+//       const data = await res.json();
+//       const products = Array.isArray(data) ? data : data.products || [];
+//       return products.map((p) => ({
+//         ...p,
+//         image: p.image ? `${BASE_URL}${p.image}` : null,
+//       }));
+//     } catch (err) {
+//       return rejectWithValue(err.message);
+//     }
+//   }
+// );
+
+// const initialState = {
+//   list: [],
+//   isLoading: false,
+//   error: null,
+// };
+
+// const productSlice = createSlice({
+//   name: "products",
+//   initialState,
+//   reducers: {},
+//   extraReducers: (builder) => {
+//     builder
+//       .addCase(fetchProducts.pending, (state) => {
+//         state.isLoading = true;
+//         state.error = null;
+//       })
+//       .addCase(fetchProducts.fulfilled, (state, action) => {
+//         state.isLoading = false;
+//         state.list = action.payload;
+//       })
+//       .addCase(fetchProducts.rejected, (state, action) => {
+//         state.isLoading = false;
+//         state.error = action.payload;
+//       });
+//   },
+// });
+
+// export default productSlice.reducer;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Base URL for images - use relative path, proxy will handle backend URL
-const BASE_URL = window.location.origin;
+// Detect environment
+const isProd = import.meta.env.MODE === "production";
+const API_URL = isProd
+  ? "https://nepalstore.onrender.com" // Render backend
+  : "http://localhost:5000";          // Local dev backend
 
 // Fetch all products
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch("/api/products");
+      const res = await fetch(`${API_URL}/api/products`);
       const data = await res.json();
-      const products = Array.isArray(data) ? data : data.products || [];
+
+      // Ensure array of products
+      const products = Array.isArray(data)
+        ? data
+        : data.products || [];
+
       return products.map((p) => ({
         ...p,
-        image: p.image ? `${BASE_URL}${p.image}` : null,
+        image: p.image ? `${API_URL}/${p.image}` : null,
       }));
     } catch (err) {
       return rejectWithValue(err.message);

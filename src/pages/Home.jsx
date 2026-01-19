@@ -1,7 +1,7 @@
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ProductCard from '../components/ProductCard';
+
 import { fetchProducts } from '../redux/slices/productSlice';
 import { Button } from '@/components/ui/button';
 import { ShoppingBag, Sparkles, TrendingUp } from 'lucide-react';
