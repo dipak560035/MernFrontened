@@ -978,7 +978,7 @@ export default function AddProduct() {
                 <Input
                   id="price"
                   type="number"
-                  step="0.01"
+                  step="1"
                   {...register("price", {
                     required: "Price is required",
                     min: { value: 0.01, message: "Price must be positive" },

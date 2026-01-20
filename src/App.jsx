@@ -22,6 +22,7 @@ import EditProduct from "./pages/EditProduct";
 
 // Components
 import PrivateRoute from "./components/PrivateRoute";
+import Contact from "./pages/Contact";
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/cart" element={<Cart />} />

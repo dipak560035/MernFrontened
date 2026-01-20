@@ -374,7 +374,7 @@ export default function Products() {
   const { data, isLoading, error } = useGetProductsQuery({
     search: searchTerm,
     page: currentPage,
-    limit: 50, // show 50 like homepage
+    limit: 12, // show 50 like homepage
   });
 
   const products = data?.products ?? [];
