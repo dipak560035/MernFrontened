@@ -478,15 +478,38 @@ export const mainApi = createApi({
 
     // =============== PRODUCTS ===============
     getProducts: builder.query({
-      query: () => '/products',
-      transformResponse: (response) => {
-        if (response?.status === "success" && Array.isArray(response.products)) {
-          return response.products;
-        }
-        return response.products || response;
-      },
-      providesTags: ['Products'],
-    }),
+  query: (params = {}) => ({
+    url: '/products',
+    method: 'GET',
+    params,
+  }),
+  transformResponse: (response) => {
+    if (response?.status === "success") {
+      return {
+        products: response.products ?? [],
+        totalPages: response.totalPages ?? 1,
+        total: response.total ?? 0,
+      };
+    }
+    return {
+      products: [],
+      totalPages: 1,
+      total: 0,
+    };
+  },
+  providesTags: ['Products'],
+}),
+
+    // getProducts: builder.query({
+    //   query: () => '/products',
+    //   transformResponse: (response) => {
+    //     if (response?.status === "success" && Array.isArray(response.products)) {
+    //       return response.products;
+    //     }
+    //     return response.products || response;
+    //   },
+    //   providesTags: ['Products'],
+    // }),
 
     getProduct: builder.query({
       query: (id) => `/products/${id}`,
