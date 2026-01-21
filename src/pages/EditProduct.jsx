@@ -97,11 +97,25 @@ export default function EditProduct() {
 
       navigate("/admin");
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to update product", {
+      console.error("Update error:", err);
+      
+      // Handle different error types
+      let errorMessage = "Failed to update product";
+      
+      if (typeof err === 'string') {
+        errorMessage = err;
+      } else if (err?.data?.message) {
+        errorMessage = err.data.message;
+      } else if (err?.message) {
+        errorMessage = err.message;
+      } else if (err?.error?.message) {
+        errorMessage = err.error.message;
+      }
+      
+      toast.error(errorMessage, {
         duration: 5000,
         position: "top-right",
       });
-      console.error("Update error:", err);
     }
   };
 
@@ -310,3 +324,47 @@ export default function EditProduct() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
