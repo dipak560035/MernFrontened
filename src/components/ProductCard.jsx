@@ -289,9 +289,7 @@ import { cn } from "@/lib/utils"; // tailwind-merge
 export default function ProductCard({ product }) {
   // product.image is now the full URL from backend
   // const imageUrl = product.image || "https://placehold.co/400x300?text=No+Image";
-  const BASE_URL = import.meta.env.MODE === "production"
-  ? "https://nepalstore.onrender.com"
-  : "http://localhost:5000";
+  const BASE_URL = "https://nepalstore.onrender.com";
 
 const imageUrl = product.image
   ? `${BASE_URL}/${product.image}`   // e.g. http://localhost:5000/uploads/xxxx-image.png
