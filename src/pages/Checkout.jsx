@@ -1,3 +1,4 @@
+import PageHero from "../components/common/PageHero";
 import Container from "../components/layout/Container";
 import Input from "../components/ui/input";
 import Button from "../components/ui/button";
@@ -15,12 +16,7 @@ export default function Checkout() {
 
   return (
     <>
-      <section className="bg-neutral-100">
-        <Container className="py-12 text-center">
-          <h1 className="text-3xl font-semibold">Checkout</h1>
-          <div className="mt-2 text-sm text-neutral-600">Home › Checkout</div>
-        </Container>
-      </section>
+      <PageHero title="Checkout" />
       <Container className="py-12">
         <div className="grid gap-12 md:grid-cols-2">
           <form className="space-y-4" onSubmit={placeOrder}>

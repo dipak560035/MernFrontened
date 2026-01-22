@@ -13,6 +13,7 @@ import Admin from "./pages/Admin.jsx";
 import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
 import Wishlist from "./pages/Wishlist.jsx";
+import Blog from "./pages/Blog.jsx";
 import Protected from "./routes/Protected.jsx";
 import store from "./store";
 import "./index.css";
@@ -32,6 +33,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="wishlist" element={<Wishlist />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
+            <Route path="blog" element={<Blog />} />
             <Route
               path="admin/*"
               element={

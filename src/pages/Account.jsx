@@ -1,3 +1,4 @@
+import PageHero from "../components/common/PageHero";
 import Container from "../components/layout/Container";
 import Input from "../components/ui/input";
 import Button from "../components/ui/button";
@@ -30,12 +31,7 @@ export default function Account() {
 
   return (
     <>
-      <section className="bg-neutral-100">
-        <Container className="py-12 text-center">
-          <h1 className="text-3xl font-semibold">My Account</h1>
-          <div className="mt-2 text-sm text-neutral-600">Home › My account</div>
-        </Container>
-      </section>
+      <PageHero title="My Account" />
 
       <Container className="py-16">
         <div className="grid gap-12 md:grid-cols-2">
@@ -70,22 +66,7 @@ export default function Account() {
           </div>
         </div>
       </Container>
-      <section className="bg-neutral-100">
-        <Container className="flex items-center justify-between py-10">
-          <div>
-            <h4 className="text-lg font-semibold">Free Delivery</h4>
-            <p className="text-sm text-neutral-600">For all orders over $50, consectetur adipim scing elit.</p>
-          </div>
-          <div>
-            <h4 className="text-lg font-semibold">90 Days Return</h4>
-            <p className="text-sm text-neutral-600">If goods have problems, consectetur adipim scing elit.</p>
-          </div>
-          <div>
-            <h4 className="text-lg font-semibold">Secure Payment</h4>
-            <p className="text-sm text-neutral-600">100% secure payment, consectetur adipim scing elit.</p>
-          </div>
-        </Container>
-      </section>
+      
     </>
   );
 }

@@ -1,5 +1,7 @@
+import PageHero from "../components/common/PageHero";
 import Container from "../components/layout/Container";
 import { Link } from "react-router-dom";
+import ProductCard from "../components/common/ProductCard";
 
 const MOCK = Array.from({ length: 16 }).map((_, i) => ({
   id: i + 1,
@@ -15,12 +17,7 @@ const MOCK = Array.from({ length: 16 }).map((_, i) => ({
 export default function Shop() {
   return (
     <>
-      <section className="bg-neutral-100">
-        <Container className="py-12 text-center">
-          <h1 className="text-3xl font-semibold">Shop</h1>
-          <div className="mt-2 text-sm text-neutral-600">Home › Shop</div>
-        </Container>
-      </section>
+      <PageHero title="Shop" />
 
       <Container className="py-6">
         <div className="flex items-center justify-between rounded-md bg-neutral-100 px-4 py-3">
@@ -44,18 +41,7 @@ export default function Shop() {
       <Container className="pb-16">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
           {MOCK.map((p) => (
-            <div key={p.id} className="group">
-              <div className="aspect-[4/3] overflow-hidden rounded-lg bg-neutral-100">
-                <img src={p.image} alt={p.title} className="h-full w-full object-cover" />
-              </div>
-              <div className="mt-2">
-                <h4 className="text-sm font-medium">{p.title}</h4>
-                <p className="text-sm text-neutral-600">Rs. {p.price.toLocaleString()}</p>
-              </div>
-              <Link to={`/product/${p.id}`} className="mt-2 inline-block text-sm underline">
-                View More
-              </Link>
-            </div>
+            <ProductCard key={p.id} p={p} />
           ))}
         </div>
         <div className="mt-12 flex justify-center gap-3">
