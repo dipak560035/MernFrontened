@@ -19,7 +19,7 @@ export default function Admin() {
           <h1 className="text-3xl font-semibold">Admin Panel</h1>
           <div className="mt-2 text-sm text-neutral-600">Add products</div>
         </Container>
-        //
+        
       </section>
       <Container className="py-12">
         <form className="max-w-xl space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
