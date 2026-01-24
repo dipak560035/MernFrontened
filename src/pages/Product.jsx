@@ -5,25 +5,40 @@ import Badge from "../components/ui/badge";
 import { Star } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/slices/cartSlice";
-
-const MOCK = {
-  id: 1,
-  title: "Asgaard sofa",
-  price: 250000,
-  rating: 4.5,
-  images: [
-    "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1524758631624-74f4d37dd068?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1540574163026-643ea20ade25?q=80&w=1200&auto=format&fit=crop",
-  ],
-  colors: ["#000000", "#7C6A5B", "#E1D5C9", "#F5DAB7"],
-  sizes: ["S", "M", "L", "XL"],
-};
+import { useProductByIdQuery, useAddToCartMutation } from "../services/api";
 
 export default function Product() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const p = { ...MOCK, id: Number(id) || MOCK.id };
+  const { data, isLoading } = useProductByIdQuery(id);
+  const [addRemote] = useAddToCartMutation();
+
+  const fallback = {
+    id,
+    title: "Asgaard sofa",
+    price: 250000,
+    rating: 4.5,
+    images: [
+      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1524758631624-74f4d37dd068?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1540574163026-643ea20ade25?q=80&w=1200&auto=format&fit=crop",
+    ],
+    colors: ["#000000", "#7C6A5B", "#E1D5C9", "#F5DAB7"],
+    sizes: ["S", "M", "L", "XL"],
+  };
+
+  const p = data
+    ? {
+        id: data.id || data._id,
+        title: data.title || data.name,
+        price: data.price,
+        rating: data.rating || 4.5,
+        images: data.images?.length ? data.images : fallback.images,
+        colors: data.colors?.length ? data.colors : fallback.colors,
+        sizes: data.sizes?.length ? data.sizes : fallback.sizes,
+      }
+    : fallback;
+
   return (
     <>
       <section className="bg-neutral-100">
@@ -35,7 +50,11 @@ export default function Product() {
         <div className="grid gap-8 md:grid-cols-2">
           <div className="grid grid-cols-4 gap-3">
             <div className="col-span-4 aspect-[4/3] overflow-hidden rounded-lg bg-neutral-100">
-              <img src={p.images[0]} alt={p.title} className="h-full w-full object-cover" />
+              {isLoading ? (
+                <div className="h-full w-full animate-pulse rounded-lg bg-neutral-100" />
+              ) : (
+                <img src={p.images[0]} alt={p.title} className="h-full w-full object-cover" />
+              )}
             </div>
             {p.images.slice(1).map((img, i) => (
               <div key={i} className="aspect-square overflow-hidden rounded-lg bg-neutral-100">
@@ -84,7 +103,16 @@ export default function Product() {
               </div>
             </div>
             <div className="mt-6 flex gap-3">
-              <Button onClick={() => dispatch(addToCart({ id: p.id, title: p.title, price: p.price }))}>
+              <Button
+                onClick={async () => {
+                  dispatch(addToCart({ id: p.id, title: p.title, price: p.price }));
+                  try {
+                    await addRemote({ productId: p.id, qty: 1 });
+                  } catch (e) {
+                    console.error("Remote cart add failed", e);
+                  }
+                }}
+              >
                 Add To Cart
               </Button>
               <Button variant="outline">Compare</Button>

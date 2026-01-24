@@ -4,11 +4,21 @@ import Button from "../components/ui/button";
 import Quantity from "../components/ui/quantity";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart, clearCart, updateQty } from "../store/slices/cartSlice";
+import {
+  useCartQuery,
+  useUpdateCartItemMutation,
+  useRemoveCartItemMutation,
+  useClearCartRemoteMutation,
+} from "../services/api";
 import { Link } from "react-router-dom";
 
 export default function Cart() {
   const items = useSelector((s) => s.cart.items);
   const dispatch = useDispatch();
+  const { data } = useCartQuery(undefined, { skip: !items.length });
+  const [updateRemote] = useUpdateCartItemMutation();
+  const [removeRemote] = useRemoveCartItemMutation();
+  const [clearRemote] = useClearCartRemoteMutation();
   const subtotal = items.reduce((sum, i) => sum + i.price * (i.qty || 1), 0);
   return (
     <>
@@ -35,14 +45,41 @@ export default function Cart() {
                   </div>
                   <Quantity
                     value={i.qty || 1}
-                    onChange={(q) => dispatch(updateQty({ id: i.id, qty: q }))}
+                    onChange={async (q) => {
+                      dispatch(updateQty({ id: i.id, qty: q }));
+                      try {
+                        await updateRemote({ productId: i.id, qty: q });
+                      } catch (e) {
+                        console.error("Remote cart update failed", e);
+                      }
+                    }}
                   />
-                  <Button variant="outline" onClick={() => dispatch(removeFromCart(i.id))}>
+                  <Button
+                    variant="outline"
+                    onClick={async () => {
+                      dispatch(removeFromCart(i.id));
+                      try {
+                        await removeRemote(i.id);
+                      } catch (e) {
+                        console.error("Remote cart remove failed", e);
+                      }
+                    }}
+                  >
                     Remove
                   </Button>
                 </div>
               ))}
-              <Button variant="outline" onClick={() => dispatch(clearCart())}>
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  dispatch(clearCart());
+                  try {
+                    await clearRemote();
+                  } catch (e) {
+                    console.error("Remote cart clear failed", e);
+                  }
+                }}
+              >
                 Clear Cart
               </Button>
             </div>

@@ -1,20 +1,14 @@
 import PageHero from "../components/common/PageHero";
 import Container from "../components/layout/Container";
-import { Link } from "react-router-dom";
 import ProductCard from "../components/common/ProductCard";
-
-const MOCK = Array.from({ length: 16 }).map((_, i) => ({
-  id: i + 1,
-  title: ["Trenton modular sofa", "Granite dining table", "Outdoor bar table and stool", "Plain console with teak mirror"][i % 4],
-  price: [25000, 100000, 25000, 25000][i % 4],
-  image:
-    ["https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1540574163026-643ea20ade25?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1582582429416-d684482636c0?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1524758631624-74f4d37dd068?q=80&w=1200&auto=format&fit=crop"][i % 4],
-}));
+import { useProductsQuery } from "../services/api";
 
 export default function Shop() {
+  const { data, isLoading } = useProductsQuery({ limit: 16 });
+  const products =
+    (Array.isArray(data?.items) && data.items) ||
+    (Array.isArray(data) && data) ||
+    [];
   return (
     <>
       <PageHero title="Shop" />
@@ -40,9 +34,21 @@ export default function Shop() {
 
       <Container className="pb-16">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-          {MOCK.map((p) => (
-            <ProductCard key={p.id} p={p} />
-          ))}
+          {isLoading && !Array.isArray(products)
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="h-40 animate-pulse rounded-lg bg-neutral-100" />
+              ))
+            : (Array.isArray(products) ? products : []).map((p) => (
+                <ProductCard
+                  key={p.id || p._id}
+                  p={{
+                    id: p.id || p._id,
+                    title: p.title || p.name,
+                    price: p.price,
+                    image: p.image || p.images?.[0],
+                  }}
+                />
+              ))}
         </div>
         <div className="mt-12 flex justify-center gap-3">
           {[1, 2, 3, "Next"].map((p) => (

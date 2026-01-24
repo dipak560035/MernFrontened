@@ -7,6 +7,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../store/slices/authSlice";
+import { useLoginMutation, useRegisterMutation } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const loginSchema = yup.object({
   email: yup.string().email().required(),
@@ -19,14 +21,29 @@ const registerSchema = yup.object({
 
 export default function Account() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [login, { isLoading: loggingIn }] = useLoginMutation();
+  const [registerUser, { isLoading: registering }] = useRegisterMutation();
   const loginForm = useForm({ resolver: yupResolver(loginSchema) });
   const registerForm = useForm({ resolver: yupResolver(registerSchema) });
 
-  const onLogin = (v) => {
-    dispatch(loginSuccess({ token: "demo-token", user: { email: v.email, role: v.admin ? "admin" : "user" } }));
+  const onLogin = async (v) => {
+    try {
+      const data = await login({ email: v.email, password: v.password }).unwrap();
+      dispatch(loginSuccess({ token: data.token, user: data.user }));
+      navigate("/");
+    } catch (e) {
+      console.error("Login failed", e);
+    }
   };
-  const onRegister = (v) => {
-    dispatch(loginSuccess({ token: "demo-token", user: { email: v.email, role: "user" } }));
+  const onRegister = async (v) => {
+    try {
+      const data = await registerUser({ email: v.email, password: v.password }).unwrap();
+      dispatch(loginSuccess({ token: data.token, user: data.user }));
+      navigate("/");
+    } catch (e) {
+      console.error("Register failed", e);
+    }
   };
 
   return (
@@ -48,7 +65,9 @@ export default function Account() {
                 <input type="checkbox" {...loginForm.register("admin")} />
                 Login as Admin
               </label>
-              <Button type="submit">Log In</Button>
+              <Button type="submit" disabled={loggingIn}>
+                {loggingIn ? "Logging in..." : "Log In"}
+              </Button>
             </form>
           </div>
           <div>
@@ -59,8 +78,8 @@ export default function Account() {
               <p className="text-sm text-neutral-600">
                 Your personal data will be used to support your experience throughout this website.
               </p>
-              <Button type="submit" variant="outline">
-                Register
+              <Button type="submit" variant="outline" disabled={registering}>
+                {registering ? "Registering..." : "Register"}
               </Button>
             </form>
           </div>

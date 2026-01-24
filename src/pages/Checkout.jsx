@@ -2,16 +2,41 @@ import PageHero from "../components/common/PageHero";
 import Container from "../components/layout/Container";
 import Input from "../components/ui/input";
 import Button from "../components/ui/button";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Toaster, toast } from "sonner";
+import { useCreateOrderMutation } from "../services/api";
+import { clearCart } from "../store/slices/cartSlice";
 
 export default function Checkout() {
   const items = useSelector((s) => s.cart.items);
   const total = items.reduce((sum, i) => sum + i.price * (i.qty || 1), 0);
+  const dispatch = useDispatch();
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
 
-  const placeOrder = (e) => {
+  const placeOrder = async (e) => {
     e.preventDefault();
-    toast.success("Order placed");
+    const form = new FormData(e.currentTarget);
+    const payload = {
+      shippingAddress: {
+        firstName: form.get("firstName"),
+        lastName: form.get("lastName"),
+        country: form.get("country"),
+        address: form.get("address"),
+        city: form.get("city"),
+        province: form.get("province"),
+        zip: form.get("zip"),
+        phone: form.get("phone"),
+        email: form.get("email"),
+      },
+    };
+    try {
+      await createOrder(payload).unwrap();
+      dispatch(clearCart());
+      toast.success("Order placed");
+    } catch (err) {
+      console.error("Order failed", err);
+      toast.error("Could not place order");
+    }
   };
 
   return (
@@ -22,19 +47,21 @@ export default function Checkout() {
           <form className="space-y-4" onSubmit={placeOrder}>
             <h3 className="text-xl font-semibold">Billing details</h3>
             <div className="grid grid-cols-2 gap-4">
-              <Input placeholder="First Name" />
-              <Input placeholder="Last Name" />
-              <Input className="col-span-2" placeholder="Company Name (Optional)" />
-              <Input className="col-span-2" placeholder="Country / Region" />
-              <Input className="col-span-2" placeholder="Street address" />
-              <Input placeholder="Town / City" />
-              <Input placeholder="Province" />
-              <Input placeholder="ZIP code" />
-              <Input placeholder="Phone" />
-              <Input className="col-span-2" placeholder="Email address" />
+              <Input name="firstName" placeholder="First Name" />
+              <Input name="lastName" placeholder="Last Name" />
+              <Input className="col-span-2" name="company" placeholder="Company Name (Optional)" />
+              <Input className="col-span-2" name="country" placeholder="Country / Region" />
+              <Input className="col-span-2" name="address" placeholder="Street address" />
+              <Input name="city" placeholder="Town / City" />
+              <Input name="province" placeholder="Province" />
+              <Input name="zip" placeholder="ZIP code" />
+              <Input name="phone" placeholder="Phone" />
+              <Input className="col-span-2" name="email" placeholder="Email address" />
               <Input className="col-span-2" placeholder="Additional Information" />
             </div>
-            <Button type="submit">Place order</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Placing order..." : "Place order"}
+            </Button>
           </form>
           <div>
             <h3 className="text-xl font-semibold">Product</h3>

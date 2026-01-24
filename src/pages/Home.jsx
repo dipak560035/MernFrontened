@@ -2,35 +2,13 @@ import Container from "../components/layout/Container";
 import Button from "../components/ui/button";
 import { Link } from "react-router-dom";
 import { useProductsQuery } from "../services/api";
-
-function ProductCard({ p }) {
-  return (
-    <div className="group">
-      <div className="aspect-[4/3] overflow-hidden rounded-lg bg-neutral-100">
-        <img
-          src={p.image}
-          alt={p.title}
-          className="h-full w-full object-contain transition-transform group-hover:scale-105"
-        />
-      </div>
-      <div className="mt-2">
-        <h4 className="text-sm font-medium">{p.title}</h4>
-        <p className="text-sm text-neutral-600">Rs. {p.price?.toLocaleString()}</p>
-      </div>
-      <Link
-        to={`/product/${p.id}`}
-        className="mt-2 inline-block text-sm font-medium text-neutral-700 underline"
-      >
-        View More
-      </Link>
-    </div>
-  );
-}
+import ProductCard from "../components/common/ProductCard";
 
 export default function Home() {
-  const { data } = useProductsQuery(null, { skip: true });
-  const demoProducts =
-    data ||
+  const { data, isLoading } = useProductsQuery({ limit: 4 });
+  const products =
+    (Array.isArray(data?.items) && data.items) ||
+    (Array.isArray(data) && data) ||
     [
       {
         id: 1,
@@ -121,9 +99,13 @@ export default function Home() {
         </div>
 
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-          {demoProducts.map((p) => (
-            <ProductCard key={p.id} p={p} />
-          ))}
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-40 animate-pulse rounded-lg bg-neutral-100" />
+              ))
+            : (Array.isArray(products) ? products : []).map((p) => (
+                <ProductCard key={p.id || p._id} p={{ id: p.id || p._id, title: p.title || p.name, price: p.price, image: p.image || p.images?.[0] }} />
+              ))}
         </div>
       </Container>
 

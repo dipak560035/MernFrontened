@@ -2,15 +2,22 @@ import Container from "../components/layout/Container";
 import Input from "../components/ui/input";
 import Button from "../components/ui/button";
 import { useForm } from "react-hook-form";
+import { useAdminCreateProductMutation } from "../services/api";
 
 export default function Admin() {
   const form = useForm();
-  const onSubmit = (v) => {
-    const raw = localStorage.getItem("adminProducts");
-    const list = raw ? JSON.parse(raw) : [];
-    list.push({ id: Date.now(), ...v });
-    localStorage.setItem("adminProducts", JSON.stringify(list));
-    form.reset();
+  const [createProduct, { isLoading }] = useAdminCreateProductMutation();
+  const onSubmit = async (v) => {
+    try {
+      await createProduct({
+        name: v.title,
+        price: Number(v.price),
+        images: v.image ? [v.image] : [],
+      }).unwrap();
+      form.reset();
+    } catch (e) {
+      console.error("Create product failed", e);
+    }
   };
   return (
     <>
@@ -26,7 +33,9 @@ export default function Admin() {
           <Input placeholder="Title" {...form.register("title")} />
           <Input placeholder="Price" type="number" {...form.register("price")} />
           <Input placeholder="Image URL" {...form.register("image")} />
-          <Button type="submit">Add Product</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Adding..." : "Add Product"}
+          </Button>
         </form>
       </Container>
     </>

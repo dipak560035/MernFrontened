@@ -3,16 +3,15 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api",
+    baseUrl: import.meta.env.VITE_API_URL || "http://localhost:4001",
     prepareHeaders: (headers, { getState }) => {
       const token = getState()?.auth?.token;
       if (token) headers.set("authorization", `Bearer ${token}`);
       return headers;
     },
   }),
-  tagTypes: ["Product", "Auth", "Cart"],
+  tagTypes: ["Product", "Auth", "Cart", "Order"],
   endpoints: (builder) => ({
-    // placeholder endpoints
     login: builder.mutation({
       query: (body) => ({ url: "/auth/login", method: "POST", body }),
       invalidatesTags: ["Auth"],
@@ -21,13 +20,60 @@ export const api = createApi({
       query: (body) => ({ url: "/auth/register", method: "POST", body }),
       invalidatesTags: ["Auth"],
     }),
+    me: builder.query({
+      query: () => "/auth/me",
+      providesTags: ["Auth"],
+    }),
     products: builder.query({
-      query: () => "/products",
+      query: (params) => ({
+        url: "/products",
+        params,
+      }),
       providesTags: ["Product"],
     }),
     productById: builder.query({
       query: (id) => `/products/${id}`,
       providesTags: (_res, _err, id) => [{ type: "Product", id }],
+    }),
+    cart: builder.query({
+      query: () => "/cart",
+      providesTags: ["Cart"],
+    }),
+    addToCart: builder.mutation({
+      query: (body) => ({ url: "/cart/add", method: "POST", body }),
+      invalidatesTags: ["Cart"],
+    }),
+    updateCartItem: builder.mutation({
+      query: (body) => ({ url: "/cart/update", method: "PUT", body }),
+      invalidatesTags: ["Cart"],
+    }),
+    removeCartItem: builder.mutation({
+      query: (productId) => ({ url: `/cart/remove/${productId}`, method: "DELETE" }),
+      invalidatesTags: ["Cart"],
+    }),
+    clearCartRemote: builder.mutation({
+      query: () => ({ url: "/cart/clear", method: "DELETE" }),
+      invalidatesTags: ["Cart"],
+    }),
+    createOrder: builder.mutation({
+      query: (body) => ({ url: "/orders", method: "POST", body }),
+      invalidatesTags: ["Order", "Cart"],
+    }),
+    orders: builder.query({
+      query: () => "/orders",
+      providesTags: ["Order"],
+    }),
+    adminCreateProduct: builder.mutation({
+      query: (body) => ({ url: "/products", method: "POST", body }),
+      invalidatesTags: ["Product"],
+    }),
+    adminUpdateProduct: builder.mutation({
+      query: ({ id, ...body }) => ({ url: `/products/${id}`, method: "PUT", body }),
+      invalidatesTags: (_res, _err, { id }) => [{ type: "Product", id }],
+    }),
+    adminDeleteProduct: builder.mutation({
+      query: (id) => ({ url: `/products/${id}`, method: "DELETE" }),
+      invalidatesTags: ["Product"],
     }),
   }),
 });
@@ -35,6 +81,17 @@ export const api = createApi({
 export const {
   useLoginMutation,
   useRegisterMutation,
+   useMeQuery,
   useProductsQuery,
   useProductByIdQuery,
+  useCartQuery,
+  useAddToCartMutation,
+  useUpdateCartItemMutation,
+  useRemoveCartItemMutation,
+  useClearCartRemoteMutation,
+  useCreateOrderMutation,
+  useOrdersQuery,
+  useAdminCreateProductMutation,
+  useAdminUpdateProductMutation,
+  useAdminDeleteProductMutation,
 } = api;
