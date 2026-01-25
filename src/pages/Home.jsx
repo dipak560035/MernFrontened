@@ -7,7 +7,7 @@ import ProductCard from "../components/common/ProductCard";
 export default function Home() {
   const { data, isLoading } = useProductsQuery({ limit: 4 });
   const products =
-    (Array.isArray(data?.items) && data.items) ||
+    (Array.isArray(data?.data) && data.data) ||
     (Array.isArray(data) && data) ||
     [
       {
@@ -104,7 +104,17 @@ export default function Home() {
                 <div key={i} className="h-40 animate-pulse rounded-lg bg-neutral-100" />
               ))
             : (Array.isArray(products) ? products : []).map((p) => (
-                <ProductCard key={p.id || p._id} p={{ id: p.id || p._id, title: p.title || p.name, price: p.price, image: p.image || p.images?.[0] }} />
+                <ProductCard
+                  key={p.id || p._id}
+                  p={{
+                    id: p.id || p._id,
+                    title: p.title || p.name,
+                    price: p.price,
+                    image:
+                      p.image ||
+                      (Array.isArray(p.images) ? (typeof p.images[0] === "string" ? p.images[0] : p.images[0]?.url) : undefined),
+                  }}
+                />
               ))}
         </div>
       </Container>

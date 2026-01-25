@@ -9,12 +9,14 @@ import { useDispatch } from "react-redux";
 import { loginSuccess } from "../store/slices/authSlice";
 import { useLoginMutation, useRegisterMutation } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const loginSchema = yup.object({
   email: yup.string().email().required(),
   password: yup.string().min(6).required(),
 });
 const registerSchema = yup.object({
+  name: yup.string().required(),
   email: yup.string().email().required(),
   password: yup.string().min(6).required(),
 });
@@ -31,18 +33,22 @@ export default function Account() {
     try {
       const data = await login({ email: v.email, password: v.password }).unwrap();
       dispatch(loginSuccess({ token: data.token, user: data.user }));
+      toast.success("Logged in");
       navigate("/");
     } catch (e) {
       console.error("Login failed", e);
+      toast.error("Login failed");
     }
   };
   const onRegister = async (v) => {
     try {
-      const data = await registerUser({ email: v.email, password: v.password }).unwrap();
+      const data = await registerUser({ name: v.name, email: v.email, password: v.password }).unwrap();
       dispatch(loginSuccess({ token: data.token, user: data.user }));
+      toast.success("Registration successful");
       navigate("/");
     } catch (e) {
       console.error("Register failed", e);
+      toast.error("Registration failed");
     }
   };
 
@@ -73,6 +79,7 @@ export default function Account() {
           <div>
             <h3 className="mb-4 text-xl font-semibold">Register</h3>
             <form className="space-y-4" onSubmit={registerForm.handleSubmit(onRegister)}>
+              <Input placeholder="Username" {...registerForm.register("name")} />
               <Input placeholder="Email address" {...registerForm.register("email")} />
               <Input type="password" placeholder="Password" {...registerForm.register("password")} />
               <p className="text-sm text-neutral-600">

@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 export default function Cart() {
   const items = useSelector((s) => s.cart.items);
   const dispatch = useDispatch();
-  const { data } = useCartQuery(undefined, { skip: !items.length });
+  const { data: CART_DATA } = useCartQuery(undefined, { skip: !items.length });
   const [updateRemote] = useUpdateCartItemMutation();
   const [removeRemote] = useRemoveCartItemMutation();
   const [clearRemote] = useClearCartRemoteMutation();

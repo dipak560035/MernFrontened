@@ -28,14 +28,18 @@ export default function authReducer(state = initialState, action) {
       try {
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
-      } catch {}
+      } catch {
+        console.warn("Storage unavailable");
+      }
       return { ...state, token, user, role: user?.role || "user" };
     }
     case "auth/logout": {
       try {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-      } catch {}
+      } catch {
+        console.warn("Storage unavailable");
+      }
       return { token: null, user: null, role: "guest" };
     }
     default:

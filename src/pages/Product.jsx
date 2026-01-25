@@ -3,13 +3,15 @@ import Container from "../components/layout/Container";
 import Button from "../components/ui/button";
 import Badge from "../components/ui/badge";
 import { Star } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../store/slices/cartSlice";
 import { useProductByIdQuery, useAddToCartMutation } from "../services/api";
+import { toast } from "sonner";
 
 export default function Product() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const role = useSelector((s) => s.auth.role);
   const { data, isLoading } = useProductByIdQuery(id);
   const [addRemote] = useAddToCartMutation();
 
@@ -104,7 +106,12 @@ export default function Product() {
             </div>
             <div className="mt-6 flex gap-3">
               <Button
+                disabled={role === "admin"}
                 onClick={async () => {
+                  if (role === "admin") {
+                    toast.error("Admins cannot purchase products");
+                    return;
+                  }
                   dispatch(addToCart({ id: p.id, title: p.title, price: p.price }));
                   try {
                     await addRemote({ productId: p.id, qty: 1 });

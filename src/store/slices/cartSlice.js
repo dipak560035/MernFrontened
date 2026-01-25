@@ -26,14 +26,18 @@ export default function cartReducer(state = initialState, action) {
       }
       try {
         localStorage.setItem("cart", JSON.stringify(items));
-      } catch {}
+      } catch {
+        console.warn("Storage unavailable");
+      }
       return { ...state, items };
     }
     case "cart/remove": {
       const items = state.items.filter((i) => i.id !== action.payload);
       try {
         localStorage.setItem("cart", JSON.stringify(items));
-      } catch {}
+      } catch {
+        console.warn("Storage unavailable");
+      }
       return { ...state, items };
     }
     case "cart/updateQty": {
@@ -41,13 +45,17 @@ export default function cartReducer(state = initialState, action) {
       const items = state.items.map((i) => (i.id === id ? { ...i, qty: Math.max(1, qty) } : i));
       try {
         localStorage.setItem("cart", JSON.stringify(items));
-      } catch {}
+      } catch {
+        console.warn("Storage unavailable");
+      }
       return { ...state, items };
     }
     case "cart/clear": {
       try {
         localStorage.removeItem("cart");
-      } catch {}
+      } catch {
+        console.warn("Storage unavailable");
+      }
       return { ...state, items: [] };
     }
     default:
