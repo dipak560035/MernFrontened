@@ -68,7 +68,7 @@ export default function Admin() {
                 <div className="p-4 flex-1 flex flex-col justify-between">
                   <div>
                     <h2 className="font-semibold text-lg">{p.name}</h2>
-                    <p className="text-sm text-neutral-600 mt-1">${p.price.toFixed(2)}</p>
+                    <p className="text-sm text-neutral-600 mt-1">Re.{p.price.toFixed(2)}</p>
                   </div>
 
                   <div className="mt-4 flex gap-2">

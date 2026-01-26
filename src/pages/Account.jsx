@@ -153,6 +153,7 @@ import { loginSuccess } from "../store/slices/authSlice";
 import { useLoginMutation, useRegisterMutation } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useState } from "react";
 
 const loginSchema = yup.object({
   email: yup.string().email().required(),
@@ -174,6 +175,8 @@ export default function Account() {
 
   const loginForm = useForm({ resolver: yupResolver(loginSchema) });
   const registerForm = useForm({ resolver: yupResolver(registerSchema) });
+const [showLoginPass, setShowLoginPass] = useState(false);
+const [showRegisterPass, setShowRegisterPass] = useState(false);
 
   const onLogin = async (v) => {
     try {
@@ -234,17 +237,34 @@ export default function Account() {
             <h3 className="mb-4 text-xl font-semibold">Log In</h3>
             <form className="space-y-4" onSubmit={loginForm.handleSubmit(onLogin)}>
               <Input placeholder="Username or email address" {...loginForm.register("email")} />
-              <Input type="password" placeholder="Password" {...loginForm.register("password")} />
+              {/* <Input type="password" placeholder="Password" {...loginForm.register("password")} /> */}
+
+   <div className="relative">
+  <Input
+    type={showLoginPass ? "text" : "password"}
+    placeholder="Password"
+    {...loginForm.register("password")}
+  />
+
+  <button
+    type="button"
+    className="absolute right-2 top-1/2 -translate-y-1/2 text-sm"
+    onClick={() => setShowLoginPass(!showLoginPass)}
+  >
+    {showLoginPass ? "Hide" : "Show"}
+  </button>
+</div>
+
 
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" {...loginForm.register("remember")} />
                 Remember me
               </label>
 
-              <label className="flex items-center gap-2 text-sm">
+              {/* <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" {...loginForm.register("admin")} />
                 Login as Admin
-              </label>
+              </label> */}
 
               <Button type="submit" disabled={loggingIn}>
                 {loggingIn ? "Logging in..." : "Log In"}
@@ -258,11 +278,30 @@ export default function Account() {
             <form className="space-y-4" onSubmit={registerForm.handleSubmit(onRegister)}>
               <Input placeholder="Username" {...registerForm.register("name")} />
               <Input placeholder="Email address" {...registerForm.register("email")} />
-              <Input type="password" placeholder="Password" {...registerForm.register("password")} />
+              {/* <Input type="password" placeholder="Password" {...registerForm.register("password")} /> */}
+<div className="relative">
+  <Input
+    type={showRegisterPass ? "text" : "password"}
+    placeholder="Password"
+    {...registerForm.register("password")}
+  />
 
-              <p className="text-sm text-neutral-600">
+  <button
+    type="button"
+    className="absolute right-2 top-1/2 -translate-y-1/2 text-sm"
+    onClick={() => setShowRegisterPass(!showRegisterPass)}
+  >
+    {showRegisterPass ? "Hide" : "Show"}
+  </button>
+</div>
+
+
+
+
+
+              {/* <p className="text-sm text-neutral-600">
                 Your personal data will be used to support your experience throughout this website.
-              </p>
+              </p> */}
 
               <Button type="submit" variant="outline" disabled={registering}>
                 {registering ? "Registering..." : "Register"}
