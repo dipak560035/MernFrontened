@@ -82,7 +82,7 @@ export const api = createApi({
       invalidatesTags: ["Product"],
     }),
   }),
-});//
+});
 
 export const {
   useLoginMutation,
