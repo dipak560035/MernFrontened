@@ -67,10 +67,7 @@ export const api = createApi({
       query: (body) => ({ url: "/products", method: "POST", body }),
       invalidatesTags: ["Product"],
     }),
-    // adminUpdateProduct: builder.mutation({
-    //   query: ({ id, body }) => ({ url: `/products/${id}`, method: "PUT", body }),
-    //   invalidatesTags: (_res, _err, { id }) => [{ type: "Product", id }],
-    // }),
+   
     adminUpdateProduct: builder.mutation({
   query: ({ id, formData }) => ({
     url: `/products/${id}`,
