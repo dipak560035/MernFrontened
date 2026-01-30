@@ -24,13 +24,21 @@ export const api = createApi({
       query: () => "/auth/me",
       providesTags: ["Auth"],
     }),
+    // products: builder.query({
+    //   query: (params) => ({
+    //     url: "/products",
+    //     params,
+    //   }),
+    //   providesTags: ["Product"],
+    // }),
     products: builder.query({
-      query: (params) => ({
-        url: "/products",
-        params,
-      }),
-      providesTags: ["Product"],
-    }),
+  query: () => "/products",
+  providesTags: (result) =>
+    result?.data
+      ? [...result.data.map(({ _id }) => ({ type: "Product", id: _id })), { type: "Product", id: "LIST" }]
+      : [{ type: "Product", id: "LIST" }],
+}),
+
     productById: builder.query({
       query: (id) => `/products/${id}`,
       providesTags: (_res, _err, id) => [{ type: "Product", id }],
@@ -68,14 +76,26 @@ export const api = createApi({
       invalidatesTags: ["Product"],
     }),
    
-    adminUpdateProduct: builder.mutation({
+//     adminUpdateProduct: builder.mutation({
+//   query: ({ id, formData }) => ({
+//     url: `/products/${id}`,
+//     method: "PUT",
+//     body: formData,
+//   }),
+//   invalidatesTags: (_res, _err, { id }) => [{ type: "Product", id }],
+// }),
+adminUpdateProduct: builder.mutation({
   query: ({ id, formData }) => ({
     url: `/products/${id}`,
     method: "PUT",
     body: formData,
   }),
-  invalidatesTags: (_res, _err, { id }) => [{ type: "Product", id }],
+  invalidatesTags: (_res, _err, { id }) => [
+    { type: "Product", id },
+    { type: "Product", id: "LIST" },
+  ],
 }),
+
 
     adminDeleteProduct: builder.mutation({
       query: (id) => ({ url: `/products/${id}`, method: "DELETE" }),

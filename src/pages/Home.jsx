@@ -5,6 +5,8 @@ import { useProductsQuery } from "../services/api";
 import ProductCard from "../components/common/ProductCard";
 
 export default function Home() {
+  const BASE_URL = "http://localhost:4001";
+
   const { data, isLoading } = useProductsQuery({ limit: 4 });
   const products =
     (Array.isArray(data?.data) && data.data) ||
@@ -111,10 +113,18 @@ export default function Home() {
                     title: p.title || p.name,
                     price: p.price,
                     image:
-                      p.image ||
-                      (Array.isArray(p.images) ? (typeof p.images[0] === "string" ? p.images[0] : p.images[0]?.url) : undefined),
+  p.image ||
+  (p.images?.length
+    ? `${BASE_URL}${p.images[0].url}`
+    : "https://placehold.co/400x300?text=No+Image"),
+
+                    // image:
+                    //   p.image ||
+                    //   (Array.isArray(p.images) ? (typeof p.images[0] === "string" ? p.images[0] : p.images[0]?.url) : undefined),
                   }}
                 />
+
+
               ))}
         </div>
       </Container>
