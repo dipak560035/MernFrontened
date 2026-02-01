@@ -84,15 +84,30 @@ export const api = createApi({
 //   }),
 //   invalidatesTags: (_res, _err, { id }) => [{ type: "Product", id }],
 // }),
+// adminUpdateProduct: builder.mutation({
+//   query: ({ id, formData }) => ({
+//     url: `/products/${id}`,
+//     method: "PUT",
+//     body: formData,
+//   }),
+//   invalidatesTags: (_res, _err, { id }) => [
+//     { type: "Product", id },
+//     { type: "Product", id: "LIST" },
+//   ],
+// }),
 adminUpdateProduct: builder.mutation({
   query: ({ id, formData }) => ({
     url: `/products/${id}`,
     method: "PUT",
     body: formData,
+    // ────────────────────────────────────────
+    // Very important: do NOT set Content-Type manually
+    // Browser will set correct boundary + multipart/form-data
+    // ────────────────────────────────────────
   }),
   invalidatesTags: (_res, _err, { id }) => [
     { type: "Product", id },
-    { type: "Product", id: "LIST" },
+    { type: "Product", id: "LIST" },   // helps refresh product list
   ],
 }),
 
