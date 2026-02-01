@@ -100,10 +100,7 @@ adminUpdateProduct: builder.mutation({
     url: `/products/${id}`,
     method: "PUT",
     body: formData,
-    // ────────────────────────────────────────
-    // Very important: do NOT set Content-Type manually
-    // Browser will set correct boundary + multipart/form-data
-    // ────────────────────────────────────────
+  
   }),
   invalidatesTags: (_res, _err, { id }) => [
     { type: "Product", id },
