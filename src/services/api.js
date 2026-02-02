@@ -96,15 +96,19 @@ export const api = createApi({
 //   ],
 // }),
 adminUpdateProduct: builder.mutation({
-  query: ({ id, formData }) => ({
-    url: `/products/${id}`,
-    method: "PUT",
-    body: formData,
-  
-  }),
+  query: ({ id, formData, body }) => {
+    // Accept either FormData (when uploading new images) or a plain JSON body
+    // Use POST (backend routes accept POST as an alias for update)
+    const payload = formData ?? body;
+    return {
+      url: `/products/${id}`,
+      method: "POST",
+      body: payload,
+    };
+  },
   invalidatesTags: (_res, _err, { id }) => [
     { type: "Product", id },
-    { type: "Product", id: "LIST" },   // helps refresh product list
+    { type: "Product", id: "LIST" },
   ],
 }),
 

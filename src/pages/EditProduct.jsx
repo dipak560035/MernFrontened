@@ -61,26 +61,51 @@ export default function EditProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
 
-    data.append("name", form.name);
-    data.append("description", form.description);
-    data.append("price", form.price);
-    data.append("category", form.category);
-    data.append("stock", form.stock || 0);
-    data.append("featured", form.featured);
+    // If user selected new images, send as FormData (multipart)
+    if (images.length > 0) {
+      const data = new FormData();
+      data.append("name", form.name);
+      data.append("description", form.description);
+      data.append("price", form.price);
+      data.append("category", form.category);
+      data.append("stock", form.stock || 0);
+      data.append("featured", form.featured);
 
-    if (form.tags) form.tags.split(",").forEach((tag) => data.append("tags", tag.trim()));
-    if (form.colors) form.colors.split(",").forEach((color) => data.append("colors", color.trim()));
-    if (form.sizes) form.sizes.split(",").forEach((size) => data.append("sizes", size.trim()));
+      if (form.tags) form.tags.split(",").forEach((tag) => data.append("tags", tag.trim()));
+      if (form.colors) form.colors.split(",").forEach((color) => data.append("colors", color.trim()));
+      if (form.sizes) form.sizes.split(",").forEach((size) => data.append("sizes", size.trim()));
 
-    images.forEach((img) => data.append("images", img));
+      images.forEach((img) => data.append("images", img));
 
-    try {
-      await updateProduct({ id, formData: data }).unwrap();
-      navigate("/admin");
-    } catch (err) {
-      console.error("Update failed:", err);
+      try {
+        await updateProduct({ id, formData: data }).unwrap();
+        navigate("/admin");
+      } catch (err) {
+        console.error("Update failed:", err.status, err.data || err);
+      }
+
+    } else {
+      // No new images — send JSON body for a lightweight partial update
+      const body = {
+        name: form.name,
+        description: form.description,
+        // cast numeric fields so backend receives numbers
+        price: Number(form.price),
+        category: form.category,
+        stock: Number(form.stock) || 0,
+        featured: !!form.featured,
+        tags: form.tags ? form.tags.split(",").map((t) => t.trim()) : [],
+        colors: form.colors ? form.colors.split(",").map((c) => c.trim()) : [],
+        sizes: form.sizes ? form.sizes.split(",").map((s) => s.trim()) : [],
+      };
+
+      try {
+        await updateProduct({ id, body }).unwrap();
+        navigate("/admin");
+      } catch (err) {
+        console.error("Update failed:", err.status, err.data || err);
+      }
     }
   };
 
