@@ -1,95 +1,132 @@
 import PageHero from "../components/common/PageHero";
 import Container from "../components/layout/Container";
 import Button from "../components/ui/button";
-import Quantity from "../components/ui/quantity";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart, clearCart, updateQty } from "../store/slices/cartSlice";
+import { removeFromCart, updateQty } from "../store/slices/cartSlice";
 import {
   useCartQuery,
   useUpdateCartItemMutation,
   useRemoveCartItemMutation,
-  useClearCartRemoteMutation,
 } from "../services/api";
 import { Link } from "react-router-dom";
+import { Trash2 } from "lucide-react";
 
 export default function Cart() {
   const items = useSelector((s) => s.cart.items);
   const dispatch = useDispatch();
-  const { data: CART_DATA } = useCartQuery(undefined, { skip: !items.length });
+  // We use local items for display but keep remote in sync
+  const { data: _remoteData } = useCartQuery(undefined, { skip: !items.length });
   const [updateRemote] = useUpdateCartItemMutation();
   const [removeRemote] = useRemoveCartItemMutation();
-  const [clearRemote] = useClearCartRemoteMutation();
+
   const subtotal = items.reduce((sum, i) => sum + i.price * (i.qty || 1), 0);
+
   return (
     <>
       <PageHero title="Cart" />
       <Container className="py-12">
         {items.length === 0 ? (
-          <div className="text-center">
-            <p className="text-sm text-neutral-600">Your cart is empty.</p>
-            <Link to="/shop" className="mt-3 inline-block underline">
-              Browse products
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="text-xl font-medium text-neutral-900">Your cart is empty</div>
+            <Link to="/shop" className="mt-4 rounded-md border border-black px-6 py-2 transition-colors hover:bg-black hover:text-white">
+              Browse Products
             </Link>
           </div>
         ) : (
-          <div className="grid gap-12 md:grid-cols-3">
-            <div className="md:col-span-2 space-y-4">
-              {items.map((i) => (
-                <div key={i.id} className="flex items-center justify-between rounded-md border p-4">
-                  <div className="flex items-center gap-4">
-                    <div className="h-16 w-16 rounded-md bg-neutral-100" />
-                    <div>
-                      <div className="font-medium">{i.title}</div>
-                      <div className="text-sm text-neutral-600">Rs. {i.price.toLocaleString()}</div>
+          <div className="grid gap-8 lg:grid-cols-3">
+            {/* Cart Items Table */}
+            <div className="lg:col-span-2">
+              <div className="hidden md:grid grid-cols-12 gap-4 bg-[#F9F1E7] p-4 font-medium mb-4">
+                 <div className="col-span-6">Product</div>
+                 <div className="col-span-2">Price</div>
+                 <div className="col-span-2">Quantity</div>
+                 <div className="col-span-2">Subtotal</div>
+              </div>
+
+              <div className="space-y-6">
+                {items.map((i) => (
+                  <div key={i.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center border-b pb-4 md:border-none md:pb-0">
+                    <div className="md:col-span-6 flex items-center gap-4">
+                      <div className="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-[#F9F1E7]">
+                        {i.image ? (
+                           <img src={i.image} alt={i.title} className="h-full w-full object-cover" />
+                        ) : (
+                           <div className="h-full w-full flex items-center justify-center text-neutral-400 text-xs">No Image</div>
+                        )}
+                      </div>
+                      <div className="md:hidden font-medium">{i.title}</div>
+                      <div className="hidden md:block text-neutral-500">{i.title}</div>
+                    </div>
+
+                    <div className="flex justify-between md:block md:col-span-2">
+                        <span className="md:hidden text-neutral-500">Price: </span>
+                        <span className="text-neutral-500">Rs. {i.price.toLocaleString()}</span>
+                    </div>
+
+                    <div className="flex justify-between md:block md:col-span-2">
+                        <span className="md:hidden text-neutral-500">Quantity: </span>
+                        <div className="flex items-center rounded-md border border-neutral-300 w-fit">
+                            <button 
+                                className="px-2 py-1 hover:bg-neutral-100"
+                                onClick={async () => {
+                                    const newQty = Math.max(1, (i.qty || 1) - 1);
+                                    dispatch(updateQty({ id: i.id, qty: newQty }));
+                                    try { await updateRemote({ productId: i.id, qty: newQty }); } catch (err) { console.error(err); }
+                                }}
+                            >
+                                -
+                            </button>
+                            <span className="px-2 text-sm">{i.qty || 1}</span>
+                            <button 
+                                className="px-2 py-1 hover:bg-neutral-100"
+                                onClick={async () => {
+                                    const newQty = (i.qty || 1) + 1;
+                                    dispatch(updateQty({ id: i.id, qty: newQty }));
+                                    try { await updateRemote({ productId: i.id, qty: newQty }); } catch (err) { console.error(err); }
+                                }}
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-between items-center md:col-span-2">
+                         <span className="md:hidden text-neutral-500">Subtotal: </span>
+                         <span className="font-medium">Rs. {(i.price * (i.qty || 1)).toLocaleString()}</span>
+                         <button 
+                            className="text-[#B88E2F] hover:text-red-600 transition-colors ml-4"
+                            onClick={async () => {
+                                dispatch(removeFromCart(i.id));
+                                try { await removeRemote(i.id); } catch (err) { console.error(err); }
+                            }}
+                         >
+                            <Trash2 size={20} fill="currentColor" />
+                         </button>
                     </div>
                   </div>
-                  <Quantity
-                    value={i.qty || 1}
-                    onChange={async (q) => {
-                      dispatch(updateQty({ id: i.id, qty: q }));
-                      try {
-                        await updateRemote({ productId: i.id, qty: q });
-                      } catch (e) {
-                        console.error("Remote cart update failed", e);
-                      }
-                    }}
-                  />
-                  <Button
-                    variant="outline"
-                    onClick={async () => {
-                      dispatch(removeFromCart(i.id));
-                      try {
-                        await removeRemote(i.id);
-                      } catch (e) {
-                        console.error("Remote cart remove failed", e);
-                      }
-                    }}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              ))}
-              <Button
-                variant="outline"
-                onClick={async () => {
-                  dispatch(clearCart());
-                  try {
-                    await clearRemote();
-                  } catch (e) {
-                    console.error("Remote cart clear failed", e);
-                  }
-                }}
-              >
-                Clear Cart
-              </Button>
-            </div>
-            <div className="rounded-md border p-4">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>Rs. {subtotal.toLocaleString()}</span>
+                ))}
               </div>
+            </div>
+
+            {/* Cart Totals */}
+            <div className="h-fit bg-[#F9F1E7] p-8 pt-4">
+              <h2 className="text-xl font-semibold mb-8 text-center">Cart Totals</h2>
+              
+              <div className="space-y-4 mb-8">
+                  <div className="flex justify-between items-center">
+                      <span className="font-medium">Subtotal</span>
+                      <span className="text-neutral-500">Rs. {subtotal.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                      <span className="font-medium">Total</span>
+                      <span className="text-xl font-medium text-[#B88E2F]">Rs. {subtotal.toLocaleString()}</span>
+                  </div>
+              </div>
+
               <Link to="/checkout">
-                <Button className="mt-4 w-full">Checkout</Button>
+                <button className="w-full rounded-md border border-black py-3 text-black transition-colors hover:bg-black hover:text-white">
+                    Check Out
+                </button>
               </Link>
             </div>
           </div>

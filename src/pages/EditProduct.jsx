@@ -33,6 +33,7 @@ export default function EditProduct() {
   useEffect(() => {
     if (data?.success && data.data) {
       const p = data.data;
+      // eslint-disable-next-line
       setForm({
         name: p.name || "",
         description: p.description || "",

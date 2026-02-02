@@ -20,6 +20,10 @@ export const api = createApi({
       query: (body) => ({ url: "/auth/register", method: "POST", body }),
       invalidatesTags: ["Auth"],
     }),
+    updateProfile: builder.mutation({
+      query: (body) => ({ url: "/auth/profile", method: "PUT", body }),
+      invalidatesTags: ["Auth"],
+    }),
     me: builder.query({
       query: () => "/auth/me",
       providesTags: ["Auth"],
@@ -32,12 +36,15 @@ export const api = createApi({
     //   providesTags: ["Product"],
     // }),
     products: builder.query({
-  query: () => "/products",
-  providesTags: (result) =>
-    result?.data
-      ? [...result.data.map(({ _id }) => ({ type: "Product", id: _id })), { type: "Product", id: "LIST" }]
-      : [{ type: "Product", id: "LIST" }],
-}),
+      query: (params) => ({
+        url: "/products",
+        params,
+      }),
+      providesTags: (result) =>
+        result?.data
+          ? [...result.data.map(({ _id }) => ({ type: "Product", id: _id })), { type: "Product", id: "LIST" }]
+          : [{ type: "Product", id: "LIST" }],
+    }),
 
     productById: builder.query({
       query: (id) => `/products/${id}`,
@@ -123,6 +130,7 @@ adminUpdateProduct: builder.mutation({
 export const {
   useLoginMutation,
   useRegisterMutation,
+  useUpdateProfileMutation,
    useMeQuery,
   useProductsQuery,
   useProductByIdQuery,
