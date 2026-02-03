@@ -11,7 +11,7 @@ import { useLoginMutation, useRegisterMutation, useUpdateProfileMutation } from 
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
-import { User, Mail, Lock, LogOut } from "lucide-react";
+import { User, Mail, Lock, LogOut, Camera } from "lucide-react";
 
 // Schemas
 const loginSchema = yup.object({
@@ -30,6 +30,8 @@ const profileSchema = yup.object({
   email: yup.string().email("Invalid email").required("Email is required"),
   password: yup.string().test('len', 'Password must be at least 6 characters', val => !val || val.length >= 6),
 });
+
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 
 export default function Account() {
   const dispatch = useDispatch();
@@ -173,6 +175,9 @@ function ProfileView({ user }) {
   const navigate = useNavigate();
   const [updateProfile, { isLoading }] = useUpdateProfileMutation();
   
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewURL, setPreviewURL] = useState(null);
+
   const form = useForm({
     resolver: yupResolver(profileSchema),
     defaultValues: {
@@ -189,19 +194,36 @@ function ProfileView({ user }) {
         email: user?.email || "",
         password: "",
     });
+    // Reset file selection on user change/refresh
+    setSelectedFile(null);
+    setPreviewURL(null);
   }, [user, form]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast.error("File size too large (max 5MB)");
+        return;
+      }
+      setSelectedFile(file);
+      setPreviewURL(URL.createObjectURL(file));
+    }
+  };
 
   const onSubmit = async (v) => {
     try {
-      const payload = {
-        name: v.name,
-        email: v.email,
-      };
+      const formData = new FormData();
+      formData.append("name", v.name);
+      formData.append("email", v.email);
       if (v.password) {
-        payload.password = v.password;
+        formData.append("password", v.password);
+      }
+      if (selectedFile) {
+        formData.append("avatar", selectedFile);
       }
       
-      const data = await updateProfile(payload).unwrap();
+      const data = await updateProfile(formData).unwrap();
       
       // If backend returns the updated user object directly or in a property
       const updatedUser = data.user || data; 
@@ -213,6 +235,8 @@ function ProfileView({ user }) {
       
       toast.success("Profile updated successfully");
       form.setValue("password", ""); // Clear password field
+      // Don't clear previewURL immediately so user sees the new image, 
+      // but useEffect will handle it if user object updates.
     } catch (e) {
       console.error("Update failed", e);
       toast.error(e?.data?.message || "Failed to update profile");
@@ -233,8 +257,30 @@ function ProfileView({ user }) {
             {/* Sidebar / Info Card */}
             <div className="md:col-span-1">
                 <div className="bg-white border rounded-lg p-6 text-center space-y-4 shadow-sm">
-                    <div className="h-24 w-24 mx-auto bg-neutral-100 rounded-full flex items-center justify-center text-neutral-400">
-                        <User size={48} />
+                    <div className="relative h-24 w-24 mx-auto">
+                        <div className="h-24 w-24 rounded-full overflow-hidden bg-neutral-100 flex items-center justify-center border">
+                            {previewURL ? (
+                                <img src={previewURL} alt="Preview" className="h-full w-full object-cover" />
+                            ) : user.avatar ? (
+                                <img src={`${BASE_URL}${user.avatar}`} alt={user.name} className="h-full w-full object-cover" />
+                            ) : (
+                                <User size={48} className="text-neutral-400" />
+                            )}
+                        </div>
+                        <label 
+                            htmlFor="avatar-upload" 
+                            className="absolute bottom-0 right-0 bg-black text-white p-1.5 rounded-full cursor-pointer hover:bg-neutral-800 transition-colors shadow-sm"
+                            title="Change Profile Picture"
+                        >
+                            <Camera size={14} />
+                            <input 
+                                type="file" 
+                                id="avatar-upload" 
+                                className="hidden" 
+                                accept="image/*"
+                                onChange={handleFileChange}
+                            />
+                        </label>
                     </div>
                     <div>
                         <h3 className="text-xl font-bold">{user.name}</h3>

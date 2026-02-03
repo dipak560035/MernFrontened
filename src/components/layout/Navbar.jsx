@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef, useEffect } from "react";
 import { logout } from "../../store/slices/authSlice";
 
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
+
 function NavItem({ to, label }) {
   return (
     <NavLink
@@ -96,7 +98,15 @@ export default function Navbar() {
                   onClick={() => setDropdownOpen((prev) => !prev)}
                   className="flex items-center gap-1 rounded-full p-2 hover:bg-neutral-100"
                 >
-                  <User className="h-6 w-6" />
+                  {user?.avatar ? (
+                      <img 
+                          src={`${BASE_URL}${user.avatar}`} 
+                          alt="Avatar" 
+                          className="h-8 w-8 rounded-full object-cover border" 
+                      />
+                  ) : (
+                      <User className="h-6 w-6" />
+                  )}
                   <span className="hidden md:inline text-sm font-medium ml-1">{user?.name || "User"}</span>
                   <ChevronDown className="h-4 w-4" />
                 </button>
