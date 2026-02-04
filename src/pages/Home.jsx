@@ -12,34 +12,34 @@ export default function Home() {
     (Array.isArray(data?.data) && data.data) ||
     (Array.isArray(data) && data) ||
     [
-      {
-        id: 1,
-        title: "Rocket single seater",
-        price: 250000,
-        image:
-          "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
-      },
-      {
-        id: 2,
-        title: "Outdoor bar table and stool",
-        price: 25000,
-        image:
-          "https://images.unsplash.com/photo-1582582429416-d684482636c0?q=80&w=1200&auto=format&fit=crop",
-      },
-      {
-        id: 3,
-        title: "Granite dining table",
-        price: 100000,
-        image:
-          "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
-      },
-      {
-        id: 4,
-        title: "Plain console with teak mirror",
-        price: 25000,
-        image:
-          "https://images.unsplash.com/photo-1540574163026-643ea20ade25?q=80&w=1200&auto=format&fit=crop",
-      },
+      // {
+      //   id: 1,
+      //   title: "Rocket single seater",
+      //   price: 250000,
+      //   image:
+      //     "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
+      // },
+      // {
+      //   id: 2,
+      //   title: "Outdoor bar table and stool",
+      //   price: 25000,
+      //   image:
+      //     "https://images.unsplash.com/photo-1582582429416-d684482636c0?q=80&w=1200&auto=format&fit=crop",
+      // },
+      // {
+      //   id: 3,
+      //   title: "Granite dining table",
+      //   price: 100000,
+      //   image:
+      //     "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
+      // },
+      // {
+      //   id: 4,
+      //   title: "Plain console with teak mirror",
+      //   price: 25000,
+      //   image:
+      //     "https://images.unsplash.com/photo-1540574163026-643ea20ade25?q=80&w=1200&auto=format&fit=crop",
+      // },
     ];
 
   return (
@@ -49,9 +49,14 @@ export default function Home() {
           <div className="grid items-center gap-8 md:grid-cols-2">
             <div>
               <h1 className="text-4xl font-semibold">Rocket single seater</h1>
-              <Button className="mt-6" as="a" href="/shop">
+              {/* <Button  className="mt-6" as="a" href="/shop">
                 Shop Now
-              </Button>
+              </Button> */}
+     <Link to="/shop">
+  <Button className="mt-6">
+    Shop Now
+  </Button>
+</Link>
             </div>
             <div className="flex justify-end">
               <img
@@ -135,12 +140,27 @@ export default function Home() {
             <div>
               <p className="text-sm text-neutral-600">New Arrivals</p>
               <h3 className="mt-2 text-2xl font-semibold">Asgaard sofa</h3>
-              <Button className="mt-4" as="a" href="/product/1">
+              {/* <Button className="mt-4" as="a" href="/product/1">
                 Order Now
-              </Button>
+              </Button> */}
+              
+ 
+
+<Link to="/product/697dd4517a3ab728c6fdc5eb">
+  <Button className="mt-6">
+    Order Now
+  </Button>
+</Link>
+
+
+
+
+
+
+
             </div>
             <img
-              src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop"
+              src="https://images.unsplash.com/photo-1684165610413-2401399e0e59?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHNvZmF8ZW58MHx8MHx8fDA%3D"
               alt="Asgaard sofa"
               className="h-56 w-56 rounded-lg object-cover shadow-soft md:h-72 md:w-72"
             />
