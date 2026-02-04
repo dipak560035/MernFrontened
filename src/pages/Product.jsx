@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Container from "../components/layout/Container";
 import Button from "../components/ui/button";
@@ -26,7 +26,9 @@ export default function Product() {
   const { data, isLoading } = useProductByIdQuery(id);
   const { data: relatedData } = useProductsQuery({ limit: 4 });
   const [addRemote] = useAddToCartMutation();
-
+  // useEffect(() => {
+  //   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  // }, [id]);
   const fallback = {
     id,
     title: "Asgaard sofa",

@@ -109,11 +109,14 @@ import store from "./store";
 import "./index.css";
 import AddProduct from "./pages/AddProduct.jsx";
 import EditProduct from "./pages/EditProduct.jsx";
+import { Scroll } from "lucide-react";
+import ScrollToTop from "./components/common/ScrollToTop.jsx";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
+      <ScrollToTop />
         <Routes>
           <Route element={<App />}>
             {/* public routes */}
