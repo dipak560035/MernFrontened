@@ -9,7 +9,7 @@ export default function ScrollToTop() {
       top: 0,
       left: 0,
       behavior: "smooth",
-        block: "start" // or "smooth" if you want animation
+        block: "start"
     });
   }, [pathname]);
 
