@@ -17,6 +17,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 export default function Product() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const token = useSelector((s) => s.auth.token);
   const role = useSelector((s) => s.auth.role);
   const wishlist = useSelector((s) => s.wishlist.items);
   const [activeTab, setActiveTab] = useState("desc");
@@ -69,12 +70,18 @@ export default function Product() {
       toast.error("Admins cannot purchase products");
       return;
     }
-    dispatch(addToCart({ id: p.id, title: p.title, price: p.price, image: p.images[0], qty }));
-    try {
-      await addRemote({ productId: p.id, qty });
-      toast.success("Added to cart");
-    } catch (err) {
-      toast.error(err?.data?.message || "Failed to add to cart");
+
+    if (token) {
+        try {
+            await addRemote({ productId: p.id, qty }).unwrap();
+            toast.success("Added to cart");
+        } catch (err) {
+            console.error(err);
+            toast.error(err?.data?.message || "Failed to add to cart");
+        }
+    } else {
+        dispatch(addToCart({ id: p.id, title: p.title, price: p.price, image: p.images[0], qty }));
+        toast.success("Added to cart");
     }
   };
 
