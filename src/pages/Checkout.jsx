@@ -4,14 +4,19 @@ import Input from "../components/ui/input";
 import Button from "../components/ui/button";
 import { useSelector, useDispatch } from "react-redux";
 import { Toaster, toast } from "sonner";
-import { useCreateOrderMutation } from "../services/api";
+import { useCreateOrderMutation, useAddToCartMutation } from "../services/api";
 import { clearCart } from "../store/slices/cartSlice";
+import { useClearCartRemoteMutation } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 export default function Checkout() {
   const items = useSelector((s) => s.cart.items);
   const total = items.reduce((sum, i) => sum + i.price * (i.qty || 1), 0);
   const dispatch = useDispatch();
   const [createOrder, { isLoading }] = useCreateOrderMutation();
+  const [clearRemote] = useClearCartRemoteMutation();
+  const navigate = useNavigate();
+  const [addRemote] = useAddToCartMutation();
 
   const placeOrder = async (e) => {
     e.preventDefault();
@@ -29,13 +34,25 @@ export default function Checkout() {
         email: form.get("email"),
       },
     };
+    // Basic required field check to avoid server-side validation issues
+    if (!payload.shippingAddress.firstName || !payload.shippingAddress.lastName || !payload.shippingAddress.address || !payload.shippingAddress.city || !payload.shippingAddress.phone) {
+      toast.error("Please fill in required billing details");
+      return;
+    }
     try {
-      await createOrder(payload).unwrap();
+      const paymentMethod = form.get("paymentMethod") || "bank";
+      await createOrder({ ...payload, paymentMethod }).unwrap();
+      try {
+        await clearRemote().unwrap();
+      } catch (err) {
+        console.warn("Remote cart clear failed", err);
+      }
       dispatch(clearCart());
       toast.success("Order placed");
+      navigate("/orders");
     } catch (err) {
       console.error("Order failed", err);
-      toast.error("Could not place order");
+      toast.error(err?.data?.message || "Could not place order");
     }
   };
 
@@ -79,14 +96,20 @@ export default function Checkout() {
                 <span>Rs. {total.toLocaleString()}</span>
               </div>
               <div className="mt-6 space-y-2 text-sm">
-                <label className="flex items-center gap-2">
-                  <input type="radio" defaultChecked />
-                  Direct Bank Transfer
-                </label>
-                <label className="flex items-center gap-2">
-                  <input type="radio" />
-                  Cash on Delivery
-                </label>
+            <label className="flex items-center gap-2">
+              <input type="radio" name="paymentMethod" value="bank" defaultChecked />
+              Direct Bank Transfer
+            </label>
+            <div className="ml-6 text-neutral-500">
+              We will contact you with bank details to complete payment securely.
+            </div>
+            <label className="flex items-center gap-2 mt-2">
+              <input type="radio" name="paymentMethod" value="cod" />
+              Cash on Delivery
+            </label>
+            <div className="ml-6 text-neutral-500">
+              Pay with cash upon delivery at your shipping address.
+            </div>
               </div>
             </div>
           </div>

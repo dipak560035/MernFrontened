@@ -120,6 +120,13 @@ export default function Navbar() {
                     >
                       Profile
                     </Link>
+                    <Link
+                      to="/orders"
+                      className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      Orders
+                    </Link>
                      
                     {role === "admin" && (
                       <Link
@@ -128,6 +135,15 @@ export default function Navbar() {
                         onClick={() => setDropdownOpen(false)}
                       >
                         Admin Panel
+                      </Link>
+                    )}
+                    {role === "admin" && (
+                      <Link
+                        to="/admin/orders"
+                        className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        Manage Orders
                       </Link>
                     )}
                     <button
