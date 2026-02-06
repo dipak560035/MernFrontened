@@ -78,6 +78,26 @@ export const api = createApi({
       query: () => "/orders",
       providesTags: ["Order"],
     }),
+    orderById: builder.query({
+      query: (id) => `/orders/${id}`,
+      providesTags: (_res, _err, id) => [{ type: "Order", id }],
+    }),
+    cancelOrder: builder.mutation({
+      query: (id) => ({ url: `/orders/${id}/cancel`, method: "PATCH" }),
+      invalidatesTags: (_res, _err, id) => [{ type: "Order", id }, "Order"],
+    }),
+    adminAllOrders: builder.query({
+      query: () => "/orders/admin/all",
+      providesTags: ["Order"],
+    }),
+    adminUpdateOrderStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/orders/admin/${id}`,
+        method: "PUT",
+        body: { status },
+      }),
+      invalidatesTags: (_res, _err, { id }) => [{ type: "Order", id }, "Order"],
+    }),
     adminCreateProduct: builder.mutation({
       query: (body) => ({ url: "/products", method: "POST", body }),
       invalidatesTags: ["Product"],
@@ -141,6 +161,10 @@ export const {
   useClearCartRemoteMutation,
   useCreateOrderMutation,
   useOrdersQuery,
+  useOrderByIdQuery,
+  useCancelOrderMutation,
+  useAdminAllOrdersQuery,
+  useAdminUpdateOrderStatusMutation,
   useAdminCreateProductMutation,
   useAdminUpdateProductMutation,
   useAdminDeleteProductMutation,

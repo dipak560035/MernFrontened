@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useCartQuery } from "../../services/api";
+import { useCartQuery, useAddToCartMutation } from "../../services/api";
 import { setCart } from "../../store/slices/cartSlice";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
@@ -8,11 +8,37 @@ const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 export default function CartSync() {
   const dispatch = useDispatch();
   const token = useSelector((s) => s.auth.token);
+  const localItems = useSelector((s) => s.cart.items);
+  const [addRemote] = useAddToCartMutation();
+  const mergedForToken = useRef(null);
   
   // Only query if we have a token
   const { data, isLoading } = useCartQuery(undefined, {
     skip: !token,
   });
+
+  // Merge guest cart into remote when user logs in
+  useEffect(() => {
+    if (!token) {
+      mergedForToken.current = null;
+      return;
+    }
+    if (mergedForToken.current === token) return;
+    if (localItems && localItems.length > 0) {
+      (async () => {
+        try {
+          for (const item of localItems) {
+            await addRemote({ productId: item.id, qty: item.qty || 1 }).unwrap();
+          }
+          mergedForToken.current = token;
+        } catch (err) {
+          console.warn("Cart merge failed", err);
+        }
+      })();
+    } else {
+      mergedForToken.current = token;
+    }
+  }, [token, localItems, addRemote]);
 
   useEffect(() => {
     if (token && data && !isLoading) {

@@ -31,6 +31,9 @@ export default function ProductCard({ p }) {
       return;
     }
 
+    // Always update local cart for consistent UI
+    dispatch(addToCart({ id: p.id, title: p.title, price: p.price, image: p.image, qty: 1 }));
+
     if (token) {
         try {
             await addRemote({ productId: p.id, qty: 1 }).unwrap();
@@ -40,7 +43,6 @@ export default function ProductCard({ p }) {
             toast.error(err?.data?.message || "Failed to add to cart");
         }
     } else {
-        dispatch(addToCart({ id: p.id, title: p.title, price: p.price, image: p.image, qty: 1 }));
         toast.success("Added to cart");
     }
   };

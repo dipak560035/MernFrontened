@@ -111,6 +111,9 @@ import AddProduct from "./pages/AddProduct.jsx";
 import EditProduct from "./pages/EditProduct.jsx";
 import { Scroll } from "lucide-react";
 import ScrollToTop from "./components/common/ScrollToTop.jsx";
+import Orders from "./pages/Orders.jsx";
+import OrderDetails from "./pages/OrderDetails.jsx";
+import AdminOrders from "./pages/AdminOrders.jsx";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -130,6 +133,7 @@ createRoot(document.getElementById("root")).render(
 <Route path="admin" element={<Protected admin><Admin /></Protected>} />
 <Route path="admin/add" element={<Protected admin><AddProduct /></Protected>} />
 <Route path="admin/edit/:id" element={<Protected admin><EditProduct /></Protected>} />
+<Route path="admin/orders" element={<Protected admin><AdminOrders /></Protected>} />
 
             {/* user protected routes */}
             <Route
@@ -145,6 +149,22 @@ createRoot(document.getElementById("root")).render(
               element={
                 <Protected>
                   <Checkout />
+                </Protected>
+              }
+            />
+            <Route
+              path="orders"
+              element={
+                <Protected>
+                  <Orders />
+                </Protected>
+              }
+            />
+            <Route
+              path="orders/:id"
+              element={
+                <Protected>
+                  <OrderDetails />
                 </Protected>
               }
             />
