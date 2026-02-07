@@ -33,18 +33,19 @@ export default function EditProduct() {
   useEffect(() => {
     if (data?.success && data.data) {
       const p = data.data;
-      // eslint-disable-next-line
-      setForm({
-        name: p.name || "",
-        description: p.description || "",
-        price: p.price || "",
-        category: p.category || "",
-        tags: p.tags?.join(",") || "",
-        stock: p.stock || "",
-        colors: p.colors?.join(",") || "",
-        sizes: p.sizes?.join(",") || "",
-        featured: p.featured || false,
-      });
+      setTimeout(() => {
+        setForm({
+          name: p.name || "",
+          description: p.description || "",
+          price: p.price || "",
+          category: p.category || "",
+          tags: p.tags?.join(",") || "",
+          stock: p.stock || "",
+          colors: p.colors?.join(",") || "",
+          sizes: p.sizes?.join(",") || "",
+          featured: p.featured || false,
+        });
+      }, 0);
     }
   }, [data]);
 

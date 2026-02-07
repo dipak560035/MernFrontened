@@ -23,8 +23,8 @@ export default function CartSync() {
       // Backend: { items: [{ product: {...}, qty: 1 }] }
       // Frontend: [{ id, title, price, image, qty }]
       
-      const itemsSrc = (data?.data?.items || data?.items || []);
-      const cartItems = itemsSrc.map((item) => {
+      const src = (data?.data?.items || data?.items || []);
+      const cartItems = src.map((item) => {
         const p = item.product || {};
         const image = p.images && p.images.length > 0 
           ? `${BASE_URL}${p.images[0].url}` 

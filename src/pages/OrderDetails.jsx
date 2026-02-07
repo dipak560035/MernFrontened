@@ -2,6 +2,7 @@ import PageHero from "../components/common/PageHero";
 import Container from "../components/layout/Container";
 import { useParams } from "react-router-dom";
 import { useOrderByIdQuery } from "../services/api";
+import { format } from "date-fns";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 
@@ -32,7 +33,7 @@ export default function OrderDetails() {
                 </div>
                 <div className="space-y-1">
                   <div className="text-sm text-neutral-500">Placed</div>
-                  <div className="font-medium">{order.createdAt ? new Date(order.createdAt).toLocaleString() : "-"}</div>
+                  <div className="font-medium">{order.createdAt ? format(new Date(order.createdAt), "PPpp") : "-"}</div>
                 </div>
                 <div className="space-y-1">
                   <div className="text-sm text-neutral-500">Status</div>

@@ -247,6 +247,10 @@ function ProfileView({ user }) {
 
   const handleLogout = () => {
     dispatch(logout());
+    try {
+      // ensure guest storage cleared
+      localStorage.removeItem("cart");
+    } catch { void 0; }
     navigate("/account");
     toast.success("Logged out");
   };

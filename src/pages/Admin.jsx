@@ -5,12 +5,30 @@ import Container from "../components/layout/Container";
 import Button from "../components/ui/button";
 import { Trash2, Edit, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 
 export default function Admin() {
-  const { data: productsResponse, isLoading } = useProductsQuery();
-  const products = productsResponse?.data || [];
+  const [q, setQ] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQ(q.trim()), 300);
+    return () => clearTimeout(t);
+  }, [q]);
+  const { data: productsResponse, isLoading } = useProductsQuery(debouncedQ ? { q: debouncedQ } : undefined);
+  const all = productsResponse?.data || [];
+  const searchLower = debouncedQ.toLowerCase();
+  const products = searchLower
+    ? all.filter((p) => {
+        const fields = [
+          p.name,
+          p.category,
+          ...(Array.isArray(p.tags) ? p.tags : []),
+        ].filter(Boolean).map((x) => String(x).toLowerCase());
+        return fields.some((f) => f.includes(searchLower));
+      })
+    : all;
   const [deleteProduct] = useAdminDeleteProductMutation();
   const navigate = useNavigate();
 
@@ -31,13 +49,21 @@ export default function Admin() {
             <h1 className="text-3xl font-semibold">Admin Panel</h1>
             <div className="mt-2 text-sm text-neutral-600">Manage Products</div>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => navigate("/admin/add")}
-            className="mt-4 md:mt-0 flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" /> Add Product
-          </Button>
+          <div className="flex items-center gap-3">
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search products…"
+              className="h-10 w-64 rounded-md bg-white px-3 text-neutral-700 outline-none placeholder:text-neutral-400"
+            />
+            <Button
+              variant="outline"
+              onClick={() => navigate("/admin/add")}
+              className="mt-4 md:mt-0 flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" /> Add Product
+            </Button>
+          </div>
         </Container>
       </section>
 

@@ -1,6 +1,17 @@
+const getKey = () => {
+  try {
+    const rawUser = localStorage.getItem("user");
+    const u = rawUser ? JSON.parse(rawUser) : null;
+    const id = u?._id || "guest";
+    return `wishlist:${id}`;
+  } catch {
+    return "wishlist:guest";
+  }
+};
+
 const initialWishlist = (() => {
   try {
-    const raw = localStorage.getItem("wishlist");
+    const raw = localStorage.getItem(getKey());
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
@@ -23,19 +34,33 @@ export default function wishlistReducer(state = initialState, action) {
         items = [...state.items, item];
       }
       try {
-        localStorage.setItem("wishlist", JSON.stringify(items));
-      } catch (err) {
-        console.error("Failed to save wishlist", err);
-      }
+        localStorage.setItem(getKey(), JSON.stringify(items));
+      } catch { void 0; }
       return { ...state, items };
     }
     case "wishlist/clear": {
       try {
-        localStorage.removeItem("wishlist");
-      } catch (err) {
-        console.error("Failed to clear wishlist", err);
-      }
+        localStorage.removeItem(getKey());
+      } catch { void 0; }
       return { ...state, items: [] };
+    }
+    case "auth/loginSuccess": {
+      try {
+        const raw = localStorage.getItem(getKey());
+        const items = raw ? JSON.parse(raw) : [];
+        return { ...state, items };
+      } catch {
+        return { ...state, items: [] };
+      }
+    }
+    case "auth/logout": {
+      try {
+        const raw = localStorage.getItem(getKey());
+        const items = raw ? JSON.parse(raw) : [];
+        return { ...state, items };
+      } catch {
+        return { ...state, items: [] };
+      }
     }
     default:
       return state;

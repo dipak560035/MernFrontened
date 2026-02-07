@@ -357,46 +357,60 @@
 import PageHero from "../components/common/PageHero";
 import Container from "../components/layout/Container";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart, updateQty } from "../store/slices/cartSlice";
+import { removeFromCart, updateQty, setCart } from "../store/slices/cartSlice";
 import { useCartQuery, useUpdateCartItemMutation, useRemoveCartItemMutation } from "../services/api";
 import { Link } from "react-router-dom";
 import { Trash2 } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useRef } from "react";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 
 export default function Cart() {
   const dispatch = useDispatch();
-  const token = useSelector((s) => s.auth.token);
-  const localItems = useSelector((s) => s.cart.items);
+  const items = useSelector((s) => s.cart.items);
 
-  // Fetch backend cart only when logged in
-  const { data: remoteCart, isFetching } = useCartQuery(undefined, { skip: !token });
+  // Fetch backend cart
+  const { data: remoteCart, isLoading } = useCartQuery();
   const [updateRemote] = useUpdateCartItemMutation();
   const [removeRemote] = useRemoveCartItemMutation();
 
-  const viewItems = useMemo(() => {
-    if (token && remoteCart?.data?.items) {
-      return remoteCart.data.items.map((i) => ({
-        id: i.product?._id,
-        title: i.product?.name,
-        price: i.product?.price,
-        image: i.product?.images?.[0]?.url ? `${BASE_URL}${i.product.images[0].url}` : "",
+  const hasSynced = useRef(false); // ensures one-time merge
+
+  useEffect(() => {
+    if (!hasSynced.current && remoteCart?.data) {
+      hasSynced.current = true;
+
+      // Map backend items
+      const backendItems = remoteCart.data.items.map((i) => ({
+        id: i.product._id,
+        title: i.product.name,
+        price: i.product.price,
+        image: i.product.images?.[0]?.url ? `${BASE_URL}${i.product.images[0].url}` : "",
         qty: i.qty,
       }));
-    }
-    return localItems;
-  }, [token, remoteCart, localItems]);
 
-  const subtotal = viewItems.reduce((sum, i) => sum + i.price * (i.qty || 1), 0);
+      // Merge with local items
+      const localItems = items.slice(); // copy of current Redux items
+      const merged = [...backendItems];
+
+      localItems.forEach((localItem) => {
+        const exists = merged.find((i) => i.id === localItem.id);
+        if (!exists) merged.push(localItem); // add only if not in backend
+      });
+
+      dispatch(setCart(merged));
+    }
+  }, [remoteCart, dispatch, items]);
+
+  const subtotal = items.reduce((sum, i) => sum + i.price * (i.qty || 1), 0);
 
   return (
     <>
       <PageHero title="Cart" />
       <Container className="py-12">
-        {token && isFetching ? (
+        {isLoading ? (
           <div className="text-center py-12">Loading...</div>
-        ) : viewItems.length === 0 ? (
+        ) : items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
             <div className="text-xl font-medium text-neutral-900">Your cart is empty</div>
             <Link to="/shop" className="mt-4 rounded-md border border-black px-6 py-2 transition-colors hover:bg-black hover:text-white">
@@ -415,7 +429,7 @@ export default function Cart() {
               </div>
 
               <div className="space-y-6">
-                {viewItems.map((i) => (
+                {items.map((i) => (
                   <div key={i.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center border-b pb-4 md:border-none md:pb-0">
                     <div className="md:col-span-6 flex items-center gap-4">
                       <div className="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-[#F9F1E7]">
@@ -441,10 +455,11 @@ export default function Cart() {
                           className="px-2 py-1 hover:bg-neutral-100"
                           onClick={async () => {
                             const newQty = Math.max(1, (i.qty || 1) - 1);
-                            if (token) {
-                              try { await updateRemote({ productId: i.id, qty: newQty }).unwrap(); } catch (err) { console.error(err); }
-                            } else {
-                              dispatch(updateQty({ id: i.id, qty: newQty }));
+                            dispatch(updateQty({ id: i.id, qty: newQty }));
+                            try {
+                              await updateRemote({ productId: i.id, qty: newQty }).unwrap();
+                            } catch (err) {
+                              console.error("Update cart failed", err);
                             }
                           }}
                         >
@@ -455,10 +470,11 @@ export default function Cart() {
                           className="px-2 py-1 hover:bg-neutral-100"
                           onClick={async () => {
                             const newQty = (i.qty || 1) + 1;
-                            if (token) {
-                              try { await updateRemote({ productId: i.id, qty: newQty }).unwrap(); } catch (err) { console.error(err); }
-                            } else {
-                              dispatch(updateQty({ id: i.id, qty: newQty }));
+                            dispatch(updateQty({ id: i.id, qty: newQty }));
+                            try {
+                              await updateRemote({ productId: i.id, qty: newQty }).unwrap();
+                            } catch (err) {
+                              console.error("Update cart failed", err);
                             }
                           }}
                         >
@@ -473,11 +489,8 @@ export default function Cart() {
                       <button
                         className="text-[#B88E2F] hover:text-red-600 transition-colors ml-4"
                         onClick={async () => {
-                          if (token) {
-                            try { await removeRemote(i.id).unwrap(); } catch (err) { console.error(err); }
-                          } else {
-                            dispatch(removeFromCart(i.id));
-                          }
+                          dispatch(removeFromCart(i.id));
+                          try { await removeRemote(i.id); } catch (err) { console.error(err); }
                         }}
                       >
                         <Trash2 size={20} fill="currentColor" />

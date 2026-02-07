@@ -3,17 +3,12 @@ import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import "./index.css";
 import { Toaster } from "sonner";
-import ErrorBoundary from "./components/common/ErrorBoundary";
-import CartSync from "./components/common/CartSync";
 
 export default function App() {
   return (
     <div className="min-h-screen">
-      <CartSync />
       <Navbar />
-      <ErrorBoundary>
-        <Outlet />
-      </ErrorBoundary>
+      <Outlet />
       <Footer />
       <Toaster richColors />
     </div>
