@@ -12,6 +12,7 @@ export default function ProductCard({ p }) {
   const token = useSelector((s) => s.auth.token);
   const role = useSelector((s) => s.auth.role);
   const inWishlist = wishlist.some((i) => i.id === p.id);
+  const outOfStock = typeof p.stock === "number" && p.stock <= 0;
   
   const [addRemote] = useAddToCartMutation();
 
@@ -30,9 +31,10 @@ export default function ProductCard({ p }) {
       toast.error("Admins cannot purchase products");
       return;
     }
-
-    // Always update local cart for consistent UI
-    dispatch(addToCart({ id: p.id, title: p.title, price: p.price, image: p.image, qty: 1 }));
+    if (outOfStock) {
+      toast.error("Product is out of stock");
+      return;
+    }
 
     if (token) {
         try {
@@ -43,6 +45,7 @@ export default function ProductCard({ p }) {
             toast.error(err?.data?.message || "Failed to add to cart");
         }
     } else {
+        dispatch(addToCart({ id: p.id, title: p.title, price: p.price, image: p.image, qty: 1 }));
         toast.success("Added to cart");
     }
   };
@@ -59,12 +62,19 @@ export default function ProductCard({ p }) {
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
             <button
             onClick={handleAddToCart}
-            className="rounded-full bg-white p-3 shadow-md transition-transform hover:scale-110 hover:bg-black hover:text-white text-neutral-900"
+            className={`rounded-full p-3 shadow-md transition-transform hover:scale-110 ${outOfStock ? "bg-neutral-300 text-neutral-500 cursor-not-allowed" : "bg-white hover:bg-black hover:text-white text-neutral-900"}`}
             title="Add to Cart"
+            disabled={outOfStock}
             >
             <ShoppingCart className="h-5 w-5" />
             </button>
         </div>
+
+        {outOfStock && (
+          <div className="absolute left-2 top-2 rounded bg-red-600 px-2 py-1 text-xs font-medium text-white">
+            Out of stock
+          </div>
+        )}
 
         <button
           onClick={handleWishlist}

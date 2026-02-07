@@ -195,8 +195,10 @@ function ProfileView({ user }) {
         password: "",
     });
     // Reset file selection on user change/refresh
-    setSelectedFile(null);
-    setPreviewURL(null);
+    setTimeout(() => {
+      setSelectedFile(null);
+      setPreviewURL(null);
+    }, 0);
   }, [user, form]);
 
   const handleFileChange = (e) => {

@@ -1,167 +1,3 @@
-// import PageHero from "../components/common/PageHero";
-// import Container from "../components/layout/Container";
-// import Input from "../components/ui/input";
-// import Button from "../components/ui/button";
-// import { useSelector, useDispatch } from "react-redux";
-// import { Toaster, toast } from "sonner";
-// import { useCreateOrderMutation, useAddToCartMutation } from "../services/api";
-// import { clearCart } from "../store/slices/cartSlice";
-// import { useClearCartRemoteMutation } from "../services/api";
-// import { useNavigate } from "react-router-dom";
-
-// export default function Checkout() {
-//   const items = useSelector((s) => s.cart.items);
-//   const total = items.reduce((sum, i) => sum + i.price * (i.qty || 1), 0);
-//   const dispatch = useDispatch();
-//   const [createOrder, { isLoading }] = useCreateOrderMutation();
-//   const [clearRemote] = useClearCartRemoteMutation();
-//   const navigate = useNavigate();
-//   const [addRemote] = useAddToCartMutation();
-
-//   const placeOrder = async (e) => {
-//     e.preventDefault();
-//     const form = new FormData(e.currentTarget);
-//     const payload = {
-//       shippingAddress: {
-//         firstName: form.get("firstName"),
-//         lastName: form.get("lastName"),
-//         country: form.get("country"),
-//         address: form.get("address"),
-//         city: form.get("city"),
-//         province: form.get("province"),
-//         zip: form.get("zip"),
-//         phone: form.get("phone"),
-//         email: form.get("email"),
-//       },
-//     };
-//     // Basic required field check to avoid server-side validation issues
-//     if (!payload.shippingAddress.firstName || !payload.shippingAddress.lastName || !payload.shippingAddress.address || !payload.shippingAddress.city || !payload.shippingAddress.phone) {
-//       toast.error("Please fill in required billing details");
-//       return;
-//     }
-//     try {
-//       const paymentMethod = form.get("paymentMethod") || "bank";
-//       await createOrder({ ...payload, paymentMethod }).unwrap();
-//       try {
-//         await clearRemote().unwrap();
-//       } catch (err) {
-//         console.warn("Remote cart clear failed", err);
-//       }
-//       dispatch(clearCart());
-//       toast.success("Order placed");
-//       navigate("/orders");
-//     } catch (err) {
-//       console.error("Order failed", err);
-//       toast.error(err?.data?.message || "Could not place order");
-//     }
-//   };
-
-//   return (
-//     <>
-//       <PageHero title="Checkout" />
-//       <Container className="py-12">
-//         <div className="grid gap-12 md:grid-cols-2">
-//           <form className="space-y-4" onSubmit={placeOrder}>
-//             <h3 className="text-xl font-semibold">Billing details</h3>
-//             <div className="grid grid-cols-2 gap-4">
-//               <Input name="firstName" placeholder="First Name" />
-//               <Input name="lastName" placeholder="Last Name" />
-//               <Input className="col-span-2" name="company" placeholder="Company Name (Optional)" />
-//               <Input className="col-span-2" name="country" placeholder="Country / Region" />
-//               <Input className="col-span-2" name="address" placeholder="Street address" />
-//               <Input name="city" placeholder="Town / City" />
-//               <Input name="province" placeholder="Province" />
-//               <Input name="zip" placeholder="ZIP code" />
-//               <Input name="phone" placeholder="Phone" />
-//               <Input className="col-span-2" name="email" placeholder="Email address" />
-//               <Input className="col-span-2" placeholder="Additional Information" />
-//             </div>
-//             <Button type="submit" disabled={isLoading}>
-//               {isLoading ? "Placing order..." : "Place order"}
-//             </Button>
-//           </form>
-//           <div>
-//             <h3 className="text-xl font-semibold">Product</h3>
-//             <div className="mt-4 space-y-3">
-//               {items.map((i) => (
-//                 <div key={i.id} className="flex justify-between text-sm">
-//                   <span>
-//                     {i.title} × {i.qty || 1}
-//                   </span>
-//                   <span>Rs. {(i.price * (i.qty || 1)).toLocaleString()}</span>
-//                 </div>
-//               ))}
-//               <div className="mt-4 flex justify-between border-t pt-3 font-medium">
-//                 <span>Total</span>
-//                 <span>Rs. {total.toLocaleString()}</span>
-//               </div>
-//               <div className="mt-6 space-y-2 text-sm">
-//             <label className="flex items-center gap-2">
-//               <input type="radio" name="paymentMethod" value="bank" defaultChecked />
-//               Direct Bank Transfer
-//             </label>
-//             <div className="ml-6 text-neutral-500">
-//               We will contact you with bank details to complete payment securely.
-//             </div>
-//             <label className="flex items-center gap-2 mt-2">
-//               <input type="radio" name="paymentMethod" value="cod" />
-//               Cash on Delivery
-//             </label>
-//             <div className="ml-6 text-neutral-500">
-//               Pay with cash upon delivery at your shipping address.
-//             </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </Container>
-//       <Toaster richColors />
-//     </>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import PageHero from "../components/common/PageHero";
 import Container from "../components/layout/Container";
@@ -169,13 +5,23 @@ import Input from "../components/ui/input";
 import Button from "../components/ui/button";
 import { useSelector, useDispatch } from "react-redux";
 import { Toaster, toast } from "sonner";
-import { useCreateOrderMutation, useClearCartRemoteMutation } from "../services/api";
+import { useCreateOrderMutation, useClearCartRemoteMutation, useCartQuery } from "../services/api";
 import { clearCart } from "../store/slices/cartSlice";
 import { useNavigate } from "react-router-dom";
 
 export default function Checkout() {
-  const items = useSelector((s) => s.cart.items || []);
-  const total = items.reduce((sum, i) => sum + i.price * (i.qty || 1), 0);
+  const token = useSelector((s) => s.auth.token);
+  const localItems = useSelector((s) => s.cart.items || []);
+  const { data: remoteCart, isFetching } = useCartQuery(undefined, { skip: !token });
+  const viewItems = token && remoteCart?.data?.items
+    ? remoteCart.data.items.map((i) => ({
+        id: i.product?._id,
+        title: i.product?.name,
+        price: i.product?.price,
+        qty: i.qty || 1,
+      }))
+    : localItems;
+  const total = viewItems.reduce((sum, i) => sum + i.price * (i.qty || 1), 0);
   const dispatch = useDispatch();
   const [createOrder, { isLoading }] = useCreateOrderMutation();
   const [clearRemote] = useClearCartRemoteMutation();
@@ -187,17 +33,27 @@ export default function Checkout() {
 
     const payload = {
       shippingAddress: {
-        firstName: form.get("firstName"),
-        lastName: form.get("lastName"),
-        country: form.get("country"),
-        address: form.get("address"),
-        city: form.get("city"),
-        province: form.get("province"),
-        zip: form.get("zip"),
-        phone: form.get("phone"),
-        email: form.get("email"),
+        firstName: String(form.get("firstName") || "").trim(),
+        lastName: String(form.get("lastName") || "").trim(),
+        country: String(form.get("country") || "").trim(),
+        address: String(form.get("address") || "").trim(),
+        city: String(form.get("city") || "").trim(),
+        province: String(form.get("province") || "").trim(),
+        zip: String(form.get("zip") || "").trim(),
+        phone: String(form.get("phone") || "").replace(/\D+/g, "").trim(),
+        email: String(form.get("email") || "").trim(),
+        line1: String(form.get("address") || "").trim(),
+        line2: String(form.get("notes") || "").trim(),
+        state: String(form.get("province") || "").trim(),
+        postalCode: String(form.get("zip") || "").trim(),
       },
     };
+    const itemsPayload = !token
+      ? (localItems || []).map((i) => ({
+          product: i.id,
+          qty: i.qty || 1,
+        }))
+      : undefined;
 
     // Basic required field validation
     if (
@@ -212,11 +68,20 @@ export default function Checkout() {
       return;
     }
 
+    if (viewItems.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
     try {
-      const paymentMethod = form.get("paymentMethod") || "bank";
+      const paymentMethod = String(form.get("paymentMethod") || "bank").toLowerCase();
 
       // Create order
-      await createOrder({ ...payload, paymentMethod }).unwrap();
+      await createOrder({
+        ...payload,
+        paymentMethod,
+        payment_method: paymentMethod,
+        ...(itemsPayload ? { items: itemsPayload } : {}),
+      }).unwrap();
 
       // Clear remote cart (server-side)
       try {
@@ -266,8 +131,9 @@ export default function Checkout() {
           <div>
             <h3 className="text-xl font-semibold">Your Order</h3>
             <div className="mt-4 space-y-3 border rounded-lg p-4 bg-neutral-50">
-              {items.length === 0 && <p className="text-sm text-neutral-500">Cart is empty</p>}
-              {items.map((i) => (
+              {isFetching && token && <p className="text-sm text-neutral-500">Loading cart…</p>}
+              {viewItems.length === 0 && !isFetching && <p className="text-sm text-neutral-500">Cart is empty</p>}
+              {viewItems.map((i) => (
                 <div key={i.id} className="flex justify-between text-sm">
                   <span>
                     {i.title} × {i.qty || 1}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Container from "../components/layout/Container";
 import Button from "../components/ui/button";
@@ -47,6 +47,7 @@ export default function Product() {
         id: data.data._id,
         title: data.data.name,
         price: data.data.price,
+        stock: data.data.stock ?? 0,
         rating: data.data.rating || 4.5,
         images:
           data.data.images?.length > 0
@@ -70,9 +71,10 @@ export default function Product() {
       toast.error("Admins cannot purchase products");
       return;
     }
-
-    // Always update local cart for consistent UI
-    dispatch(addToCart({ id: p.id, title: p.title, price: p.price, image: p.images[0], qty }));
+    if (p.stock <= 0) {
+      toast.error("Product is out of stock");
+      return;
+    }
 
     if (token) {
         try {
@@ -83,6 +85,7 @@ export default function Product() {
             toast.error(err?.data?.message || "Failed to add to cart");
         }
     } else {
+        dispatch(addToCart({ id: p.id, title: p.title, price: p.price, image: p.images[0], qty }));
         toast.success("Added to cart");
     }
   };
@@ -141,6 +144,11 @@ export default function Product() {
             <div className="mt-2 text-2xl text-neutral-500 font-medium">
               Rs. {p.price.toLocaleString()}
             </div>
+            {typeof p.stock === "number" && p.stock <= 0 && (
+              <div className="mt-2 inline-block rounded bg-red-600 px-3 py-1 text-sm font-medium text-white">
+                Out of stock
+              </div>
+            )}
 
             <div className="mt-4 flex items-center gap-3">
               <div className="flex text-[#FFC700]">
@@ -186,14 +194,15 @@ export default function Product() {
             {/* Actions */}
             <div className="mt-8 flex gap-4 pb-8 border-b border-neutral-200">
               <div className="flex items-center rounded-md border border-neutral-400 px-3 py-3 gap-4">
-                 <button onClick={() => setQty(q => Math.max(1, q - 1))}>-</button>
+                 <button disabled={p.stock <= 0} onClick={() => setQty(q => Math.max(1, q - 1))}>-</button>
                  <span className="w-4 text-center">{qty}</span>
-                 <button onClick={() => setQty(q => q + 1)}>+</button>
+                 <button disabled={p.stock <= 0} onClick={() => setQty(q => q + 1)}>+</button>
               </div>
               
               <button
                 onClick={handleAddToCart}
-                className="rounded-md border border-black bg-transparent px-8 py-3 text-black transition-colors hover:bg-black hover:text-white"
+                className={`rounded-md border bg-transparent px-8 py-3 transition-colors ${p.stock <= 0 ? "border-neutral-400 text-neutral-400 cursor-not-allowed" : "border-black text-black hover:bg-black hover:text-white"}`}
+                disabled={p.stock <= 0}
               >
                 Add To Cart
               </button>
@@ -290,6 +299,7 @@ export default function Product() {
                    image: rp.images?.length
                      ? `${BASE_URL}${rp.images[0].url}`
                      : "https://placehold.co/400x300?text=No+Image",
+                       stock: rp.stock ?? 0,
                  }}
                />
             ))}

@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Search, User, Heart, ShoppingCart, ChevronDown } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
+import { useCartQuery } from "../../services/api";
 
 import { useState, useRef, useEffect } from "react";
 import { logout } from "../../store/slices/authSlice";
@@ -26,9 +27,13 @@ export default function Navbar() {
   const token = useSelector((s) => s.auth.token);
   const role = useSelector((s) => s.auth.role);
   const user = useSelector((s) => s.auth.user);
-  const cartCount = useSelector((s) =>
+  const localCount = useSelector((s) =>
     s.cart.items.reduce((n, i) => n + (i.qty || 1), 0)
   );
+  const { data: remoteCart } = useCartQuery(undefined, { skip: !token });
+  const cartCount = token && remoteCart?.data?.items
+    ? remoteCart.data.items.reduce((n, i) => n + (i.qty || 1), 0)
+    : localCount;
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();

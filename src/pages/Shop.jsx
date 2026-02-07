@@ -92,6 +92,7 @@ export default function Shop() {
                     image: p.images?.length
                       ? `${BASE_URL}${p.images[0].url}`
                       : "https://placehold.co/400x300?text=No+Image",
+                    stock: p.stock ?? 0,
                   }}
                 />
               ))}
