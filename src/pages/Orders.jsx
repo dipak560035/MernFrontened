@@ -88,7 +88,7 @@ export default function Orders() {
                       ))}
                     </div>
                   </div>
-                  <div>
+                  {/* <div>
                     <div className="text-sm text-neutral-500 mb-2">Shipping Address</div>
                     <div className="rounded bg-neutral-50 p-4 text-sm">
                       <div>{o.shippingAddress?.firstName} {o.shippingAddress?.lastName}</div>
@@ -97,7 +97,20 @@ export default function Orders() {
                       <div>{o.shippingAddress?.country}</div>
                       <div className="mt-2 text-neutral-500">Phone: {o.shippingAddress?.phone}</div>
                     </div>
-                  </div>
+                  </div> */}
+                  <div>
+  <div className="text-sm text-neutral-500 mb-2">Shipping Address</div>
+  <div className="rounded bg-neutral-50 p-4 text-sm space-y-1">
+    <div>{o.shippingAddress?.firstName} {o.shippingAddress?.lastName}</div>
+    <div>{o.shippingAddress?.line1}</div>
+    {o.shippingAddress?.line2 && <div>{o.shippingAddress.line2}</div>}
+    <div>{o.shippingAddress?.city}, {o.shippingAddress?.state} {o.shippingAddress?.postalCode}</div>
+    <div>{o.shippingAddress?.country}</div>
+    <div>Email: {o.shippingAddress?.email}</div>
+    <div>Phone: {o.shippingAddress?.phone}</div>
+  </div>
+</div>
+
                 </div>
 
                 <div className="mt-6 flex items-center gap-3">

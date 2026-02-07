@@ -1,9 +1,12 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Search, User, Heart, ShoppingCart, ChevronDown } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
+import { useCartQuery } from "../../services/api";
 
 import { useState, useRef, useEffect } from "react";
 import { logout } from "../../store/slices/authSlice";
+import { clearCart } from "../../store/slices/cartSlice";
+import clsx from "clsx";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 
@@ -26,15 +29,21 @@ export default function Navbar() {
   const token = useSelector((s) => s.auth.token);
   const role = useSelector((s) => s.auth.role);
   const user = useSelector((s) => s.auth.user);
-  const cartCount = useSelector((s) =>
+  const localCount = useSelector((s) =>
     s.cart.items.reduce((n, i) => n + (i.qty || 1), 0)
   );
+  const { data: remoteCart } = useCartQuery(undefined, { skip: !token });
+  const cartCount = token && remoteCart?.data?.items
+    ? remoteCart.data.items.reduce((n, i) => n + (i.qty || 1), 0)
+    : localCount;
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
+  const [navQ, setNavQ] = useState("");
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(clearCart());
     navigate("/account");
   };
 
@@ -48,6 +57,12 @@ export default function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+  
+  const submitSearch = () => {
+    const q = navQ.trim();
+    if (q.length === 0) return;
+    navigate(`/shop?q=${encodeURIComponent(q)}&page=1`);
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur">
@@ -72,9 +87,22 @@ export default function Navbar() {
 
           {/* Icons + Account */}
           <div className="flex items-center gap-4 relative">
-            <button className="rounded-full p-2 hover:bg-neutral-100">
-               <Search className="h-6 w-6" />
-            </button>
+            <div className="hidden md:flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1">
+              <Search className="h-5 w-5 text-neutral-600" />
+              <input
+                value={navQ}
+                onChange={(e) => setNavQ(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") submitSearch(); }}
+                placeholder="Search…"
+                className="h-8 w-40 bg-transparent text-sm outline-none placeholder:text-neutral-400"
+              />
+              <button
+                onClick={submitSearch}
+                className={clsx("rounded px-2 py-1 text-sm", navQ.trim() ? "text-black" : "text-neutral-400")}
+              >
+                Go
+              </button>
+            </div>
 
             {/* Wishlist */}
             <Link to="/wishlist" aria-label="Wishlist" className="rounded-full p-2 hover:bg-neutral-100">

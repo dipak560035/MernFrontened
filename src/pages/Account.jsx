@@ -195,8 +195,10 @@ function ProfileView({ user }) {
         password: "",
     });
     // Reset file selection on user change/refresh
-    setSelectedFile(null);
-    setPreviewURL(null);
+    setTimeout(() => {
+      setSelectedFile(null);
+      setPreviewURL(null);
+    }, 0);
   }, [user, form]);
 
   const handleFileChange = (e) => {
@@ -245,6 +247,10 @@ function ProfileView({ user }) {
 
   const handleLogout = () => {
     dispatch(logout());
+    try {
+      // ensure guest storage cleared
+      localStorage.removeItem("cart");
+    } catch { void 0; }
     navigate("/account");
     toast.success("Logged out");
   };
