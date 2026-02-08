@@ -60,7 +60,7 @@ export default function Home() {
             </div>
             <div className="flex justify-end">
               <img
-                src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop"
+                src="https://ak1.ostkcdn.com/images/products/is/images/direct/cc1e27e9b5d35e3ff5db228168bccefc9788045a/Single-sofa-chair-for-bedroom-living-room-with-wooden-legs.jpg?impolicy=medium"
                 alt="Hero Chair"
                 className="h-64 w-64 rounded-lg object-cover shadow-soft md:h-80 md:w-80"
               />
@@ -73,7 +73,7 @@ export default function Home() {
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="rounded-lg bg-white p-6 shadow-soft">
             <img
-              src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop"
+              src="https://mohh.com/cdn/shop/files/Jane-Side-Table-1.jpg?v=1749014881"
               alt="Side table"
               className="h-48 w-full rounded-lg object-cover"
             />
@@ -85,7 +85,7 @@ export default function Home() {
 
           <div className="rounded-lg bg-white p-6 shadow-soft">
             <img
-              src="https://images.unsplash.com/photo-1524758631624-74f4d37dd068?q=80&w=1200&auto=format&fit=crop"
+              src="https://images.unsplash.com/photo-1499933374294-4584851497cc?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c2lkZSUyMHRhYmxlfGVufDB8fDB8fHww"
               alt="Side table"
               className="h-48 w-full rounded-lg object-cover"
             />
@@ -139,24 +139,18 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-neutral-600">New Arrivals</p>
-              <h3 className="mt-2 text-2xl font-semibold">Asgaard sofa</h3>
+              <h3 className="mt-2 text-2xl font-semibold">Asgard sofa</h3>
               {/* <Button className="mt-4" as="a" href="/product/1">
                 Order Now
               </Button> */}
               
  
 
-<Link to="/product/697dd4517a3ab728c6fdc5eb">
+<Link to="/product/6980e1ee5dc791dfec9d5f5a">
   <Button className="mt-6">
     Order Now
   </Button>
 </Link>
-
-
-
-
-
-
 
             </div>
             <img
