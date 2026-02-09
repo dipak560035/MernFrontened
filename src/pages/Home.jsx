@@ -12,34 +12,7 @@ export default function Home() {
     (Array.isArray(data?.data) && data.data) ||
     (Array.isArray(data) && data) ||
     [
-      // {
-      //   id: 1,
-      //   title: "Rocket single seater",
-      //   price: 250000,
-      //   image:
-      //     "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
-      // },
-      // {
-      //   id: 2,
-      //   title: "Outdoor bar table and stool",
-      //   price: 25000,
-      //   image:
-      //     "https://images.unsplash.com/photo-1582582429416-d684482636c0?q=80&w=1200&auto=format&fit=crop",
-      // },
-      // {
-      //   id: 3,
-      //   title: "Granite dining table",
-      //   price: 100000,
-      //   image:
-      //     "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
-      // },
-      // {
-      //   id: 4,
-      //   title: "Plain console with teak mirror",
-      //   price: 25000,
-      //   image:
-      //     "https://images.unsplash.com/photo-1540574163026-643ea20ade25?q=80&w=1200&auto=format&fit=crop",
-      // },
+     
     ];
 
   return (
@@ -182,22 +155,81 @@ export default function Home() {
         </div>
       </Container>
 
-      <Container className="py-12">
-        <h2 className="mb-6 text-center text-2xl font-semibold">Our Instagram</h2>
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-          {[1, 2, 3, 4].map((i) => (
-            <img
-              key={i}
-              src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop"
-              alt="Insta"
-              className="h-36 w-full rounded-lg object-cover"
-            />
-          ))}
+  
+<Container className="py-12">
+
+  
+  <div className="mb-6 text-center">
+    <div className="flex items-center justify-center gap-2 text-black-600">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path d="M7.75 2C4.68 2 2 4.68 2 7.75v8.5C2 19.32 4.68 22 7.75 22h8.5C19.32 22 22 19.32 22 16.25v-8.5C22 4.68 19.32 2 16.25 2h-8.5zm0 1.5h8.5c2.2 0 4 1.8 4 4v8.5c0 2.2-1.8 4-4 4h-8.5c-2.2 0-4-1.8-4-4v-8.5c0-2.2 1.8-4 4-4zm9.75 2.75a1 1 0 110 2 1 1 0 010-2zM12 7a5 5 0 100 10 5 5 0 000-10zm0 1.5a3.5 3.5 0 110 7 3.5 3.5 0 010-7z" />
+      </svg>
+      <span className="font-medium">@heavencraft</span>
+    </div>
+
+    <h2 className="mt-3 text-3xl font-semibold">
+      Follow Our Journey
+    </h2>
+
+    <p className="mt-2 text-gray-500 text-sm">
+      Discover our latest drops & behind the scenes
+    </p>
+  </div>
+
+  
+  <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+    {[
+      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1503342452485-86ff0a8b9d3e?q=80&w=1200&auto=format&fit=crop",
+    ].map((img, i) => (
+      <a
+        key={i}
+        href="https://www.instagram.com/iamdeepaksha/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group relative overflow-hidden rounded-xl"
+      >
+        <img
+          src={img}
+          alt="Instagram Post"
+          className="h-44 w-full object-cover transition duration-500 group-hover:scale-110"
+        />
+
+        
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition duration-300 group-hover:opacity-100">
+          <span className="text-white text-sm font-medium tracking-wide">
+            View on Instagram
+          </span>
         </div>
-        <div className="mt-8 text-center">
-          <Button variant="outline">Follow Us</Button>
-        </div>
-      </Container>
+      </a>
+    ))}
+  </div>
+
+  
+  <div className="mt-12 text-center">
+    <a
+      href="https://www.instagram.com/iamdeepaksha/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {/* <Button className="bg-pink-600 px-8 py-3 text-white hover:bg-pink-700 transition">
+        Follow Us on Instagram
+      </Button> */}
+      <Button variant="outline">Follow Us on Instagram</Button>
+    </a>
+  </div>
+
+</Container>
+
+
     </>
   );
 }
