@@ -11,6 +11,9 @@ import { toggleWishlist } from "../store/slices/wishlistSlice";
 import { useProductByIdQuery, useAddToCartMutation, useProductsQuery } from "../services/api";
 import { toast } from "sonner";
 import ProductCard from "../components/common/ProductCard";
+import StarRating from "../components/common/StarRating";
+import ReviewList from "../components/reviews/ReviewList";
+import ReviewForm from "../components/reviews/ReviewForm";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 
@@ -48,7 +51,9 @@ export default function Product() {
         title: data.data.name,
         price: data.data.price,
         stock: data.data.stock ?? 0,
-        rating: data.data.rating || 4.5,
+        rating: data.data.rating || 0,
+        numReviews: data.data.numReviews || 0,
+        reviews: Array.isArray(data.data.reviews) ? data.data.reviews : [],
         images:
           data.data.images?.length > 0
             ? data.data.images.map(
@@ -151,13 +156,9 @@ export default function Product() {
             )}
 
             <div className="mt-4 flex items-center gap-3">
-              <div className="flex text-[#FFC700]">
-                 {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-current" />
-                 ))}
-              </div>
+              <StarRating value={p.rating} />
               <div className="h-5 w-[1px] bg-neutral-400"></div>
-              <span className="text-sm text-neutral-500">5 Customer Review</span>
+              <span className="text-sm text-neutral-500">{p.numReviews} Customer Review{p.numReviews === 1 ? "" : "s"}</span>
             </div>
 
             <p className="mt-4 text-sm text-neutral-700 leading-relaxed max-w-md">
@@ -262,7 +263,7 @@ export default function Product() {
                    className={`${activeTab === "reviews" ? "text-black font-medium" : "text-neutral-400"}`}
                    onClick={() => setActiveTab("reviews")}
                 >
-                    Reviews [5]
+                    Reviews [{p.numReviews}]
                 </button>
             </div>
             
@@ -278,7 +279,12 @@ export default function Product() {
                    </>
                )}
                {activeTab === "info" && <p>Additional information content...</p>}
-               {activeTab === "reviews" && <p>Reviews content...</p>}
+               {activeTab === "reviews" && (
+                 <>
+                   <ReviewList reviews={p.reviews} rating={p.rating} numReviews={p.numReviews} />
+                   <ReviewForm productId={p.id} />
+                 </>
+               )}
             </div>
         </Container>
       </div>
