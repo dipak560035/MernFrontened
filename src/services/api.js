@@ -50,6 +50,18 @@ export const api = createApi({
       query: (id) => `/products/${id}`,
       providesTags: (_res, _err, id) => [{ type: "Product", id }],
     }),
+    createReview: builder.mutation({
+  query: ({ id, body }) => ({
+    url: `/products/${id}/reviews`,
+    method: "POST",
+    body,
+  }),
+  invalidatesTags: (_res, _err, { id }) => [
+    { type: "Product", id },
+    { type: "Product", id: "LIST" },
+  ],
+}),
+
     cart: builder.query({
       query: () => "/cart",
       providesTags: ["Cart"],
@@ -103,25 +115,6 @@ export const api = createApi({
       invalidatesTags: ["Product"],
     }),
    
-//     adminUpdateProduct: builder.mutation({
-//   query: ({ id, formData }) => ({
-//     url: `/products/${id}`,
-//     method: "PUT",
-//     body: formData,
-//   }),
-//   invalidatesTags: (_res, _err, { id }) => [{ type: "Product", id }],
-// }),
-// adminUpdateProduct: builder.mutation({
-//   query: ({ id, formData }) => ({
-//     url: `/products/${id}`,
-//     method: "PUT",
-//     body: formData,
-//   }),
-//   invalidatesTags: (_res, _err, { id }) => [
-//     { type: "Product", id },
-//     { type: "Product", id: "LIST" },
-//   ],
-// }),
 adminUpdateProduct: builder.mutation({
   query: ({ id, formData, body }) => {
     // Accept either FormData (when uploading new images) or a plain JSON body
@@ -154,6 +147,7 @@ export const {
    useMeQuery,
   useProductsQuery,
   useProductByIdQuery,
+  useCreateReviewMutation,
   useCartQuery,
   useAddToCartMutation,
   useUpdateCartItemMutation,
