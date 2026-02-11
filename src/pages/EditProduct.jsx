@@ -45,10 +45,10 @@ export default function EditProduct() {
         description: productData.description || "",
         price: productData.price || "",
         category: productData.category || "",
-        tags: productData.tags?.join(",") || "",
+        tags: Array.isArray(productData.tags) ? productData.tags.join(", ") : "",
         stock: productData.stock || "",
-        colors: productData.colors?.join(",") || "",
-        sizes: productData.sizes?.join(",") || "",
+        colors: Array.isArray(productData.colors) ? productData.colors.join(", ") : "",
+        sizes: Array.isArray(productData.sizes) ? productData.sizes.join(", ") : "",
         featured: productData.featured || false,
       });
       setExistingImages(productData.images || []);
@@ -96,9 +96,18 @@ export default function EditProduct() {
     formData.append("featured", form.featured);
 
     // Arrays (tags, colors, sizes)
-    if (form.tags) form.tags.split(",").forEach((t) => formData.append("tags", t.trim()));
-    if (form.colors) form.colors.split(",").forEach((c) => formData.append("colors", c.trim()));
-    if (form.sizes) form.sizes.split(",").forEach((s) => formData.append("sizes", s.trim()));
+    if (form.tags) {
+      const tagsArray = form.tags.split(",").map((t) => t.trim()).filter(Boolean);
+      tagsArray.forEach((t) => formData.append("tags", t));
+    }
+    if (form.colors) {
+      const colorsArray = form.colors.split(",").map((c) => c.trim()).filter(Boolean);
+      colorsArray.forEach((c) => formData.append("colors", c));
+    }
+    if (form.sizes) {
+      const sizesArray = form.sizes.split(",").map((s) => s.trim()).filter(Boolean);
+      sizesArray.forEach((s) => formData.append("sizes", s));
+    }
 
     // 1. Send the list of image URLs we want to KEEP
     formData.append("existingImages", JSON.stringify(existingImages.map(img => img.url)));
