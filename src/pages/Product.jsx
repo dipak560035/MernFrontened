@@ -14,6 +14,7 @@ import ProductCard from "../components/common/ProductCard";
 import StarRating from "../components/common/StarRating";
 import ReviewList from "../components/reviews/ReviewList";
 import ReviewForm from "../components/reviews/ReviewForm";
+import ProductGallery from "../components/common/ProductGallery";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 
@@ -25,9 +26,8 @@ export default function Product() {
   const wishlist = useSelector((s) => s.wishlist.items);
   const [activeTab, setActiveTab] = useState("desc");
   const [qty, setQty] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(null);
 
-  const { data, isLoading } = useProductByIdQuery(id);
+  const { data } = useProductByIdQuery(id);
   const { data: relatedData } = useProductsQuery({ limit: 4 });
   const [addRemote] = useAddToCartMutation();
   // useEffect(() => {
@@ -114,34 +114,7 @@ export default function Product() {
       <Container className="py-8">
         <div className="grid gap-12 md:grid-cols-2">
           {/* Gallery */}
-          <div className="flex gap-4">
-             {/* Thumbnails */}
-             <div className="flex flex-col gap-4">
-                {p.images.map((img, i) => (
-                    <div 
-                        key={i} 
-                        className={`h-20 w-20 overflow-hidden rounded-lg bg-[#F9F1E7] cursor-pointer transition-all ${
-                            (selectedImage || p.images[0]) === img ? "ring-2 ring-black" : ""
-                        }`}
-                        onClick={() => setSelectedImage(img)}
-                    >
-                        <img src={img} alt="thumb" className="h-full w-full object-cover" />
-                    </div>
-                ))}
-             </div>
-             {/* Main Image */}
-             <div className="flex-1 aspect-square overflow-hidden rounded-lg bg-[#F9F1E7] relative group">
-                {isLoading ? (
-                    <div className="h-full w-full animate-pulse bg-neutral-200" />
-                ) : (
-                    <img 
-                        src={selectedImage || p.images[0]} 
-                        alt={p.title} 
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                    />
-                )}
-             </div>
-          </div>
+          <ProductGallery key={p.id} images={p.images} />
 
           {/* Details */}
           <div>
@@ -317,3 +290,223 @@ export default function Product() {
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { useState, useEffect } from "react";
+// import { useParams, Link } from "react-router-dom";
+// import Container from "../components/layout/Container";
+// import { Facebook, Linkedin, Twitter, Heart } from "lucide-react";
+// import { useDispatch, useSelector } from "react-redux";
+// import { addToCart } from "../store/slices/cartSlice";
+// import { toggleWishlist } from "../store/slices/wishlistSlice";
+// import {
+//   useProductByIdQuery,
+//   useAddToCartMutation,
+//   useProductsQuery,
+// } from "../services/api";
+// import { toast } from "sonner";
+// import ProductCard from "../components/common/ProductCard";
+// import StarRating from "../components/common/StarRating";
+// import ReviewList from "../components/reviews/ReviewList";
+// import ReviewForm from "../components/reviews/ReviewForm";
+// import ProductGallery from "../components/common/ProductGallery";
+
+// const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
+
+// export default function Product() {
+//   const { id } = useParams();
+//   const dispatch = useDispatch();
+//   const token = useSelector((s) => s.auth.token);
+//   const role = useSelector((s) => s.auth.role);
+//   const wishlist = useSelector((s) => s.wishlist.items);
+
+//   const [activeTab, setActiveTab] = useState("desc");
+//   const [qty, setQty] = useState(1);
+
+//   const { data, isLoading } = useProductByIdQuery(id);
+//   const { data: relatedData } = useProductsQuery({ limit: 4 });
+//   const [addRemote] = useAddToCartMutation();
+
+//   useEffect(() => {
+//     window.scrollTo(0, 0);
+//   }, [id]);
+
+//   if (isLoading) return null;
+
+//   if (!data?.success || !data?.data) return null;
+
+//   const product = data.data;
+
+//   const images =
+//     product.images?.length > 0
+//       ? product.images.map((img) =>
+//           img.url.startsWith("http")
+//             ? img.url
+//             : `${BASE_URL}${img.url}`
+//         )
+//       : [];
+
+//   const p = {
+//     id: product._id,
+//     title: product.name,
+//     price: product.price,
+//     stock: product.stock ?? 0,
+//     rating: product.rating || 0,
+//     numReviews: product.numReviews || 0,
+//     reviews: Array.isArray(product.reviews) ? product.reviews : [],
+//     images,
+//     colors: product.colors?.length ? product.colors : [],
+//     sizes: product.sizes?.length ? product.sizes : [],
+//   };
+
+//   const inWishlist = wishlist.some((i) => i.id === p.id);
+
+//   const handleAddToCart = async () => {
+//     if (role === "admin") {
+//       toast.error("Admins cannot purchase products");
+//       return;
+//     }
+
+//     if (p.stock <= 0) {
+//       toast.error("Product is out of stock");
+//       return;
+//     }
+
+//     if (token) {
+//       try {
+//         await addRemote({ productId: p.id, qty }).unwrap();
+//         toast.success("Added to cart");
+//       } catch (err) {
+//         toast.error(err?.data?.message || "Failed to add to cart");
+//       }
+//     } else {
+//       dispatch(
+//         addToCart({
+//           id: p.id,
+//           title: p.title,
+//           price: p.price,
+//           image: p.images[0],
+//           qty,
+//         })
+//       );
+//       toast.success("Added to cart");
+//     }
+//   };
+
+//   return (
+//     <>
+//       <Container className="py-8">
+//         <div className="grid gap-12 md:grid-cols-2">
+//           {/* Gallery */}
+//           <ProductGallery images={p.images} />
+
+//           {/* Details */}
+//           <div>
+//             <h1 className="text-4xl font-medium text-neutral-900">
+//               {p.title}
+//             </h1>
+
+//             <div className="mt-2 text-2xl text-neutral-500 font-medium">
+//               Rs. {p.price.toLocaleString()}
+//             </div>
+
+//             {p.stock <= 0 && (
+//               <div className="mt-2 inline-block rounded bg-red-600 px-3 py-1 text-sm font-medium text-white">
+//                 Out of stock
+//               </div>
+//             )}
+
+//             <div className="mt-4 flex items-center gap-3">
+//               <StarRating value={p.rating} />
+//               <div className="h-5 w-[1px] bg-neutral-400"></div>
+//               <span className="text-sm text-neutral-500">
+//                 {p.numReviews} Review{p.numReviews === 1 ? "" : "s"}
+//               </span>
+//             </div>
+
+//             {/* Quantity + Add to cart */}
+//             <div className="mt-8 flex gap-4 pb-8 border-b border-neutral-200">
+//               <div className="flex items-center rounded-md border border-neutral-400 px-3 py-3 gap-4">
+//                 <button
+//                   disabled={p.stock <= 0}
+//                   onClick={() => setQty((q) => Math.max(1, q - 1))}
+//                 >
+//                   -
+//                 </button>
+//                 <span className="w-4 text-center">{qty}</span>
+//                 <button
+//                   disabled={p.stock <= 0}
+//                   onClick={() => setQty((q) => q + 1)}
+//                 >
+//                   +
+//                 </button>
+//               </div>
+
+//               <button
+//                 onClick={handleAddToCart}
+//                 className={`rounded-md border bg-transparent px-8 py-3 transition-colors ${
+//                   p.stock <= 0
+//                     ? "border-neutral-400 text-neutral-400 cursor-not-allowed"
+//                     : "border-black text-black hover:bg-black hover:text-white"
+//                 }`}
+//                 disabled={p.stock <= 0}
+//               >
+//                 Add To Cart
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       </Container>
+//     </>
+//   );
+// }
+
