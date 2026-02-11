@@ -17,30 +17,80 @@ export default function Home() {
 
   return (
     <>
-      <section className="bg-brand-light">
-        <Container className="py-16">
-          <div className="grid items-center gap-8 md:grid-cols-2">
-            <div>
-              <h1 className="text-4xl font-semibold">Rocket single seater</h1>
-              {/* <Button  className="mt-6" as="a" href="/shop">
-                Shop Now
-              </Button> */}
-     <Link to="/shop">
-  <Button className="mt-6">
-    Shop Now
-  </Button>
-</Link>
-            </div>
-            <div className="flex justify-end">
-              <img
-                src="https://ak1.ostkcdn.com/images/products/is/images/direct/cc1e27e9b5d35e3ff5db228168bccefc9788045a/Single-sofa-chair-for-bedroom-living-room-with-wooden-legs.jpg?impolicy=medium"
-                alt="Hero Chair"
-                className="h-64 w-64 rounded-lg object-cover shadow-soft md:h-80 md:w-80"
-              />
-            </div>
-          </div>
-        </Container>
-      </section>
+    {/* <section className="bg-brand-light">
+  <Container className="py-16">
+    <div className="grid items-center gap-8 md:grid-cols-2">
+      <div>
+        <h1 className="text-4xl font-semibold">Rocket single seater</h1>
+        <Link to="/shop">
+          <Button className="mt-6">
+            Shop Now
+          </Button>
+        </Link>
+      </div>
+      <div className="flex justify-center md:justify-end">
+        <img
+          src="https://ak1.ostkcdn.com/images/products/is/images/direct/cc1e27e9b5d35e3ff5db228168bccefc9788045a/Single-sofa-chair-for-bedroom-living-room-with-wooden-legs.jpg?impolicy=medium"
+          alt="Rocket single seater"
+          className="w-full max-w-[500px] h-auto object-cover rounded-xl shadow-2xl md:max-w-[700px] lg:max-w-[800px]"
+        />
+      </div>
+    </div>
+  </Container>
+</section> */}
+ 
+
+
+
+
+<section className="bg-brand-light">
+  <Container className="py-16">
+    <div className="grid items-center gap-8 md:grid-cols-2">
+      <div>
+        <h1 className="text-4xl font-semibold">Rocket single seater</h1>
+        <Link to="/shop">
+          <Button className="mt-6">
+            Shop Now
+          </Button>
+        </Link>
+      </div>
+      <div className="flex justify-center md:justify-end">
+        <img
+          src="https://img.freepik.com/free-vector/beige-soft-leather-armchair-with-wooden-legs_107791-29582.jpg"
+          alt="Rocket single seater"
+          className="w-full max-w-[500px] h-auto object-contain drop-shadow-2xl md:max-w-[700px] lg:max-w-[800px]"
+        />
+      </div>
+    </div>
+  </Container>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <Container className="py-16">
         <div className="grid gap-6 sm:grid-cols-2">
@@ -135,25 +185,50 @@ export default function Home() {
         </Container>
       </section>
 
-      <Container className="py-16">
-        <h2 className="mb-6 text-center text-2xl font-semibold">Our Blogs</h2>
-        <div className="grid gap-6 md:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-lg bg-white p-4 shadow-soft">
-              <img
-                src="https://images.unsplash.com/photo-1524758631624-74f4d37dd068?q=80&w=1200&auto=format&fit=crop"
-                alt="Blog"
-                className="h-40 w-full rounded-lg object-cover"
-              />
-              <h4 className="mt-3 text-sm font-semibold">Going all-in with millennial design</h4>
-              <div className="mt-2 text-xs text-neutral-600">Read More • 3 min</div>
-            </div>
-          ))}
+  <Container className="py-16">
+  <h2 className="mb-6 text-center text-2xl font-semibold">
+    Our Blogs
+  </h2>
+
+  <div className="grid gap-6 md:grid-cols-3">
+    {[
+      {
+        img: "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmxvZyUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D",
+        title: "Modern Living Room Inspiration",
+      },
+      {
+        img: "https://plus.unsplash.com/premium_photo-1661265944044-bc7248ae54f9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YmxvZyUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D",
+        title: "Why Wooden Furniture Never Goes Out of Style",
+      },
+      {
+        img: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGJsb2clMjBiYWNrZ3JvdW5kfGVufDB8fDB8fHww",
+        title: "Creating a Cozy Bedroom Setup",
+      },
+    ].map((blog, i) => (
+      <div
+        key={i}
+        className="rounded-lg bg-white p-4 shadow-soft transition duration-300 hover:-translate-y-2 hover:shadow-lg"
+      >
+        <img
+          src={blog.img}
+          alt={blog.title}
+          className="h-40 w-full rounded-lg object-cover transition duration-300 hover:scale-105"
+        />
+        <h4 className="mt-3 text-sm font-semibold">
+          {blog.title}
+        </h4>
+        <div className="mt-2 text-xs text-neutral-600">
+          Read More • 3 min
         </div>
-        <div className="mt-8 text-center">
-          <Button variant="outline">View All Post</Button>
-        </div>
-      </Container>
+      </div>
+    ))}
+  </div>
+
+  <div className="mt-8 text-center">
+    <Button variant="outline">View All Post</Button>
+  </div>
+</Container>
+
 
   
 <Container className="py-12">
@@ -185,10 +260,13 @@ export default function Home() {
   
   <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
     {[
-      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1503342452485-86ff0a8b9d3e?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGludGVyaW9yJTIwZGVzaWdufGVufDB8fDB8fHww",
+
+      "https://media.istockphoto.com/id/1366533374/photo/japandi-style-living-room-interior-design-and-decoration-green-sofa-in-living-room-3d.webp?a=1&b=1&s=612x612&w=0&k=20&c=hBbmdeJLb9qoHm2Pt-_fk06oi2MnoNTSifdLHFxjQpw=",
+
+      "https://plus.unsplash.com/premium_photo-1661765778256-169bf5e561a6?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8aW50ZXJpb3IlMjBkZXNpZ258ZW58MHx8MHx8fDA%3D",
+      
+      "https://images.unsplash.com/photo-1606744888344-493238951221?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGludGVyaW9yJTIwZGVzaWdufGVufDB8fDB8fHww",
     ].map((img, i) => (
       <a
         key={i}
