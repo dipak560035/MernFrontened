@@ -1,8 +1,271 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Search, User, Heart, ShoppingCart, ChevronDown } from "lucide-react";
+// import { Link, NavLink, useNavigate } from "react-router-dom";
+// import { Search, User, Heart, ShoppingCart, ChevronDown, Menu, X } from "lucide-react";
+// import { useSelector, useDispatch } from "react-redux";
+// import { useCartQuery } from "../../services/api";
+
+// import { useState, useRef, useEffect } from "react";
+// import { logout } from "../../store/slices/authSlice";
+// import { clearCart } from "../../store/slices/cartSlice";
+// import clsx from "clsx";
+
+// const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
+
+// function NavItem({ to, label }) {
+//   return (
+//     <NavLink
+//       to={to}
+//       className={({ isActive }) =>
+//         `text-sm ${isActive ? "font-semibold" : "font-medium"} text-neutral-700 hover:text-black`
+//       }
+//     >
+//       {label}
+//     </NavLink>
+//   );
+// }
+
+// export default function Navbar() {
+//   const dispatch = useDispatch();
+//   const navigate = useNavigate();
+//   const token = useSelector((s) => s.auth.token);
+//   const role = useSelector((s) => s.auth.role);
+//   const user = useSelector((s) => s.auth.user);
+//   const localCount = useSelector((s) =>
+//     s.cart.items.reduce((n, i) => n + (i.qty || 1), 0)
+//   );
+//   const { data: remoteCart } = useCartQuery(undefined, { skip: !token });
+//   const cartCount = token && remoteCart?.data?.items
+//     ? remoteCart.data.items.reduce((n, i) => n + (i.qty || 1), 0)
+//     : localCount;
+
+//   const [dropdownOpen, setDropdownOpen] = useState(false);
+//   const dropdownRef = useRef();
+//   const [navQ, setNavQ] = useState("");
+//   const [mobileOpen, setMobileOpen] = useState(false);
+
+//   const handleLogout = () => {
+//     dispatch(logout());
+//     dispatch(clearCart());
+//     navigate("/account");
+//   };
+
+//   // Close dropdown when clicking outside
+//   useEffect(() => {
+//     const handleClickOutside = (e) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+//         setDropdownOpen(false);
+//       }
+//     };
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, []);
+  
+//   const submitSearch = () => {
+//     const q = navQ.trim();
+//     if (q.length === 0) return;
+//     navigate(`/shop?q=${encodeURIComponent(q)}&page=1`);
+//   };
+
+//   return (
+//     <header className="sticky top-0 z-40 bg-brand-light backdrop-blur">
+//       {/* <div className="mx-auto max-w-7xl px-6"> */}
+//       <div className="mx-auto max-w-[1440px] px-4 md:px-8">
+//         <div className="flex h-16 items-center justify-between">
+//           {/* Brand */}
+//          {/* Increased gap from 2 to 5 to create clear space between logo and text */}
+// <Link to="/" className="flex items-center gap-5 group shrink-0">
+  
+//   {/* The Square Logo */}
+//   <div className="h-9 w-9 rounded-sm bg-brand-dark transition-transform group-hover:rotate-6" />
+  
+//   {/* The Text */}
+//   <span className="text-xl font-bold tracking-[0.15em] text-black uppercase sm:text-2xl">
+//     HEAVEN <span className="font-light">CRAFT</span>
+//   </span>
+// </Link>
+
+//           {/* Main Nav */}
+//           <nav className="hidden items-center gap-8 md:flex">
+//             <NavItem to="/" label="Home" />
+//             <NavItem to="/shop" label="Shop" />
+//             <NavItem to="/about" label="About" />
+//             <NavItem to="/contact" label="Contact" />
+
+//             {/* Admin link */}
+//             {token && role === "admin" && <NavItem to="/admin" label="Admin" />}
+//           </nav>
+
+//           {/* Icons + Account */}
+//           <div className="flex items-center gap-3 relative">
+//             <div className="hidden md:flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1">
+//               <Search className="h-5 w-5 text-neutral-600" />
+//               <input
+//                 value={navQ}
+//                 onChange={(e) => setNavQ(e.target.value)}
+//                 onKeyDown={(e) => { if (e.key === "Enter") submitSearch(); }}
+//                 placeholder="Search…"
+//                 className="h-8 w-40 bg-transparent text-sm outline-none placeholder:text-neutral-400"
+//               />
+//               <button
+//                 onClick={submitSearch}
+//                 className={clsx("rounded px-2 py-1 text-sm", navQ.trim() ? "text-black" : "text-neutral-400")}
+//               >
+//                 Go
+//               </button>
+//             </div>
+
+//             {/* Wishlist */}
+//             <Link to="/wishlist" aria-label="Wishlist" className="rounded-full p-3 md:p-2 hover:bg-neutral-100">
+//               <Heart className="h-6 w-6" />
+//             </Link>
+
+//             {/* Cart */}
+//             <Link to="/cart" aria-label="Cart" className="relative rounded-full p-3 md:p-2 hover:bg-neutral-100">
+//               <ShoppingCart className="h-6 w-6" />
+//               {cartCount > 0 && (
+//                 <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs text-white">
+//                   {cartCount}
+//                 </span>
+//               )}
+//             </Link>
+
+//             {/* Profile Dropdown */}
+//             {token ? (
+//               <div className="relative" ref={dropdownRef}>
+//                 <button
+//                   onClick={() => setDropdownOpen((prev) => !prev)}
+//                   className="flex items-center gap-1 rounded-full p-3 md:p-2 hover:bg-neutral-100"
+//                 >
+//                   {user?.avatar ? (
+//                       <img 
+//                           src={`${BASE_URL}${user.avatar}`} 
+//                           alt="Avatar" 
+//                           className="h-8 w-8 rounded-full object-cover border" 
+//                       />
+//                   ) : (
+//                       <User className="h-6 w-6" />
+//                   )}
+//                   <span className="hidden md:inline text-sm font-medium ml-1">{user?.name || "User"}</span>
+//                   <ChevronDown className="h-4 w-4" />
+//                 </button>
+
+//                 {dropdownOpen && (
+//                   <div className="absolute right-0 mt-2 w-48 rounded-md border bg-white shadow-lg py-2 z-50">
+//                     <Link
+//                       to="/account"
+//                       className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
+//                       onClick={() => setDropdownOpen(false)}
+//                     >
+//                       Profile
+//                     </Link>
+//                     <Link
+//                       to="/orders"
+//                       className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
+//                       onClick={() => setDropdownOpen(false)}
+//                     >
+//                       Orders
+//                     </Link>
+                     
+//                     {role === "admin" && (
+//                       <Link
+//                         to="/admin"
+//                         className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
+//                         onClick={() => setDropdownOpen(false)}
+//                       >
+//                         Admin Panel
+//                       </Link>
+//                     )}
+//                     {role === "admin" && (
+//                       <Link
+//                         to="/admin/orders"
+//                         className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
+//                         onClick={() => setDropdownOpen(false)}
+//                       >
+//                         Manage Orders
+//                       </Link>
+//                     )}
+//                     <button
+//                       onClick={handleLogout}
+//                       className="w-full text-left px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
+//                     >
+//                       Logout
+//                     </button>
+//                   </div>
+//                 )}
+//               </div>
+//             ) : (
+//               <Link to="/account" aria-label="Account" className="rounded-full p-2 hover:bg-neutral-100">
+//                 <User className="h-6 w-6" />
+//               </Link>
+//             )}
+//             {/* Mobile Hamburger */}
+//             <button
+//               aria-label="Toggle menu"
+//               className="md:hidden rounded-full p-3 hover:bg-neutral-100"
+//               onClick={() => setMobileOpen((v) => !v)}
+//             >
+//               {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+//             </button>
+//           </div>
+//         </div>
+//         {/* Mobile Menu */}
+//         <div className={`md:hidden origin-top transition-all duration-200 ${mobileOpen ? "max-h-[320px] opacity-100" : "max-h-0 opacity-0"}`}>
+//           <div className="px-4 pb-4">
+//             <div className="grid gap-3 rounded-lg border bg-white p-4">
+//               <NavLink to="/" onClick={() => setMobileOpen(false)} className="text-sm font-medium">Home</NavLink>
+//               <NavLink to="/shop" onClick={() => setMobileOpen(false)} className="text-sm font-medium">Shop</NavLink>
+//               <NavLink to="/about" onClick={() => setMobileOpen(false)} className="text-sm font-medium">About</NavLink>
+//               <NavLink to="/contact" onClick={() => setMobileOpen(false)} className="text-sm font-medium">Contact</NavLink>
+//               {token && role === "admin" && (
+//                 <NavLink to="/admin" onClick={() => setMobileOpen(false)} className="text-sm font-medium">Admin</NavLink>
+//               )}
+//               <div className="mt-2 flex items-center gap-2 rounded-md bg-neutral-100 px-3 py-2">
+//                 <Search className="h-5 w-5 text-neutral-600" />
+//                 <input
+//                   value={navQ}
+//                   onChange={(e) => setNavQ(e.target.value)}
+//                   onKeyDown={(e) => { if (e.key === "Enter") { submitSearch(); setMobileOpen(false); } }}
+//                   placeholder="Search products…"
+//                   className="h-8 flex-1 bg-transparent text-sm outline-none placeholder:text-neutral-400"
+//                 />
+//                 <button
+//                   onClick={() => { submitSearch(); setMobileOpen(false); }}
+//                   className={`rounded px-2 py-1 text-sm ${navQ.trim() ? "text-black" : "text-neutral-400"}`}
+//                 >
+//                   Go
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </header>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
+import {
+  Search,
+  User,
+  Heart,
+  ShoppingCart,
+  ChevronDown,
+  Menu,
+  X,
+} from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { useCartQuery } from "../../services/api";
-
 import { useState, useRef, useEffect } from "react";
 import { logout } from "../../store/slices/authSlice";
 import { clearCart } from "../../store/slices/cartSlice";
@@ -15,7 +278,9 @@ function NavItem({ to, label }) {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `text-sm ${isActive ? "font-semibold" : "font-medium"} text-neutral-700 hover:text-black`
+        `text-sm ${
+          isActive ? "font-semibold" : "font-medium"
+        } text-neutral-700 hover:text-black`
       }
     >
       {label}
@@ -26,20 +291,50 @@ function NavItem({ to, label }) {
 export default function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const token = useSelector((s) => s.auth.token);
   const role = useSelector((s) => s.auth.role);
   const user = useSelector((s) => s.auth.user);
+
   const localCount = useSelector((s) =>
     s.cart.items.reduce((n, i) => n + (i.qty || 1), 0)
   );
+
   const { data: remoteCart } = useCartQuery(undefined, { skip: !token });
-  const cartCount = token && remoteCart?.data?.items
-    ? remoteCart.data.items.reduce((n, i) => n + (i.qty || 1), 0)
-    : localCount;
+
+  const cartCount =
+    token && remoteCart?.data?.items
+      ? remoteCart.data.items.reduce((n, i) => n + (i.qty || 1), 0)
+      : localCount;
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [navQ, setNavQ] = useState("");
+
+  const dropdownRef = useRef();
+
+  // ✅ CLOSE MENU ON ROUTE CHANGE
+  useEffect(() => {
+    setMobileOpen(false);
+    setDropdownOpen(false);
+  }, [location.pathname]);
+
+  // ✅ LOCK BODY SCROLL WHEN MOBILE MENU OPEN
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "auto";
+  }, [mobileOpen]);
+
+  // ✅ CLOSE DROPDOWN WHEN CLICK OUTSIDE
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -47,147 +342,137 @@ export default function Navbar() {
     navigate("/account");
   };
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-  
   const submitSearch = () => {
     const q = navQ.trim();
-    if (q.length === 0) return;
+    if (!q) return;
     navigate(`/shop?q=${encodeURIComponent(q)}&page=1`);
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur">
-      <div className="mx-auto max-w-7xl px-6">
+    <header className="sticky top-0 z-50 bg-brand-light backdrop-blur border-b">
+      <div className="mx-auto max-w-[1440px] px-4 md:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Brand */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded bg-brand-dark" />
-            <span className="text-lg font-semibold">HEAVEN CRAFT</span>
+          
+          {/* LOGO */}
+          <Link to="/" className="flex items-center gap-4 shrink-0">
+            <div className="h-9 w-9 rounded-sm bg-brand-dark" />
+            <span className="text-xl font-bold tracking-[0.15em] uppercase">
+              HEAVEN <span className="font-light">CRAFT</span>
+            </span>
           </Link>
 
-          {/* Main Nav */}
-          <nav className="hidden items-center gap-8 md:flex">
+          {/* DESKTOP NAV */}
+          <nav className="hidden md:flex items-center gap-8">
             <NavItem to="/" label="Home" />
             <NavItem to="/shop" label="Shop" />
             <NavItem to="/about" label="About" />
             <NavItem to="/contact" label="Contact" />
-
-            {/* Admin link */}
             {token && role === "admin" && <NavItem to="/admin" label="Admin" />}
           </nav>
 
-          {/* Icons + Account */}
-          <div className="flex items-center gap-4 relative">
+          {/* RIGHT SIDE */}
+          <div className="flex items-center gap-2">
+
+            {/* SEARCH DESKTOP */}
             <div className="hidden md:flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1">
               <Search className="h-5 w-5 text-neutral-600" />
               <input
                 value={navQ}
                 onChange={(e) => setNavQ(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") submitSearch(); }}
+                onKeyDown={(e) => e.key === "Enter" && submitSearch()}
                 placeholder="Search…"
-                className="h-8 w-40 bg-transparent text-sm outline-none placeholder:text-neutral-400"
+                className="h-8 w-40 bg-transparent text-sm outline-none"
               />
-              <button
-                onClick={submitSearch}
-                className={clsx("rounded px-2 py-1 text-sm", navQ.trim() ? "text-black" : "text-neutral-400")}
-              >
-                Go
-              </button>
             </div>
 
-            {/* Wishlist */}
-            <Link to="/wishlist" aria-label="Wishlist" className="rounded-full p-2 hover:bg-neutral-100">
+            {/* WISHLIST */}
+            <Link to="/wishlist" className="rounded-full p-3 md:p-2 hover:bg-neutral-100">
               <Heart className="h-6 w-6" />
             </Link>
 
-            {/* Cart */}
-            <Link to="/cart" aria-label="Cart" className="relative rounded-full p-2 hover:bg-neutral-100">
+            {/* CART */}
+            <Link to="/cart" className="relative rounded-full p-3 md:p-2 hover:bg-neutral-100">
               <ShoppingCart className="h-6 w-6" />
               {cartCount > 0 && (
-                <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs text-white">
+                <span className="absolute -right-1 -top-1 h-5 min-w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center px-1">
                   {cartCount}
                 </span>
               )}
             </Link>
 
-            {/* Profile Dropdown */}
+            {/* PROFILE */}
             {token ? (
               <div className="relative" ref={dropdownRef}>
                 <button
-                  onClick={() => setDropdownOpen((prev) => !prev)}
-                  className="flex items-center gap-1 rounded-full p-2 hover:bg-neutral-100"
+                  onClick={() => setDropdownOpen((v) => !v)}
+                  className="flex items-center gap-1 rounded-full p-3 md:p-2 hover:bg-neutral-100"
                 >
                   {user?.avatar ? (
-                      <img 
-                          src={`${BASE_URL}${user.avatar}`} 
-                          alt="Avatar" 
-                          className="h-8 w-8 rounded-full object-cover border" 
-                      />
+                    <img
+                      src={`${BASE_URL}${user.avatar}`}
+                      className="h-8 w-8 rounded-full object-cover border"
+                    />
                   ) : (
-                      <User className="h-6 w-6" />
+                    <User className="h-6 w-6" />
                   )}
-                  <span className="hidden md:inline text-sm font-medium ml-1">{user?.name || "User"}</span>
                   <ChevronDown className="h-4 w-4" />
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 rounded-md border bg-white shadow-lg py-2 z-50">
-                    <Link
-                      to="/account"
-                      className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      Profile
-                    </Link>
-                    <Link
-                      to="/orders"
-                      className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      Orders
-                    </Link>
-                     
-                    {role === "admin" && (
-                      <Link
-                        to="/admin"
-                        className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
-                        onClick={() => setDropdownOpen(false)}
-                      >
-                        Admin Panel
-                      </Link>
-                    )}
-                    {role === "admin" && (
-                      <Link
-                        to="/admin/orders"
-                        className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
-                        onClick={() => setDropdownOpen(false)}
-                      >
-                        Manage Orders
-                      </Link>
-                    )}
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
-                    >
+                  <div className="absolute right-0 mt-2 w-48 rounded-md border bg-white shadow-lg py-2">
+                    <Link to="/account" className="block px-4 py-2 hover:bg-neutral-100">Profile</Link>
+                    <Link to="/orders" className="block px-4 py-2 hover:bg-neutral-100">Orders</Link>
+                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-neutral-100">
                       Logout
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <Link to="/account" aria-label="Account" className="rounded-full p-2 hover:bg-neutral-100">
+              <Link to="/account" className="rounded-full p-2 hover:bg-neutral-100">
                 <User className="h-6 w-6" />
               </Link>
             )}
+
+            {/* MOBILE MENU BUTTON */}
+            <button
+              className="md:hidden rounded-full p-3 hover:bg-neutral-100"
+              onClick={() => setMobileOpen((v) => !v)}
+            >
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* MOBILE MENU PANEL */}
+        <div
+          className={`md:hidden transition-all duration-300 overflow-hidden ${
+            mobileOpen
+              ? "max-h-[420px] opacity-100 pointer-events-auto"
+              : "max-h-0 opacity-0 pointer-events-none"
+          }`}
+        >
+          <div className="pb-4">
+            <div className="grid gap-3 rounded-lg border bg-white p-4 shadow-lg">
+
+              <NavLink to="/" className="font-medium">Home</NavLink>
+              <NavLink to="/shop" className="font-medium">Shop</NavLink>
+              <NavLink to="/about" className="font-medium">About</NavLink>
+              <NavLink to="/contact" className="font-medium">Contact</NavLink>
+
+              {/* SEARCH MOBILE */}
+              <div className="flex items-center gap-2 rounded-md bg-neutral-100 px-3 py-2">
+                <Search className="h-5 w-5 text-neutral-600" />
+                <input
+                  value={navQ}
+                  onChange={(e) => setNavQ(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && submitSearch()}
+                  placeholder="Search products…"
+                  className="flex-1 bg-transparent text-sm outline-none"
+                />
+              </div>
+
+            </div>
           </div>
         </div>
       </div>

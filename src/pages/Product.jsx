@@ -98,9 +98,9 @@ export default function Product() {
   return (
     <>
       {/* Breadcrumb */}
-      <section className="py-6">
+      <section className="py-4 sm:py-6">
         <Container>
-            <div className="flex items-center gap-2 text-neutral-400">
+            <div className="flex flex-wrap items-center gap-2 text-neutral-400">
                 <span className="text-neutral-500">Home</span>
                 <span className="text-black">›</span>
                 <span className="text-neutral-500">Shop</span>
@@ -111,15 +111,15 @@ export default function Product() {
         </Container>
       </section>
 
-      <Container className="py-8">
-        <div className="grid gap-12 md:grid-cols-2">
+      <Container className="py-6 sm:py-8">
+        <div className="grid gap-8 md:gap-12 md:grid-cols-2">
           {/* Gallery */}
           <ProductGallery key={p.id} images={p.images} />
 
           {/* Details */}
           <div>
-            <h1 className="text-4xl font-medium text-neutral-900">{p.title}</h1>
-            <div className="mt-2 text-2xl text-neutral-500 font-medium">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium text-neutral-900">{p.title}</h1>
+            <div className="mt-2 text-xl sm:text-2xl text-neutral-500 font-medium">
               Rs. {p.price.toLocaleString()}
             </div>
             {typeof p.stock === "number" && p.stock <= 0 && (
@@ -134,15 +134,15 @@ export default function Product() {
               <span className="text-sm text-neutral-500">{p.numReviews} Customer Review{p.numReviews === 1 ? "" : "s"}</span>
             </div>
 
-            <p className="mt-4 text-sm text-neutral-700 leading-relaxed max-w-md">
+            <p className="mt-3 sm:mt-4 text-sm text-neutral-700 leading-relaxed max-w-md">
               Setting the bar as one of the loudest speakers in its class, the Kilburn is a compact, stout-hearted hero with a well-balanced audio which boasts a clear midrange and extended highs for a sound.
             </p>
 
             {/* Options */}
-            <div className="mt-6 space-y-4">
+            <div className="mt-5 sm:mt-6 space-y-4">
               <div>
                 <div className="text-sm text-neutral-400 mb-2">Size</div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                   {p.sizes.map((s) => (
                     <button key={s} className="h-8 w-8 rounded-md bg-[#F9F1E7] text-sm hover:bg-[#FBEBB5] transition-colors">
                         {s}
@@ -153,7 +153,7 @@ export default function Product() {
 
               <div>
                 <div className="text-sm text-neutral-400 mb-2">Color</div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                   {p.colors.map((c) => (
                     <button
                       key={c}
@@ -166,7 +166,7 @@ export default function Product() {
             </div>
 
             {/* Actions */}
-            <div className="mt-8 flex gap-4 pb-8 border-b border-neutral-200">
+            <div className="mt-6 sm:mt-8 flex flex-wrap gap-4 pb-8 border-b border-neutral-200">
               <div className="flex items-center rounded-md border border-neutral-400 px-3 py-3 gap-4">
                  <button disabled={p.stock <= 0} onClick={() => setQty(q => Math.max(1, q - 1))}>-</button>
                  <span className="w-4 text-center">{qty}</span>
@@ -175,7 +175,7 @@ export default function Product() {
               
               <button
                 onClick={handleAddToCart}
-                className={`rounded-md border bg-transparent px-8 py-3 transition-colors ${p.stock <= 0 ? "border-neutral-400 text-neutral-400 cursor-not-allowed" : "border-black text-black hover:bg-black hover:text-white"}`}
+                className={`rounded-md border bg-transparent px-8 py-3 transition-colors w-full sm:w-auto ${p.stock <= 0 ? "border-neutral-400 text-neutral-400 cursor-not-allowed" : "border-black text-black hover:bg-black hover:text-white"}`}
                 disabled={p.stock <= 0}
               >
                 Add To Cart
@@ -287,6 +287,23 @@ export default function Product() {
             <Link to="/shop" className="border-b border-black pb-1 font-medium text-sm">View More</Link>
         </div>
       </Container>
+      {/* Sticky mobile action bar */}
+      <div className="fixed inset-x-0 bottom-0 z-30 bg-white/95 backdrop-blur border-t border-neutral-200 p-3 md:hidden">
+        <div className="mx-auto max-w-[640px] flex items-center justify-between gap-3">
+          <div className="flex items-center rounded-md border border-neutral-400 px-3 py-2 gap-4">
+            <button disabled={p.stock <= 0} onClick={() => setQty(q => Math.max(1, q - 1))}>-</button>
+            <span className="w-4 text-center">{qty}</span>
+            <button disabled={p.stock <= 0} onClick={() => setQty(q => q + 1)}>+</button>
+          </div>
+          <button
+            onClick={handleAddToCart}
+            className={`flex-1 rounded-md border bg-black px-6 py-3 text-white ${p.stock <= 0 ? "opacity-60 cursor-not-allowed" : "hover:bg-neutral-900"}`}
+            disabled={p.stock <= 0}
+          >
+            Add To Cart
+          </button>
+        </div>
+      </div>
     </>
   );
 }
@@ -509,4 +526,3 @@ export default function Product() {
 //     </>
 //   );
 // }
-

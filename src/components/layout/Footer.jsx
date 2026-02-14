@@ -83,7 +83,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
 
           {/* Brand */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold">HEAVEN CRAFT</h3>
             <p className="text-sm text-neutral-600 leading-6">
               Premium handcrafted furniture designed for modern homes.
@@ -95,7 +95,7 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="text-center md:text-left">
             <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide">
               Quick Links
             </h4>
@@ -124,7 +124,7 @@ export default function Footer() {
           </div>
 
           {/* Customer Service */}
-          <div>
+          <div className="text-center md:text-left">
             <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide">
               Customer Service
             </h4>
@@ -153,7 +153,7 @@ export default function Footer() {
           </div>
 
           {/* Newsletter */}
-          <div>
+          <div className="text-center md:text-left">
             <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide">
               Newsletter
             </h4>
@@ -173,7 +173,7 @@ export default function Footer() {
             </div>
 
             {/* Social Icons */}
-     <div className="mt-6 flex gap-4 text-lg">
+            <div className="mt-6 flex justify-center md:justify-start gap-4 text-lg">
 
   {/* Facebook */}
   <a
@@ -216,7 +216,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="mt-12 flex flex-col items-center justify-between gap-6 border-t border-neutral-600 pt-6 md:flex-row">
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-neutral-500 text-center md:text-left">
             © {year} HeavenCraft. All rights reserved.
           </p>
 

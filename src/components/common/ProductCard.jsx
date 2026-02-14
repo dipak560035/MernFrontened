@@ -146,7 +146,7 @@ export default function ProductCard({ p }) {
         </button>
       </div>
       <div className="mt-3 space-y-1">
-        <h4 className="text-base font-medium text-neutral-900">{p.title}</h4>
+        <h4 className="text-base font-medium text-neutral-900 truncate">{p.title}</h4>
         <p className="text-sm font-semibold text-neutral-900">Rs. {p.price?.toLocaleString()}</p>
       </div>
     </Link>

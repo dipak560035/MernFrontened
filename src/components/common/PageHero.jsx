@@ -6,7 +6,7 @@ export default function PageHero({ title, trail = "Home", image }) {
       className="relative"
       style={{
         backgroundImage:
-          `url(${image || "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1600&auto=format&fit=crop"})`,
+          `url(${image || "https://plus.unsplash.com/premium_photo-1684338795288-097525d127f0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnVybml0dXJlfGVufDB8MHwwfHx8MA%3D%3D"})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
