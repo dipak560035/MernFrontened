@@ -68,30 +68,6 @@ export default function Home() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       <Container className="py-16">
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="rounded-lg bg-white p-6 shadow-soft">
@@ -120,42 +96,41 @@ export default function Home() {
         </div>
       </Container>
 
-      <Container>
-        <div className="py-8 text-center">
-          <h2 className="text-2xl font-semibold">Top Picks For You</h2>
-          <p className="mt-2 text-sm text-neutral-600">
-            Find a bright ideal to suit your taste with our great selection.
-          </p>
-        </div>
+       <Container>
+      {/* Section Header */}
+      <div className="py-8 text-center">
+        <h2 className="text-2xl font-semibold">Top Picks For You</h2>
+        <p className="mt-2 text-sm text-neutral-600">
+          Find a bright ideal to suit your taste with our great selection.
+        </p>
+      </div>
 
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-          {isLoading
-            ? Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-40 animate-pulse rounded-lg bg-neutral-100" />
-              ))
-            : (Array.isArray(products) ? products : []).map((p) => (
-                <ProductCard
-                  key={p.id || p._id}
-                  p={{
-                    id: p.id || p._id,
-                    title: p.title || p.name,
-                    price: p.price,
-                    image:
-  p.image ||
-  (p.images?.length
-    ? `${BASE_URL}${p.images[0].url}`
-    : "https://placehold.co/400x300?text=No+Image"),
-
-                    // image:
-                    //   p.image ||
-                    //   (Array.isArray(p.images) ? (typeof p.images[0] === "string" ? p.images[0] : p.images[0]?.url) : undefined),
-                  }}
-                />
-
-
-              ))}
-        </div>
-      </Container>
+      {/* Products Grid */}
+      <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-72 animate-pulse rounded-lg bg-neutral-100"
+              />
+            ))
+          : products.map((p) => (
+              <ProductCard
+                key={p._id}
+                p={{
+                  id: p._id,
+                  title: p.name,
+                  price: p.price,
+                  image:
+                    p.images?.length
+                      ? `${BASE_URL}${p.images[0].url}`
+                      : "https://placehold.co/400x300?text=No+Image",
+                  stock: p.stock ?? 0,
+                }}
+              />
+            ))}
+      </div>
+    </Container>
 
       <section className="mt-16 bg-brand-light">
         <Container className="py-12">
