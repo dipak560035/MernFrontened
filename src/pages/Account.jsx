@@ -8,7 +8,7 @@ import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, logout } from "../store/slices/authSlice";
 import { useLoginMutation, useRegisterMutation, useUpdateProfileMutation } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { User, Mail, Lock, LogOut, Camera } from "lucide-react";
@@ -113,9 +113,14 @@ export default function Account() {
                 <p className="text-red-500 text-xs mt-1">{loginForm.formState.errors.password?.message}</p>
               </div>
 
-              <div className="flex items-center gap-2 text-sm">
-                <input type="checkbox" id="remember" {...loginForm.register("remember")} />
-                <label htmlFor="remember">Remember me</label>
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="remember" {...loginForm.register("remember")} />
+                  <label htmlFor="remember">Remember me</label>
+                </div>
+                <Link to="/forgot-password" className="text-neutral-700 hover:text-black">
+                  Forgot password?
+                </Link>
               </div>
 
               <Button type="submit" disabled={loggingIn}>

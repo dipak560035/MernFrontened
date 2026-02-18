@@ -269,7 +269,6 @@ import { useCartQuery } from "../../services/api";
 import { useState, useRef, useEffect } from "react";
 import { logout } from "../../store/slices/authSlice";
 import { clearCart } from "../../store/slices/cartSlice";
-import clsx from "clsx";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 

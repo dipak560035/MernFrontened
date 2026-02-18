@@ -24,6 +24,16 @@ export const api = createApi({
       query: (body) => ({ url: "/auth/profile", method: "PUT", body }),
       invalidatesTags: ["Auth"],
     }),
+    forgotPassword: builder.mutation({
+      query: (body) => ({ url: "/forgot-password", method: "POST", body }),
+    }),
+    resetPassword: builder.mutation({
+      query: ({ token, password }) => ({
+        url: `/reset-password/${token}`,
+        method: "POST",
+        body: { password },
+      }),
+    }),
     me: builder.query({
       query: () => "/auth/me",
       providesTags: ["Auth"],
@@ -144,6 +154,8 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useUpdateProfileMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
    useMeQuery,
   useProductsQuery,
   useProductByIdQuery,
