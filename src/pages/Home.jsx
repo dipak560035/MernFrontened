@@ -5,7 +5,7 @@ import { useProductsQuery } from "../services/api";
 import ProductCard from "../components/common/ProductCard";
 
 export default function Home() {
-  const BASE_URL = "http://localhost:4001";
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 
   const { data, isLoading } = useProductsQuery({ limit: 4 });
   const products =
@@ -17,52 +17,39 @@ export default function Home() {
 
   return (
     <>
-    {/* <section className="bg-brand-light">
-  <Container className="py-16">
-    <div className="grid items-center gap-8 md:grid-cols-2">
-      <div>
-        <h1 className="text-4xl font-semibold">Rocket single seater</h1>
-        <Link to="/shop">
-          <Button className="mt-6">
+    
+<section className="bg-brand-light min-h-[480px] sm:min-h-[560px] flex items-center overflow-hidden">
+  <div className="container mx-auto px-4 md:px-10 lg:px-20">
+    <div className="grid grid-cols-1 items-center gap-10 md:gap-12 md:grid-cols-2">
+      
+      {/* 1. TEXT CONTENT (Matches Figma Typography) */}
+      <div className="space-y-5 text-center md:text-left">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-black">
+          Rocket single <br /> seater
+        </h1>
+        <div className="pt-4">
+          <Link 
+            to="/shop" 
+            className="group relative inline-block text-xl font-medium tracking-wide text-black"
+          >
             Shop Now
-          </Button>
-        </Link>
+            {/* The signature thick underline from the Figma design */}
+            <span className="absolute -bottom-2 left-0 h-[2px] w-[120px] bg-black transition-all group-hover:h-[3px]"></span>
+          </Link>
+        </div>
       </div>
-      <div className="flex justify-center md:justify-end">
+
+      {/* 2. IMAGE CONTENT (Transparent & HD) */}
+      <div className="mt-6 md:mt-0 flex justify-center md:justify-end">
         <img
           src="https://ak1.ostkcdn.com/images/products/is/images/direct/cc1e27e9b5d35e3ff5db228168bccefc9788045a/Single-sofa-chair-for-bedroom-living-room-with-wooden-legs.jpg?impolicy=medium"
           alt="Rocket single seater"
-          className="w-full max-w-[500px] h-auto object-cover rounded-xl shadow-2xl md:max-w-[700px] lg:max-w-[800px]"
+          className="w-full max-w-[500px] h-auto object-contain transition-transform duration-500 hover:scale-105 md:max-w-[700px] drop-shadow-2xl"
         />
       </div>
+
     </div>
-  </Container>
-</section> */}
- 
-
-
-
-
-<section className="bg-brand-light">
-  <Container className="py-16">
-    <div className="grid items-center gap-8 md:grid-cols-2">
-      <div>
-        <h1 className="text-4xl font-semibold">Rocket single seater</h1>
-        <Link to="/shop">
-          <Button className="mt-6">
-            Shop Now
-          </Button>
-        </Link>
-      </div>
-      <div className="flex justify-center md:justify-end">
-        <img
-          src="https://img.freepik.com/free-vector/beige-soft-leather-armchair-with-wooden-legs_107791-29582.jpg"
-          alt="Rocket single seater"
-          className="w-full max-w-[500px] h-auto object-contain drop-shadow-2xl md:max-w-[700px] lg:max-w-[800px]"
-        />
-      </div>
-    </div>
-  </Container>
+  </div>
 </section>
 
 
@@ -73,26 +60,7 @@ export default function Home() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      <Container className="py-16">
+      <Container className="py-12 sm:py-16">
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="rounded-lg bg-white p-6 shadow-soft">
             <img
@@ -120,7 +88,8 @@ export default function Home() {
         </div>
       </Container>
 
-      <Container>
+      
+       <Container>
         <div className="py-8 text-center">
           <h2 className="text-2xl font-semibold">Top Picks For You</h2>
           <p className="mt-2 text-sm text-neutral-600">
@@ -129,37 +98,67 @@ export default function Home() {
         </div>
 
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-          {isLoading
-            ? Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-40 animate-pulse rounded-lg bg-neutral-100" />
-              ))
-            : (Array.isArray(products) ? products : []).map((p) => (
-                <ProductCard
-                  key={p.id || p._id}
-                  p={{
-                    id: p.id || p._id,
-                    title: p.title || p.name,
-                    price: p.price,
-                    image:
-  p.image ||
-  (p.images?.length
-    ? `${BASE_URL}${p.images[0].url}`
-    : "https://placehold.co/400x300?text=No+Image"),
 
-                    // image:
-                    //   p.image ||
-                    //   (Array.isArray(p.images) ? (typeof p.images[0] === "string" ? p.images[0] : p.images[0]?.url) : undefined),
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-72 animate-pulse rounded-lg bg-neutral-100"/>
+            ))
+          ) : products.length > 0 ? (
+
+            products.map((p) => {
+
+              // ✅ BULLETPROOF IMAGE LOGIC (handles ALL backend cases)
+              let imageUrl = "https://placehold.co/400x300?text=No+Image";
+
+              if (Array.isArray(p.images) && p.images.length > 0) {
+
+                // case: { url:"/uploads/x.jpg" }
+                if (typeof p.images[0] === "object" && p.images[0]?.url) {
+                  imageUrl = `${BASE_URL}${p.images[0].url}`;
+                }
+
+                // case: ["http://..."]
+                else if (typeof p.images[0] === "string") {
+                  imageUrl = p.images[0].startsWith("http")
+                    ? p.images[0]
+                    : `${BASE_URL}${p.images[0]}`;
+                }
+              }
+
+              // fallback: image field
+              else if (p.image) {
+                imageUrl = p.image.startsWith("http")
+                  ? p.image
+                  : `${BASE_URL}${p.image}`;
+              }
+
+              return (
+                <ProductCard
+                  key={p._id}
+                  p={{
+                    id: p._id,
+                    title: p.name,
+                    price: p.price,
+                    image: imageUrl,
+                    stock: p.stock ?? 0,
                   }}
                 />
+              );
+            })
 
+          ) : (
+            <p className="col-span-full text-center text-neutral-500">
+              No products found
+            </p>
+          )}
 
-              ))}
         </div>
       </Container>
 
+
       <section className="mt-16 bg-brand-light">
-        <Container className="py-12">
-          <div className="flex items-center justify-between">
+        <Container className="py-10 sm:py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <p className="text-sm text-neutral-600">New Arrivals</p>
               <h3 className="mt-2 text-2xl font-semibold">Asgard sofa</h3>
@@ -179,18 +178,18 @@ export default function Home() {
             <img
               src="https://images.unsplash.com/photo-1684165610413-2401399e0e59?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHNvZmF8ZW58MHx8MHx8fDA%3D"
               alt="Asgaard sofa"
-              className="h-56 w-56 rounded-lg object-cover shadow-soft md:h-72 md:w-72"
+              className="h-48 w-48 rounded-lg object-cover shadow-soft md:h-64 md:w-64 lg:h-72 lg:w-72"
             />
           </div>
         </Container>
       </section>
 
-  <Container className="py-16">
-  <h2 className="mb-6 text-center text-2xl font-semibold">
+  <Container className="py-12 sm:py-16">
+  <h2 className="mb-6 text-center text-2xl sm:text-3xl font-semibold">
     Our Blogs
   </h2>
 
-  <div className="grid gap-6 md:grid-cols-3">
+  <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
     {[
       {
         img: "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmxvZyUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D",
@@ -248,7 +247,7 @@ export default function Home() {
       <span className="font-medium">@heavencraft</span>
     </div>
 
-    <h2 className="mt-3 text-3xl font-semibold">
+    <h2 className="mt-3 text-2xl sm:text-3xl font-semibold">
       Follow Our Journey
     </h2>
 

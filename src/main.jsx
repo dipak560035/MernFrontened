@@ -25,6 +25,8 @@ import ScrollToTop from "./components/common/ScrollToTop.jsx";
 import Orders from "./pages/Orders.jsx";
 import OrderDetails from "./pages/OrderDetails.jsx";
 import AdminOrders from "./pages/AdminOrders.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -41,6 +43,9 @@ createRoot(document.getElementById("root")).render(
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
             <Route path="blog" element={<Blog />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
+            <Route path="reset-password/:token" element={<ResetPassword />} />
+            
 <Route path="admin" element={<Protected admin><Admin /></Protected>} />
 <Route path="admin/add" element={<Protected admin><AddProduct /></Protected>} />
 <Route path="admin/edit/:id" element={<Protected admin><EditProduct /></Protected>} />

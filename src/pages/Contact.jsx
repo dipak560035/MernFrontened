@@ -15,8 +15,8 @@ export default function Contact() {
               For more information about our products and services, please feel free to drop us an email or call.  
             </p>
             <ul className="space-y-3 text-sm">
-              <li>Address: 236 5th SE Avenue, New York, United States</li>
-              <li>Phone: Mobile (+84) 546-6789 • Hotline (+84) 456-6789</li>
+              <li>Address: 236 5th SE putlisadak, Kathmandu, Nepal</li>
+              <li>Phone: Mobile (+977) 546-6789 • Hotline (+77) 456-6789</li>
               <li>Working Time: Mon–Fri 9:00–22:00 • Sat–Sun 9:00–21:00</li>
             </ul>
           </div>
