@@ -24,16 +24,7 @@ export const api = createApi({
       query: (body) => ({ url: "/auth/profile", method: "PUT", body }),
       invalidatesTags: ["Auth"],
     }),
-    // forgotPassword: builder.mutation({
-    //   query: (body) => ({ url: "/forgot-password", method: "POST", body }),
-    // }),
-    // resetPassword: builder.mutation({
-    //   query: ({ token, password }) => ({
-    //     url: `/reset-password/${token}`,
-    //     method: "POST",
-    //     body: { password },
-    //   }),
-    // }),
+  
     forgotPassword: builder.mutation({
   query: (body) => ({ url: "/auth/forgot-password", method: "POST", body }),
 }),
@@ -48,13 +39,7 @@ resetPassword: builder.mutation({
       query: () => "/auth/me",
       providesTags: ["Auth"],
     }),
-    // products: builder.query({
-    //   query: (params) => ({
-    //     url: "/products",
-    //     params,
-    //   }),
-    //   providesTags: ["Product"],
-    // }),
+  
     products: builder.query({
       query: (params) => ({
         url: "/products",
@@ -118,10 +103,7 @@ resetPassword: builder.mutation({
     { type: "Order", id: "LIST" },
   ],
 }),
-    // adminAllOrders: builder.query({
-    //   query: () => "/orders/admin/all",
-    //   providesTags: ["Order"],
-    // }),
+   
     orders: builder.query({
   query: () => "/orders",
   providesTags: (result) =>
@@ -148,14 +130,7 @@ adminAllOrders: builder.query({
         ]
       : [{ type: "Order", id: "LIST" }],
 }),
-    // adminUpdateOrderStatus: builder.mutation({
-    //   query: ({ id, status }) => ({
-    //     url: `/orders/admin/${id}`,
-    //     method: "PUT",
-    //     body: { status },
-    //   }),
-    //   invalidatesTags: (_res, _err, { id }) => [{ type: "Order", id }, "Order"],
-    // }),
+    
     adminUpdateOrderStatus: builder.mutation({
   query: ({ id, status }) => ({
     url: `/orders/admin/${id}`,

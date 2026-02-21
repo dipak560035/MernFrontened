@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Container from "../components/layout/Container";
-import Button from "../components/ui/button";
-import Badge from "../components/ui/badge";
-import Quantity from "../components/ui/quantity";
+
 import { Star, Facebook, Linkedin, Twitter, Heart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../store/slices/cartSlice";
@@ -36,6 +34,7 @@ export default function Product() {
   const fallback = {
     id,
     title: "Asgaard sofa",
+    description: "No description available",
     price: 250000,
     rating: 4.5,
     images: [
@@ -49,10 +48,12 @@ export default function Product() {
     ? {
         id: data.data._id,
         title: data.data.name,
+        description: data.data.description || "",
         price: data.data.price,
         stock: data.data.stock ?? 0,
         rating: data.data.rating || 0,
         numReviews: data.data.numReviews || 0,
+          category: data.data.category || "Uncategorized",
         reviews: Array.isArray(data.data.reviews) ? data.data.reviews : [],
         images:
           data.data.images?.length > 0
@@ -66,6 +67,7 @@ export default function Product() {
         sizes: data.data.sizes?.length
           ? data.data.sizes
           : fallback.sizes,
+          createdAt: data.data.createdAt,
       }
     : fallback;
 
@@ -134,9 +136,10 @@ export default function Product() {
               <span className="text-sm text-neutral-500">{p.numReviews} Customer Review{p.numReviews === 1 ? "" : "s"}</span>
             </div>
 
-            <p className="mt-3 sm:mt-4 text-sm text-neutral-700 leading-relaxed max-w-md">
-              Setting the bar as one of the loudest speakers in its class, the Kilburn is a compact, stout-hearted hero with a well-balanced audio which boasts a clear midrange and extended highs for a sound.
-            </p>
+           
+            <p className="mt-3 sm:mt-4 text-sm text-neutral-700 leading-relaxed max-w-md line-clamp-2">
+  {p.description || "No description available"}
+</p>
 
             {/* Options */}
             <div className="mt-5 sm:mt-6 space-y-4">
@@ -239,26 +242,104 @@ export default function Product() {
                     Reviews [{p.numReviews}]
                 </button>
             </div>
-            
+          
             <div className="max-w-4xl mx-auto text-neutral-500 text-sm space-y-6 text-justify">
-               {activeTab === "desc" && (
-                   <>
-                   <p>Embodying the raw, wayward spirit of rock ‘n’ roll, the Kilburn portable active stereo speaker takes the unmistakable look and sound of Marshall, unplugs the chords, and takes the show on the road.</p>
-                   <p>Weighing in under 7 pounds, the Kilburn is a lightweight piece of vintage styled engineering. Setting the bar as one of the loudest speakers in its class, the Kilburn is a compact, stout-hearted hero with a well-balanced audio which boasts a clear midrange and extended highs for a sound that is both articulate and pronounced. The analogue knobs allow you to fine tune the controls to your personal preferences while the guitar-influenced leather strap enables easy and stylish travel.</p>
-                   <div className="grid md:grid-cols-2 gap-6 mt-8">
-                       <div className="bg-[#F9F1E7] rounded-lg h-64"></div>
-                       <div className="bg-[#F9F1E7] rounded-lg h-64"></div>
-                   </div>
-                   </>
-               )}
-               {activeTab === "info" && <p>Additional information content...</p>}
-               {activeTab === "reviews" && (
-                 <>
-                   <ReviewList reviews={p.reviews} rating={p.rating} numReviews={p.numReviews} />
-                   <ReviewForm productId={p.id} />
-                 </>
-               )}
-            </div>
+  {activeTab === "desc" && (
+    <>
+      <p>
+        {p.description?.trim()
+          ? p.description
+          : "No description available for this product."}
+      </p>
+
+<div className="grid md:grid-cols-2 gap-6 mt-8">
+  {p.images?.slice(1, 3).map((img, i) => (
+    <div key={i} className="rounded-lg overflow-hidden bg-[#F9F1E7] h-64">
+      <img
+        src={img}
+        alt={`Product extra ${i}`}
+        className="h-full w-full object-cover"
+      />
+    </div>
+  ))}
+</div>
+    </>
+  )}
+
+  {/* {activeTab === "info" && <p>Additional information content...</p>} */}
+  {activeTab === "info" && (
+  <div className="border rounded-lg overflow-hidden">
+    <table className="w-full text-sm">
+
+      <tbody className="divide-y">
+
+        <tr className="bg-neutral-50">
+          <td className="p-3 font-medium w-1/3">Category</td>
+          <td className="p-3">{p.category || "-"}</td>
+        </tr>
+
+        <tr>
+          <td className="p-3 font-medium">Price</td>
+          <td className="p-3">NPR {p.price}</td>
+        </tr>
+
+        <tr className="bg-neutral-50">
+          <td className="p-3 font-medium">Availability</td>
+          <td className="p-3">
+            {p.stock > 0 ? `In Stock (${p.stock})` : "Out of Stock"}
+          </td>
+        </tr>
+
+        {p.colors?.length > 0 && (
+          <tr>
+            <td className="p-3 font-medium">Colors</td>
+            <td className="p-3">{p.colors.join(", ")}</td>
+          </tr>
+        )}
+
+        {p.sizes?.length > 0 && (
+          <tr className="bg-neutral-50">
+            <td className="p-3 font-medium">Sizes</td>
+            <td className="p-3">{p.sizes.join(", ")}</td>
+          </tr>
+        )}
+
+        {p.tags?.length > 0 && (
+          <tr>
+            <td className="p-3 font-medium">Tags</td>
+            <td className="p-3">{p.tags.join(", ")}</td>
+          </tr>
+        )}
+
+        <tr className="bg-neutral-50">
+          <td className="p-3 font-medium">Rating</td>
+          <td className="p-3">{p.rating?.toFixed(1)} / 5</td>
+        </tr>
+
+        <tr>
+          <td className="p-3 font-medium">Added On</td>
+          <td className="p-3">
+            {new Date(p.createdAt).toLocaleDateString()}
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+  </div>
+)}
+
+  {activeTab === "reviews" && (
+    <>
+      <ReviewList
+        reviews={p.reviews}
+        rating={p.rating}
+        numReviews={p.numReviews}
+      />
+      <ReviewForm productId={p.id} />
+    </>
+  )}
+</div>
         </Container>
       </div>
 
