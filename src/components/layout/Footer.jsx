@@ -1,73 +1,3 @@
-// export default function Footer() {
-//   return (
-//     <footer className="mt-24 border-t border-neutral-200 bg-white">
-//       <div className="mx-auto max-w-7xl px-6 py-12">
-//         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-//           <div>
-//             <h4 className="mb-3 text-sm font-semibold">Meubel House</h4>
-//             <p className="text-sm text-neutral-600">
-//               400 University Drive Suite 200 Coral Gables, FL 33134 USA
-//             </p>
-//           </div>
-//           <div>
-//             <h4 className="mb-3 text-sm font-semibold">Links</h4>
-//             <ul className="space-y-2 text-sm text-neutral-600">
-//               <li>Home</li>
-//               <li>Shop</li>
-//               <li>About</li>
-//               <li>Contact</li>
-//             </ul>
-//           </div>
-//           <div>
-//             <h4 className="mb-3 text-sm font-semibold">Help</h4>
-//             <ul className="space-y-2 text-sm text-neutral-600">
-//               <li>Payment Options</li>
-//               <li>Returns</li>
-//               <li>Privacy Policies</li>
-//             </ul>
-//           </div>
-//           <div>
-//             <h4 className="mb-3 text-sm font-semibold">Newsletter</h4>
-//             <div className="flex gap-2">
-//               <input
-//                 className="flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm"
-//                 placeholder="Enter Your Email Address"
-//               />
-//               <button className="rounded-md border border-neutral-300 px-4 py-2 text-sm">
-//                 SUBSCRIBE
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//         <div className="mt-12 border-t border-neutral-200 pt-6 text-center text-sm text-neutral-600">
-//           2022 Meubel House. All rights reserved
-//         </div>
-//       </div>
-//     </footer>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import { Link } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
@@ -101,22 +31,22 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm text-neutral-600">
               <li>
-                <Link to="/" className="hover:text-white transition">
+                <Link to="/" className="hover:text-neutral-900 transition">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/shop" className="hover:text-white transition">
+                <Link to="/shop" className="hover:text-neutral-900 transition">
                   Shop
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-white transition">
+                <Link to="/about" className="hover:text-neutral-900 transition">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-white transition">
+                <Link to="/contact" className="hover:text-neutral-900 transition">
                   Contact
                 </Link>
               </li>
@@ -130,22 +60,22 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm text-neutral-600">
               <li>
-                <Link to="/returns" className="hover:text-white transition">
+                <Link to="/returns" className="hover:text-neutral-900 transition">
                   Returns & Refunds
                 </Link>
               </li>
               <li>
-                <Link to="/shipping" className="hover:text-white transition">
+                <Link to="/shipping" className="hover:text-neutral-900 transition">
                   Shipping Policy
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="hover:text-white transition">
+                <Link to="/privacy" className="hover:text-neutral-900 transition">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="hover:text-white transition">
+                <Link to="/faq" className="hover:text-neutral-900 transition">
                   FAQs
                 </Link>
               </li>

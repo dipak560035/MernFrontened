@@ -76,6 +76,7 @@ createRoot(document.getElementById("root")).render(
                 </Protected>
               }
             />
+
             <Route
               path="orders/:id"
               element={

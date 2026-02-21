@@ -1,11 +1,12 @@
+
+import { useState } from "react";
+import { toast } from "sonner";
+import { Link } from "react-router-dom";
 import PageHero from "../components/common/PageHero";
 import Container from "../components/layout/Container";
 import Input from "../components/ui/input";
 import Button from "../components/ui/button";
 import { useForgotPasswordMutation } from "../services/api";
-import { useState } from "react";
-import { toast } from "sonner";
-import { Link } from "react-router-dom";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -35,6 +36,7 @@ export default function ForgotPassword() {
           <p className="mb-6 text-sm text-neutral-600 text-center">
             Enter your email address and we’ll send you a reset link.
           </p>
+
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-1">
@@ -49,14 +51,17 @@ export default function ForgotPassword() {
                 aria-required="true"
               />
             </div>
+
             <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? "Sending..." : "Send Reset Link"}
             </Button>
+
             {isSuccess && (
               <div role="alert" className="rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-700">
                 Reset link sent to your email
               </div>
             )}
+
             <div className="text-center text-sm">
               <Link to="/account" className="text-neutral-700 hover:text-black">
                 Back to Login
@@ -68,3 +73,4 @@ export default function ForgotPassword() {
     </>
   );
 }
+

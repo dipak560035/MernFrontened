@@ -138,11 +138,12 @@ export default function EditProduct() {
 
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div className="grid gap-4">
-          <Input label="Product Name" name="name" value={form.name} onChange={handleChange} required />
+          <Input label="Product Name" name="name" placeholder="Product Name" value={form.name} onChange={handleChange} required />
           <div className="space-y-1">
             <label className="text-sm font-medium">Description</label>
             <textarea
               name="description"
+              placeholder="Description"
               value={form.description}
               onChange={handleChange}
               className="w-full border rounded-md p-2 min-h-[120px]"
@@ -150,13 +151,13 @@ export default function EditProduct() {
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <Input type="number" label="Price" name="price" value={form.price} onChange={handleChange} required />
-            <Input type="number" label="Stock" name="stock" value={form.stock} onChange={handleChange} required />
+            <Input type="number" label="Price" name="price" placeholder="Price" value={form.price} onChange={handleChange} required />
+            <Input type="number" label="Stock" name="stock" placeholder="Stock" value={form.stock} onChange={handleChange} required />
           </div>
-          <Input label="Category" name="category" value={form.category} onChange={handleChange} />
-          <Input label="Tags (comma separated)" name="tags" value={form.tags} onChange={handleChange} />
-          <Input label="Colors (comma separated)" name="colors" value={form.colors} onChange={handleChange} />
-          <Input label="Sizes (comma separated)" name="sizes" value={form.sizes} onChange={handleChange} />
+          <Input label="Category" name="category" placeholder="Category" value={form.category} onChange={handleChange} />
+          <Input label="Tags (comma separated)" name="tags" placeholder="Tags (comma separated)" value={form.tags} onChange={handleChange} />
+          <Input label="Colors (comma separated)" name="colors" placeholder="Colors (comma separated)" value={form.colors} onChange={handleChange} />
+          <Input label="Sizes (comma separated)" name="sizes" placeholder="Sizes (comma separated)" value={form.sizes} onChange={handleChange} />
 
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" name="featured" checked={form.featured} onChange={handleChange} className="w-4 h-4" />
