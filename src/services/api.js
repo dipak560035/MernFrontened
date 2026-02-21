@@ -24,16 +24,26 @@ export const api = createApi({
       query: (body) => ({ url: "/auth/profile", method: "PUT", body }),
       invalidatesTags: ["Auth"],
     }),
+    // forgotPassword: builder.mutation({
+    //   query: (body) => ({ url: "/forgot-password", method: "POST", body }),
+    // }),
+    // resetPassword: builder.mutation({
+    //   query: ({ token, password }) => ({
+    //     url: `/reset-password/${token}`,
+    //     method: "POST",
+    //     body: { password },
+    //   }),
+    // }),
     forgotPassword: builder.mutation({
-      query: (body) => ({ url: "/forgot-password", method: "POST", body }),
-    }),
-    resetPassword: builder.mutation({
-      query: ({ token, password }) => ({
-        url: `/reset-password/${token}`,
-        method: "POST",
-        body: { password },
-      }),
-    }),
+  query: (body) => ({ url: "/auth/forgot-password", method: "POST", body }),
+}),
+resetPassword: builder.mutation({
+  query: ({ token, password }) => ({
+    url: `/auth/reset-password/${token}`,
+    method: "POST",
+    body: { password },
+  }),
+}),
     me: builder.query({
       query: () => "/auth/me",
       providesTags: ["Auth"],
@@ -96,30 +106,67 @@ export const api = createApi({
       query: (body) => ({ url: "/orders", method: "POST", body }),
       invalidatesTags: ["Order", "Cart"],
     }),
-    orders: builder.query({
-      query: () => "/orders",
-      providesTags: ["Order"],
-    }),
-    orderById: builder.query({
-      query: (id) => `/orders/${id}`,
-      providesTags: (_res, _err, id) => [{ type: "Order", id }],
-    }),
+  
     cancelOrder: builder.mutation({
-      query: (id) => ({ url: `/orders/${id}/cancel`, method: "PATCH" }),
-      invalidatesTags: (_res, _err, id) => [{ type: "Order", id }, "Order"],
-    }),
-    adminAllOrders: builder.query({
-      query: () => "/orders/admin/all",
-      providesTags: ["Order"],
-    }),
+  query: (id) => ({
+    url: `/orders/${id}/cancel`,
+    method: "PATCH",
+  }),
+
+  invalidatesTags: (_res, _err, id) => [
+    { type: "Order", id },
+    { type: "Order", id: "LIST" },
+  ],
+}),
+    // adminAllOrders: builder.query({
+    //   query: () => "/orders/admin/all",
+    //   providesTags: ["Order"],
+    // }),
+    orders: builder.query({
+  query: () => "/orders",
+  providesTags: (result) =>
+    result?.data
+      ? [
+          ...result.data.map(({ _id }) => ({ type: "Order", id: _id })),
+          { type: "Order", id: "LIST" },
+        ]
+      : [{ type: "Order", id: "LIST" }],
+}),
+
+orderById: builder.query({
+  query: (id) => `/orders/${id}`,
+  providesTags: (_res, _err, id) => [{ type: "Order", id }],
+}),
+
+adminAllOrders: builder.query({
+  query: () => "/orders/admin/all",
+  providesTags: (result) =>
+    result?.data
+      ? [
+          ...result.data.map(({ _id }) => ({ type: "Order", id: _id })),
+          { type: "Order", id: "LIST" },
+        ]
+      : [{ type: "Order", id: "LIST" }],
+}),
+    // adminUpdateOrderStatus: builder.mutation({
+    //   query: ({ id, status }) => ({
+    //     url: `/orders/admin/${id}`,
+    //     method: "PUT",
+    //     body: { status },
+    //   }),
+    //   invalidatesTags: (_res, _err, { id }) => [{ type: "Order", id }, "Order"],
+    // }),
     adminUpdateOrderStatus: builder.mutation({
-      query: ({ id, status }) => ({
-        url: `/orders/admin/${id}`,
-        method: "PUT",
-        body: { status },
-      }),
-      invalidatesTags: (_res, _err, { id }) => [{ type: "Order", id }, "Order"],
-    }),
+  query: ({ id, status }) => ({
+    url: `/orders/admin/${id}`,
+    method: "PUT",
+    body: { status },
+  }),
+  invalidatesTags: (_res, _err, { id }) => [
+    { type: "Order", id },
+    { type: "Order", id: "LIST" },
+  ],
+}),
     adminCreateProduct: builder.mutation({
       query: (body) => ({ url: "/products", method: "POST", body }),
       invalidatesTags: ["Product"],
