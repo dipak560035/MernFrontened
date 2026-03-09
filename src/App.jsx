@@ -1,17 +1,20 @@
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
+import "./index.css";
+import { Toaster } from "sonner";
+import FeatureStrip from "./components/common/FeatureStrip";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import AuthPage from "./Auth/AuthPage"
 
 
-
-function App() {
+export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<AuthPage />} />
-      </Routes>
-    </Router>
-  )
+    <div className="min-h-screen">
+      <Navbar />
+      <Outlet />
+      <FeatureStrip />
+      <Footer />
+      <Toaster richColors />
+    </div>
+  );
 }
-
-export default App
