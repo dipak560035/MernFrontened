@@ -2,7 +2,7 @@
 
 
 // import * as React from "reac
-// import { Slot } from "@radix-ui/react-slot
+// import { Slot } from "@radix-ui/react-slo
 // import { cva, type VariantProps } from "class-variance-autho
 // import { cn } from "@/lib/utils
 // const buttonVariants = cva(
