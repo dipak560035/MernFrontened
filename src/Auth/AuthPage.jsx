@@ -6,7 +6,7 @@
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 // export default function AuthPage() {
-//   const [formType, setFormType] = useState("none") // none | login | signup
+//   const [formType, setFormType] = useState("none") // none | login | signu
 
 //   return (
 //     <div className="flex items-center justify-center min-h-screen bg-gray-50">
