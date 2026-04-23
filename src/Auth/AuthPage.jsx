@@ -11,7 +11,7 @@
 //   return (
 //     <div className="flex items-center justify-center min-h-screen bg-gray-50">
 //       <Card className="w-[350px]">
-//         <CardHeader>
+//         <CardHeader
 //           <CardTitle className="text-center text-xl font-bold">
 //             {formType === "login"
 //               ? "Login"
