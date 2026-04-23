@@ -13,7 +13,7 @@
 //       <Card className="w-[350px]">
 //         <CardHeader
 //           <CardTitle className="text-center text-xl font-bold">
-//             {formType === "login"
+//             {formType === "login
 //               ? "Login"
 //               : formType === "signup"
 //               ? "Sign Up"
