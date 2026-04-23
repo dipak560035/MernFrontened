@@ -15,7 +15,7 @@
 //           <CardTitle className="text-center text-xl font-bold">
 //             {formType === "login
 //               ? "Login"
-//               : formType === "signup"
+//               : formType === "signup
 //               ? "Sign Up"
 //               : "Welcome"}
 //           </CardTitle>
