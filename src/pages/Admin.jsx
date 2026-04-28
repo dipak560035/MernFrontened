@@ -19,7 +19,7 @@
 //   const { data: productsResponse, isLoading } = useProductsQuery(debouncedQ ? { q: debouncedQ } : undefined);
 //   const all = productsResponse?.data || [];
 //   const searchLower = debouncedQ.toLowerCase();
-//   const products = searchLower
+//   const products =
 //     ? all.filter((p) => {
 //         const fields = [
 //           p.name,
