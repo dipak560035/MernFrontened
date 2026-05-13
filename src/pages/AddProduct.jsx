@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 import Container from "../components/layout/Container";
 import Input from "../components/ui/input";
@@ -35,7 +33,7 @@ export default function AddProduct() {
     }));
   };
 
-  // ✅ FIXED: Append images instead of replacing
+  //  FIXED: Append images instead of replacing
   const handleImagesChange = (e) => {
     const files = Array.from(e.target.files);
 
