@@ -1,10 +1,22 @@
 
-import { useState, uimport { useState, useEffect } from "react";
-import Container from "../components/layout/Container";
-import Input from "../components/ui/input";
-import Button from "../components/ui/button";
-import { useAdminCreateProductMutation } from "../services/api";
-import { useNavigate } from "react-router-dom";
+
+
+export default function AddProduct() {
+  const [createProduct, { isLoading }] = useAdminCreateProductMutation();
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    price: "",
+    category: "",
+    tags: "",
+    stock: "",
+    colors: "",
+    sizes: "",
+    featured: false,
+  });
+-router-dom";
 
 export default function AddProduct() {
   const [createProduct, { isLoading }] = useAdminCreateProductMutation();
