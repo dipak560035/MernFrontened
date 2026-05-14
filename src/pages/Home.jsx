@@ -14,6 +14,9 @@ export default function Home() {
   const products =
     (Array.isArray(data?.data) && data.data) ||
     (Array.isArray(data) && data) ||
+  const products =
+    (Array.isArray(data?.data) && data.data) ||
+    (Array.isArray(data) && data) ||
     (Array.isArray(data?.data) && data.data) ||
     (Array.isArray(data) && data) ||
 
