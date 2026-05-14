@@ -11,14 +11,6 @@ export default function Home() {
   const products =
     (Array.isArray(data?.data) && data.data) ||
     (Array.isArray(data) && data) ||
-import Container from "../components/layout/Container";
-import Button from "../components/ui/button";
-import { Link } from "react-router-dom";
-import { useProductsQuery } from "../services/api";
-import ProductCard from "../components/common/ProductCard";
-
-export default function Home() {
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4001";
 
   const { data, iimport Container from "../components/layout/Container";
 import Button from "../components/ui/button";
