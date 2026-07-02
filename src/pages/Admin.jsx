@@ -176,12 +176,7 @@ export default function Admin() {
           
           </div>
           <div className="flex items-center gap-3">
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search products…"
-              className="h-10 w-64 rounded-md bg-white px-3 text-neutral-700 outline-none placeholder:text-neutral-400"
-            />
+       
          
           </div>
         </Container>
