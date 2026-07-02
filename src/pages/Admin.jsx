@@ -182,13 +182,7 @@ export default function Admin() {
               placeholder="Search products…"
               className="h-10 w-64 rounded-md bg-white px-3 text-neutral-700 outline-none placeholder:text-neutral-400"
             />
-            <Button
-              variant="outline"
-              onClick={() => navigate("/admin/add")}
-              className="mt-4 md:mt-0 flex items-center gap-2"
-            >
-              <Plus className="h-4 w-4" /> Add Product
-            </Button>
+         
           </div>
         </Container>
       </section>
