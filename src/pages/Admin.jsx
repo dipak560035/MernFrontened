@@ -248,7 +248,7 @@ export default function Admin() {
       <section className="bg-neutral-100">
         <Container className="py-12 flex flex-col md:flex-row justify-between items-center">
           <div>
-            <h1 className="text-3xl font-semibold">Admin Panel</h1>
+           
             <div className="mt-2 text-sm text-neutral-600">Manage Products</div>
           </div>
           <div className="flex items-center gap-3">
