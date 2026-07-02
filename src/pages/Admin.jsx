@@ -126,82 +126,6 @@
 // }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { useProductsQuery, useAdminDeleteProductMutation } from "../services/api";
 import Container from "../components/layout/Container";
 import Button from "../components/ui/button";
@@ -249,7 +173,7 @@ export default function Admin() {
         <Container className="py-12 flex flex-col md:flex-row justify-between items-center">
           <div>
            
-            <div className="mt-2 text-sm text-neutral-600">Manage Products</div>
+          
           </div>
           <div className="flex items-center gap-3">
             <input
