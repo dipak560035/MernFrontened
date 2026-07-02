@@ -224,14 +224,7 @@ export default function Admin() {
                   </div>
 
                   <div className="mt-4 flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 flex items-center justify-center gap-1"
-                      onClick={() => navigate(`/admin/edit/${p.id || p._id}`)}
-                    >
-                      <Edit className="h-4 w-4" /> Edit
-                    </Button>
+                 
                    
                   </div>
                 </div>
