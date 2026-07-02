@@ -232,14 +232,7 @@ export default function Admin() {
                     >
                       <Edit className="h-4 w-4" /> Edit
                     </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="flex-1 flex items-center justify-center gap-1"
-                      onClick={() => handleDelete(p.id || p._id)}
-                    >
-                      <Trash2 className="h-4 w-4" /> Delete
-                    </Button>
+                   
                   </div>
                 </div>
               </div>
